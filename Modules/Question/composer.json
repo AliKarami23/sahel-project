@@ -1,0 +1,31 @@
+{
+    "name": "nwidart/question",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Question\\": "",
+            "Modules\\Question\\App\\": "app/",
+            "Modules\\Question\\Database\\Factories\\": "database/factories/",
+            "Modules\\Question\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Question\\Tests\\": "tests/"
+        }
+    }
+}
