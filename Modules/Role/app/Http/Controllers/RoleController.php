@@ -6,62 +6,62 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\Role\app\Http\Requests\RoleRequest;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function create(RoleRequest $request){
+
+
+
+        $role = Role::create([
+            'name' => $request->name,
+            'guard_name' => 'api'
+        ]);
+
+        $permissions = $request->permissions;
+        $role->permissions()->sync($permissions);
+
+        return response()->json(
+            ['message' => 'Role is Add',
+                'role' => $role,
+                'permissions'=>$permissions
+            ]);
+
+    }
+    public function edit(RoleRequest $request, $id)
     {
-        return view('role::index');
+        $role = Role::findOrFail($id);
+
+        $role->update([
+            'name' => $request->name,
+        ]);
+
+        $permissions = $request->permissions;
+        $role->permissions()->sync($permissions);
+
+        return response()->json(['message' => 'Role is Edit', 'role' => $role]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('role::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        //
-    }
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('role::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('role::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
-        //
+        $role = Role::findOrFail($id);
+
+        $role->delete();
+
+        return response()->json(['message' => 'Role is Delete']);
+    }
+
+    public function index(){
+
+        $roles = Role::all();
+        $permission = Permission::all();
+
+        return response()->json([
+            'roles' => $roles,
+            'permission' => $permission
+        ]);
     }
 }
