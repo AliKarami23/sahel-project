@@ -1,5 +1,6 @@
 {
     "Article": true,
     "Comment": true,
-    "Question": true
+    "Question": true,
+    "Role": true
 }
