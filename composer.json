@@ -12,6 +12,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "nwidart/laravel-modules": "^10.0",
+        "spatie/laravel-medialibrary": "*",
         "spatie/laravel-permission": "^6.1"
     },
     "require-dev": {
