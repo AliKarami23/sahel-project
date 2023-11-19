@@ -6,10 +6,8 @@ use App\Models\PhoneNumber;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Modules\Sms\app\Http\Controllers\SmsController;
 use Illuminate\Validation\ValidationException;
-use Modules\User\Http\Requests\CustomerRequest;
 
 
 class RegisterController extends Controller

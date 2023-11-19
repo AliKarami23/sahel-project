@@ -18,6 +18,14 @@ use \App\Http\Controllers\RegisterController;
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/Register/GetInformation', [RegisterController::class, 'GetInformation'])->name('GetInformation');
+    Route::post('/Logout', [RegisterController::class, 'Logout'])->name('Logout');
+
+
+    // Customer
+    Route::put('/Customer/Edit/{id}', [RegisterController::class, 'EditCustomer'])->middleware('checkCustomerAccess');
+    Route::delete('/Customer/Delete/{id}', [RegisterController::class, 'DeleteCustomer'])->middleware('checkCustomerAccess');
+    Route::get('/Customer/List', [RegisterController::class, 'ListCustomer']);
+
 
 });
 
