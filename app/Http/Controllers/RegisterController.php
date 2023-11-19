@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\PhoneNumber;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Modules\Sms\app\Http\Controllers\SmsController;
 use Illuminate\Validation\ValidationException;
+use Modules\User\Http\Requests\CustomerRequest;
 
 
 class RegisterController extends Controller
@@ -89,6 +92,55 @@ class RegisterController extends Controller
 
         return response()->json(['token' => $token]);
     }
+
+    public function Logout(Request $request)
+    {
+
+        $request->user()->tokens()->delete();
+        return response()->json([
+            'Logout' => 'Goodbye'
+        ]);
+    }
+
+    public function ListCustomer()
+    {
+        $Customer = User::where('Role', 'Customer')->get();
+        return response()->json([
+            'Customer' => $Customer
+        ]);
+    }
+
+
+    public function DeleteCustomer($id)
+    {
+        $user = User::where('Role', 'Customer')->find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Customer not found'], 404);
+        }
+
+        $user->delete();
+
+        return response()->json(['message' => 'Customer deleted successfully']);
+    }
+
+    public function EditCustomer(Request $request, $id)
+    {
+        $user = User::where('Role', 'Customer')->find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Customer not found'], 404);
+        }
+
+
+        $user->update($request->all());
+
+        return response()->json([
+            'message' => 'Customer information updated successfully',
+            'customer' => $user
+        ]);
+    }
+
 
 
 }
