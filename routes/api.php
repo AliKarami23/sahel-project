@@ -22,8 +22,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     // Customer
-    Route::put('/Customer/Edit/{id}', [RegisterController::class, 'EditCustomer'])->middleware('checkCustomerAccess');
-    Route::delete('/Customer/Delete/{id}', [RegisterController::class, 'DeleteCustomer'])->middleware('checkCustomerAccess');
+    Route::put('/Customer/Edit/{id}', [RegisterController::class, 'EditCustomer']);
+    Route::put('/Customer/Update', [RegisterController::class, 'UpdateCustomer']);
+    Route::delete('/Customer/Delete/{id}', [RegisterController::class, 'DeleteCustomer']);
     Route::get('/Customer/List', [RegisterController::class, 'ListCustomer']);
 
 

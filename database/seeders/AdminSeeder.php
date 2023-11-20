@@ -18,10 +18,10 @@ class AdminSeeder extends Seeder
             'id' => 1,
             'Role' => 'Admin',
             'Full_Name' => 'AliK',
-            'PhoneNumber' => '0912',
+            'Phone_Number' => '0912',
             'Email' => 'ali@gmail.com',
             'Password' => Hash::make('00000000')
         ]);
-        $Admin->assignRole('SuperAdmin');
+        $Admin->assignRole('Admin');
     }
 }

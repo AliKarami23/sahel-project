@@ -111,7 +111,6 @@ class RegisterController extends Controller
 
     public function DeleteCustomer($id)
     {
-        $user = User::where('Role', 'Customer')->find($id);
 
         if (!$user) {
             return response()->json(['message' => 'Customer not found'], 404);
@@ -124,7 +123,23 @@ class RegisterController extends Controller
 
     public function EditCustomer(Request $request, $id)
     {
-        $user = User::where('Role', 'Customer')->find($id);
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Customer not found'], 404);
+        }
+
+
+        $user->update($request->all());
+
+        return response()->json([
+            'message' => 'Customer information updated successfully',
+            'customer' => $user
+        ]);
+    }
+    public function UpdateCustomer(Request $request)
+    {
+        $user = Auth::user();
 
         if (!$user) {
             return response()->json(['message' => 'Customer not found'], 404);

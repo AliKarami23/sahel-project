@@ -69,13 +69,13 @@ class RoleSeeder extends Seeder
             'Article.List',
         ];
 
+
         Permission::insert($AdminPermissions);
 
         $Admin->syncPermissions(collect($AdminPermissions)->map(function (array $arr) {
             return $arr['name'];
         })->all());
 
-        $Admin->syncPermissions($AdminPermissions);
         $Customer->syncPermissions($CustomerPermissions);
 
     }
