@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\RegisterController;
 use \App\Http\Controllers\ProductController;
+use \App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,10 +25,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     // Customer
-    Route::put('/Customer/Edit/{id}', [RegisterController::class, 'Edit'])->name('EditCustomer');
-    Route::put('/Customer/Update', [RegisterController::class, 'Update'])->name('UpdateCustomer');
-    Route::delete('/Customer/Delete/{id}', [RegisterController::class, 'Delete'])->name('DeleteCustomer');
-    Route::get('/Customer/List', [RegisterController::class, 'List'])->name('ListCustomer');
+    Route::put('/Customer/Edit/{id}', [UserController::class, 'Edit'])->name('EditCustomer');
+    Route::put('/Customer/Update', [UserController::class, 'Update'])->name('UpdateCustomer');
+    Route::delete('/Customer/Delete/{id}', [UserController::class, 'Delete'])->name('DeleteCustomer');
+    Route::get('/Customer/List', [UserController::class, 'List'])->name('ListCustomer');
 
 
     //Product
