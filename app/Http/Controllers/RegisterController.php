@@ -100,7 +100,7 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function ListCustomer()
+    public function List()
     {
         $Customer = User::where('Role', 'Customer')->get();
         return response()->json([
@@ -109,7 +109,7 @@ class RegisterController extends Controller
     }
 
 
-    public function DeleteCustomer($id)
+    public function Delete($id)
     {
 
         if (!$user) {
@@ -121,7 +121,7 @@ class RegisterController extends Controller
         return response()->json(['message' => 'Customer deleted successfully']);
     }
 
-    public function EditCustomer(Request $request, $id)
+    public function Edit(Request $request, $id)
     {
         $user = User::find($id);
 
@@ -137,7 +137,7 @@ class RegisterController extends Controller
             'customer' => $user
         ]);
     }
-    public function UpdateCustomer(Request $request)
+    public function Update(Request $request)
     {
         $user = Auth::user();
 
