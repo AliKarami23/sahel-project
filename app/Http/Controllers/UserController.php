@@ -5,20 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
     public function List()
     {
-        $Customer = User::where('Role', 'Customer')->get();
+        $Customers = User::role('customer')->get();
+
         return response()->json([
-            'Customer' => $Customer
+            'Customer' => $Customers
         ]);
     }
 
 
     public function Delete($id)
     {
+        $user = User::find($id);
 
         if (!$user) {
             return response()->json(['message' => 'Customer not found'], 404);

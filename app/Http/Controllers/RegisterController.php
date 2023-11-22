@@ -6,6 +6,7 @@ use App\Models\PhoneNumber;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Modules\Sms\app\Http\Controllers\SmsController;
 use Illuminate\Validation\ValidationException;
 
@@ -14,12 +15,11 @@ class RegisterController extends Controller
 {
     public function GetNumber(Request $request)
     {
-        $Phone_Number = $request->Phone_Number;
+        $Phone_Number = intval($request->Phone_Number);
 
         $Verification_Code = mt_rand(10000, 99999);
         $tmp = new SmsController();
-        $tmp->VerificationCode($Phone_Number,$Verification_Code);
-
+        $tmp->VerificationCode($Phone_Number, $Verification_Code);
         PhoneNumber::create([
             'number' => $Phone_Number,
             'verification_code' => $Verification_Code,
@@ -27,7 +27,6 @@ class RegisterController extends Controller
 
         return response()->json(['message' => 'Verification code has been sent.']);
     }
-
 
 
     public function GetCodeSent(Request $request)
@@ -43,11 +42,11 @@ class RegisterController extends Controller
             return response()->json(['message' => 'Invalid verification code.'], 401);
         }
 
-        $token = $phoneNumber->createToken('UserToken')->plainTextToken;
-
-        $user = $phoneNumber->user;
-        $user->assignRole('Customer');
-
+        $User = User::updateOrcreate([
+            'Phone_Number' => $Phone_Number,
+        ]);
+        $User->assignRole('Customer');
+        $token = $User->createToken('UserToken')->plainTextToken;
         return response()->json(['token' => $token, 'message' => 'Token created successfully.']);
     }
 
@@ -71,24 +70,24 @@ class RegisterController extends Controller
     }
 
 
-    public function AdminLogin(Request $request){
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+    public function AdminLogin(Request $request)
+    {
 
-        $credentials = request(['email', 'password']);
+        $user = User::where('Email', $request->Email)->first();
 
-        if (!Auth::attempt($credentials)) {
+        if (!$user || !Hash::check($request->Password, $user->Password)) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+                'Email' => ['Invalid credentials']
             ]);
         }
 
-        $user = Auth::user();
-        $token = $user->createToken('authToken')->plainTextToken;
+        $token = $user->createToken('UserToken')->plainTextToken;
 
-        return response()->json(['token' => $token]);
+        return response()->json([
+            'token' => $token,
+            'user' => $user
+        ]);
+
     }
 
     public function Logout(Request $request)
@@ -99,7 +98,6 @@ class RegisterController extends Controller
             'Logout' => 'Goodbye'
         ]);
     }
-
 
 
 }

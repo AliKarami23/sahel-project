@@ -9,7 +9,32 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function Create(Request $request){
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('main_image')->singleFile();
+        $this->addMediaCollection('additional_images1')->singleFile();
+        $this->addMediaCollection('additional_images2')->singleFile();
+        $this->addMediaCollection('additional_images3')->singleFile();
+        $this->addMediaCollection('additional_images4')->singleFile();
+        $this->addMediaCollection('videos')->singleFile();
+    }
+
+    private function deleteAndSaveMedia($product, $request, $inputName, $collectionName, $mediaName)
+    {
+        $newMedia = $request->file($inputName);
+
+        if ($newMedia instanceof UploadedFile) {
+            $product->clearMediaCollection($collectionName);
+
+            $mediaPath = $product->addMedia($newMedia)
+                ->toMediaCollection($mediaName, $collectionName)
+                ->getPath();
+        }
+    }
+
+    public function Create(Request $request)
+    {
 
         if ($request->Discount_Type == 'Percent') {
             $Discounted_price = $request->Price - ($request->Price * $request->Discount_Amount / 100);
@@ -20,6 +45,7 @@ class ProductController extends Controller
         }
 
         $Capacity_Total = $request->Capacity_Men + $request->Capacity_Women;
+
 
         $product = Product::create([
             'Title' => $request->Title,
@@ -40,6 +66,42 @@ class ProductController extends Controller
             'Description' => $request->Description,
             'Discounted_price' => $Discounted_price,
         ]);
+
+
+        $mainImage = $request->file('main_image');
+        $mainImagePath = $product->addMedia($mainImage)
+            ->toMediaCollection('main_image', 'images')
+            ->getPath();
+
+        $additionalImages1 = $request->file('additional_images1');
+        $additionalImages2 = $request->file('additional_images2');
+        $additionalImages3 = $request->file('additional_images3');
+        $additionalImages4 = $request->file('additional_images4');
+        if (isset($additionalImages1)) {
+            $additionalImagePath = $product->addMedia($additionalImages1)
+                ->toMediaCollection('additional_images1', 'images')
+                ->getPath();
+        }
+        if (isset($additionalImages2)) {
+            $additionalImagePath = $product->addMedia($additionalImages2)
+                ->toMediaCollection('additional_images2', 'images')
+                ->getPath();
+        }
+        if (isset($additionalImages3)) {
+            $additionalImagePath = $product->addMedia($additionalImages3)
+                ->toMediaCollection('additional_images3', 'images')
+                ->getPath();
+        }
+        if (isset($additionalImages4)) {
+            $additionalImagePath = $product->addMedia($additionalImages4)
+                ->toMediaCollection('additional_images4', 'images')
+                ->getPath();
+        }
+
+        $video = $request->file('video');
+        $videoPath = $product->addMedia($video)
+            ->toMediaCollection('videos', 'videos')
+            ->getPath();
 
         foreach ($request->json('sans') as $sansData) {
             Sans::create([
@@ -63,11 +125,12 @@ class ProductController extends Controller
         return response()->json([
             'message' => 'Product Added',
             'product' => $product_back
-            ]);
+        ]);
     }
 
 
-    public function Edit(Request $request, $id){
+    public function Edit(Request $request, $id)
+    {
 
         $product = Product::find($id);
 
@@ -105,6 +168,49 @@ class ProductController extends Controller
             'Discounted_price' => $Discounted_price,
         ]);
 
+        $mainImage = $request->file('main_image');
+        if (isset($mainImage)) {
+            $mainImagePath = $product->addMedia($mainImage)
+                ->toMediaCollection('main_image', 'images')
+                ->getPath();
+        }
+        $additionalImages1 = $request->file('additional_images1');
+        $additionalImages2 = $request->file('additional_images2');
+        $additionalImages3 = $request->file('additional_images3');
+        $additionalImages4 = $request->file('additional_images4');
+        if (isset($additionalImages1)) {
+            $this->deleteAndSaveMedia($product, $request, 'additional_images1', 'images', 'additional_images1');
+            $additionalImagePath = $product->addMedia($additionalImages1)
+                ->toMediaCollection('additional_images1', 'images')
+                ->getPath();
+        }
+        if (isset($additionalImages2)) {
+            $this->deleteAndSaveMedia($product, $request, 'additional_images2', 'images', 'additional_images2');
+            $additionalImagePath = $product->addMedia($additionalImages2)
+                ->toMediaCollection('additional_images2', 'images')
+                ->getPath();
+        }
+        if (isset($additionalImages3)) {
+            $this->deleteAndSaveMedia($product, $request, 'additional_images3', 'images', 'additional_images3');
+            $additionalImagePath = $product->addMedia($additionalImages3)
+                ->toMediaCollection('additional_images3', 'images')
+                ->getPath();
+        }
+        if (isset($additionalImages4)) {
+            $this->deleteAndSaveMedia($product, $request, 'additional_images4', 'images', 'additional_images4');
+            $additionalImagePath = $product->addMedia($additionalImages4)
+                ->toMediaCollection('additional_images4', 'images')
+                ->getPath();
+        }
+
+        $video = $request->file('video');
+        if (isset($video)) {
+            $this->deleteAndSaveMedia($product, $request, 'video', 'videos', 'videos');
+            $videoPath = $product->addMedia($video)
+                ->toMediaCollection('videos', 'videos')
+                ->getPath();
+        }
+
         $product->sans()->delete();
 
         foreach ($request->json('sans') as $sansData) {
@@ -135,7 +241,6 @@ class ProductController extends Controller
     }
 
 
-
     public function List()
     {
         $products = Product::with(['sans', 'extraditions'])->get();
@@ -145,14 +250,17 @@ class ProductController extends Controller
 
     public function Delete($id)
     {
-        $product = Product::findOrFail($id);
+        if ($product = Product::find($id)) {
+            $product->sans()->delete();
+            $product->extraditions()->delete();
 
-        $product->sans()->delete();
-        $product->extraditions()->delete();
+            $product->delete();
 
-        $product->delete();
+            return response()->json(['message' => 'Product Deleted']);
+        } else {
+            return response()->json(['message' => 'Product not find']);
+        }
 
-        return response()->json(['message' => 'Product Deleted']);
     }
 
 }
