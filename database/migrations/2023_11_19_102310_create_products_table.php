@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('Title');
             $table->integer('Price');
-            $table->string('Discount');
+            $table->string('Discount')->nullable();
             $table->integer('Discount_Amount')->nullable();
             $table->string('Discount_Type')->nullable();
             $table->string('Age_Limit')->nullable();

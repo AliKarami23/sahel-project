@@ -66,7 +66,10 @@ class RegisterController extends Controller
             'Email' => $email,
         ]);
 
-        return response()->json(['message' => 'User information updated successfully.']);
+        return response()->json([
+            'message' => 'User information updated successfully.',
+            'user' => $user
+        ]);
     }
 
 

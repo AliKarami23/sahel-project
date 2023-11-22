@@ -20,6 +20,7 @@ class User extends Authenticatable
         'Phone_Number',
         'Email',
         'Password',
+        'Status'
     ];
 
 

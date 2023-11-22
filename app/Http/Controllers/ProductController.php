@@ -37,10 +37,13 @@ class ProductController extends Controller
     {
 
         if ($request->Discount_Type == 'Percent') {
+            $Discount = 'Percent';
             $Discounted_price = $request->Price - ($request->Price * $request->Discount_Amount / 100);
         } elseif ($request->Discount_Type == 'Amount') {
+            $Discount = 'Amount';
             $Discounted_price = $request->Price - $request->Discount_Amount;
         } else {
+            $Discount = null;
             $Discounted_price = $request->Price;
         }
 
@@ -139,10 +142,13 @@ class ProductController extends Controller
         }
 
         if ($request->Discount_Type == 'Percent') {
+            $Discount = 'Percent';
             $Discounted_price = $request->Price - ($request->Price * $request->Discount_Amount / 100);
         } elseif ($request->Discount_Type == 'Amount') {
+            $Discount = 'Amount';
             $Discounted_price = $request->Price - $request->Discount_Amount;
         } else {
+            $Discount = null;
             $Discounted_price = $request->Price;
         }
 
@@ -240,10 +246,24 @@ class ProductController extends Controller
         ]);
     }
 
+    public function showEdit(Request $request, $id)
+    {
+
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        return response()->json([
+            'product' => $product
+        ]);
+    }
+
 
     public function List()
     {
-        $products = Product::with(['sans', 'extraditions'])->get();
+        $products = Product::get(['id', 'title']);
 
         return response()->json($products);
     }
