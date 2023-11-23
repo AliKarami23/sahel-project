@@ -6,6 +6,7 @@ use \App\Http\Controllers\RegisterController;
 use \App\Http\Controllers\ProductController;
 use \App\Http\Controllers\UserController;
 use \App\Http\Controllers\BlogController;
+use \Modules\Article\app\Http\Controllers\ArticleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +19,7 @@ use \App\Http\Controllers\BlogController;
 |
 */
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+//Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     Route::post('/Register/GetInformation', [RegisterController::class, 'GetInformation'])->name('GetInformation');
@@ -39,13 +40,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/Product/List', [ProductController::class, 'List'])->name('ListProduct');
     Route::delete('/Product/Delete/{id}', [ProductController::class, 'Delete'])->name('DeleteProduct');
 
-    //Blog
-    Route::post('/blog/create', [BlogController::class, 'Create'])->name('CreateBloge');
+    //Article
+    Route::post('/article/create', [ArticleController::class, 'create'])->name('CreateBloge');
     Route::put('/blog/edit/{id}', [BlogController::class, 'Edit'])->name('EditBlog');
     Route::delete('/blog/delete/{id}', [BlogController::class, 'delete'])->name('DeleteBlog');
-    Route::get('/blog/list', [BlogController::class, 'list'])->name('listblog');
+    Route::get('/blog/list', [BlogController::class, 'listblog'])->name('listblog');
 
-});
+//});
 
 Route::post('/Register/GetNumber', [RegisterController::class, 'GetNumber'])->name('GetNumber');
 Route::post('/Register/GetCodeSent', [RegisterController::class, 'GetCodeSent'])->name('GetCodeSent');

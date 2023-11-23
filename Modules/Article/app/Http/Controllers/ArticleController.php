@@ -3,9 +3,11 @@
 namespace Modules\Article\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Blog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\Article\app\Models\Article;
 
 class ArticleController extends Controller
 {
@@ -20,9 +22,18 @@ class ArticleController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('article::create');
+        $validateDate = $request->validate([
+            'title_article' => 'required|max:255',
+            'text_article' => 'required',
+        ]);
+        $article = Article::create($validateDate);
+        return response()->json([
+            'massage' => 'نوشته با موفقیت ایجاد شد',
+            'article' => $article,
+        ]);
+
     }
 
     /**
