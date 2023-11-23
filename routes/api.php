@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\RegisterController;
 use \App\Http\Controllers\ProductController;
 use \App\Http\Controllers\UserController;
+use \App\Http\Controllers\BlogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/Product/show/Edit', [ProductController::class, 'showEdit'])->name('EditProduct');
     Route::get('/Product/List', [ProductController::class, 'List'])->name('ListProduct');
     Route::delete('/Product/Delete/{id}', [ProductController::class, 'Delete'])->name('DeleteProduct');
+
+    //Blog
+    Route::post('/blog/create', [BlogController::class, 'Create'])->name('CreateBloge');
+    Route::put('/blog/edit/{id}', [BlogController::class, 'Edit'])->name('EditBlog');
+    Route::delete('/blog/delete/{id}', [BlogController::class, 'delete'])->name('DeleteBlog');
+    Route::get('/blog/list', [BlogController::class, 'list'])->name('listblog');
 
 });
 
