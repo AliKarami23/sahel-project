@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CleanUpVerificationCodes;
+use App\Jobs\CleanUpVerificationCodesJob;
 use App\Models\PhoneNumber;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -25,7 +27,12 @@ class RegisterController extends Controller
             'verification_code' => $Verification_Code,
         ]);
 
+        event(new CleanUpVerificationCodes());
+
+        CleanUpVerificationCodesJob::dispatch()->delay(now()->addMinutes(3));
+
         return response()->json(['message' => 'Verification code has been sent.']);
+
     }
 
 
@@ -38,8 +45,8 @@ class RegisterController extends Controller
             ->where('verification_code', $verificationCode)
             ->first();
 
-        if (!$phoneNumber) {
-            return response()->json(['message' => 'Invalid verification code.'], 401);
+        if (!$phoneNumber || $phoneNumber->created_at < now()->subMinutes(3)) {
+            return response()->json(['message' => 'Invalid or expired verification code.'], 401);
         }
 
         $User = User::updateOrcreate([

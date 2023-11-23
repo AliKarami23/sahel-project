@@ -18,7 +18,7 @@ use \App\Http\Controllers\BlogController;
 |
 */
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+//Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     Route::post('/Register/GetInformation', [RegisterController::class, 'GetInformation'])->name('GetInformation');
@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/Product/List', [ProductController::class, 'List'])->name('ListProduct');
     Route::delete('/Product/Delete/{id}', [ProductController::class, 'Delete'])->name('DeleteProduct');
 
+<<<<<<< HEAD
     //Blog
     Route::post('/blog/create', [BlogController::class, 'Create'])->name('CreateBloge');
     Route::put('/blog/edit/{id}', [BlogController::class, 'Edit'])->name('EditBlog');
@@ -46,6 +47,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/blog/list', [BlogController::class, 'list'])->name('listblog');
 
 });
+=======
+//});
+>>>>>>> d3fc8587e1b680ba03cc05ebc58c8f615ba6c501
 
 Route::post('/Register/GetNumber', [RegisterController::class, 'GetNumber'])->name('GetNumber');
 Route::post('/Register/GetCodeSent', [RegisterController::class, 'GetCodeSent'])->name('GetCodeSent');
