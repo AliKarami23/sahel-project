@@ -41,10 +41,10 @@ use \Modules\Article\app\Http\Controllers\ArticleController;
     Route::delete('/Product/Delete/{id}', [ProductController::class, 'Delete'])->name('DeleteProduct');
 
     //Article
-    Route::post('/article/create', [ArticleController::class, 'create'])->name('CreateBloge');
-    Route::put('/blog/edit/{id}', [BlogController::class, 'Edit'])->name('EditBlog');
-    Route::delete('/blog/delete/{id}', [BlogController::class, 'delete'])->name('DeleteBlog');
-    Route::get('/blog/list', [BlogController::class, 'listblog'])->name('listblog');
+    Route::post('/article/create', [ArticleController::class, 'create_article'])->name('Createarticle');
+    Route::put('/article/edit/{id}', [ArticleController::class, 'edit_article'])->name('Editarticle');
+    Route::delete('/article/delete/{id}', [ArticleController::class, 'delete_article'])->name('Deletearticle');
+    Route::get('/article/list', [ArticleController::class, 'list_article'])->name('listarticle');
 
 //});
 
