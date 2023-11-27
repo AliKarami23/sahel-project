@@ -3,5 +3,6 @@
     "Comment": true,
     "Question": true,
     "Role": true,
-    "Sms": true
+    "Sms": true,
+    "Contact": true
 }

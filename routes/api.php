@@ -6,6 +6,7 @@ use \App\Http\Controllers\RegisterController;
 use \App\Http\Controllers\ProductController;
 use \App\Http\Controllers\UserController;
 use \Modules\Article\app\Http\Controllers\ArticleController;
+use Modules\Contact\app\Http\Controllers\ContactController;
 use Modules\Question\app\Http\Controllers\QuestionController;
 
 
@@ -52,6 +53,12 @@ use Modules\Question\app\Http\Controllers\QuestionController;
     Route::put('/question/edit/{id}', [QuestionController::class, 'edit_question'])->name('EditQuestion');
     Route::delete('/question/delete/{id}', [QuestionController::class, 'delete_question'])->name('DeleteQuestion');
     Route::get('/question/list', [QuestionController::class, 'list_question'])->name('listQuestion');
+
+    //Contact
+    Route::post('/contact/create', [ContactController::class, 'create_contact'])->name('CreateContact');
+
+
+
 
 //});
 
