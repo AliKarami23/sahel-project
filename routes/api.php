@@ -5,8 +5,9 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\RegisterController;
 use \App\Http\Controllers\ProductController;
 use \App\Http\Controllers\UserController;
-use \App\Http\Controllers\BlogController;
 use \Modules\Article\app\Http\Controllers\ArticleController;
+use Modules\Question\app\Http\Controllers\QuestionController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +46,12 @@ use \Modules\Article\app\Http\Controllers\ArticleController;
     Route::put('/article/edit/{id}', [ArticleController::class, 'edit_article'])->name('Editarticle');
     Route::delete('/article/delete/{id}', [ArticleController::class, 'delete_article'])->name('Deletearticle');
     Route::get('/article/list', [ArticleController::class, 'list_article'])->name('listarticle');
+
+    //Question
+    Route::post('/question/create', [QuestionController::class, 'create_question'])->name('Createquestion');
+    Route::put('/question/edit/{id}', [QuestionController::class, 'edit_question'])->name('Editquestion');
+    Route::delete('/question/delete/{id}', [QuestionController::class, 'delete_question'])->name('Deletequestion');
+    Route::get('/question/list', [QuestionController::class, 'list_question'])->name('listquestion');
 
 //});
 
