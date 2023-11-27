@@ -42,16 +42,16 @@ use Modules\Question\app\Http\Controllers\QuestionController;
     Route::delete('/Product/Delete/{id}', [ProductController::class, 'Delete'])->name('DeleteProduct');
 
     //Article
-    Route::post('/article/create', [ArticleController::class, 'create_article'])->name('Createarticle');
-    Route::put('/article/edit/{id}', [ArticleController::class, 'edit_article'])->name('Editarticle');
-    Route::delete('/article/delete/{id}', [ArticleController::class, 'delete_article'])->name('Deletearticle');
-    Route::get('/article/list', [ArticleController::class, 'list_article'])->name('listarticle');
+    Route::post('/article/create', [ArticleController::class, 'create_article'])->name('CreateArticle');
+    Route::put('/article/edit/{id}', [ArticleController::class, 'edit_article'])->name('EditArticle');
+    Route::delete('/article/delete/{id}', [ArticleController::class, 'delete_article'])->name('DeleteArticle');
+    Route::get('/article/list', [ArticleController::class, 'list_article'])->name('listArticle');
 
     //Question
-    Route::post('/question/create', [QuestionController::class, 'create_question'])->name('Createquestion');
-    Route::put('/question/edit/{id}', [QuestionController::class, 'edit_question'])->name('Editquestion');
-    Route::delete('/question/delete/{id}', [QuestionController::class, 'delete_question'])->name('Deletequestion');
-    Route::get('/question/list', [QuestionController::class, 'list_question'])->name('listquestion');
+    Route::post('/question/create', [QuestionController::class, 'create_question'])->name('CreateQuestion');
+    Route::put('/question/edit/{id}', [QuestionController::class, 'edit_question'])->name('EditQuestion');
+    Route::delete('/question/delete/{id}', [QuestionController::class, 'delete_question'])->name('DeleteQuestion');
+    Route::get('/question/list', [QuestionController::class, 'list_question'])->name('listQuestion');
 
 //});
 
