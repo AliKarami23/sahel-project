@@ -18,6 +18,7 @@ class UserController extends Controller
             'Customer' => $Customers
         ]);
     }
+
     public function operation()
     {
 //        اسم و شماره و ایمیل و تعداد خرید ها count(order) و فاکتور ها کامل
@@ -46,7 +47,7 @@ class UserController extends Controller
         }
 
         $user->update([
-            'Full_Name' => 'blocked'
+            'Status' => 'blocked'
         ]);
 
         return response()->json(['message' => 'The user was blocked']);
@@ -68,6 +69,7 @@ class UserController extends Controller
             'customer' => $user
         ]);
     }
+
     public function Update(Request $request)
     {
         $user = Auth::user();
