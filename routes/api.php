@@ -4,9 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\RegisterController;
 use \App\Http\Controllers\ProductController;
-use \App\Http\Controllers\UserController;
+use \Modules\Article\app\Http\Controllers\ArticleController;
+use Modules\Contact\app\Http\Controllers\ContactController;
+use Modules\Question\app\Http\Controllers\QuestionController;
 use \App\Http\Controllers\BlogController;
-use \App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,7 @@ use \App\Http\Controllers\OrderController;
 |
 */
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+//Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     Route::post('/Register/GetInformation', [RegisterController::class, 'GetInformation'])->name('GetInformation');
@@ -59,6 +60,20 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/UploadMainImage/{id}', [ProductController::class, 'UploadMainImage'])->name('UploadMainImage');
     Route::post('/UploadVideo/{id}', [ProductController::class, 'UploadVideo'])->name('UploadVideo');
 
+    //Article
+    Route::post('/article/create', [ArticleController::class, 'create_article'])->name('CreateArticle');
+    Route::put('/article/edit/{id}', [ArticleController::class, 'edit_article'])->name('EditArticle');
+    Route::delete('/article/delete/{id}', [ArticleController::class, 'delete_article'])->name('DeleteArticle');
+    Route::get('/article/list', [ArticleController::class, 'list_article'])->name('listArticle');
+
+    //Question
+    Route::post('/question/create', [QuestionController::class, 'create_question'])->name('CreateQuestion');
+    Route::put('/question/edit/{id}', [QuestionController::class, 'edit_question'])->name('EditQuestion');
+    Route::delete('/question/delete/{id}', [QuestionController::class, 'delete_question'])->name('DeleteQuestion');
+    Route::get('/question/list', [QuestionController::class, 'list_question'])->name('listQuestion');
+
+    //Contact
+    Route::post('/contact/create', [ContactController::class, 'create_contact'])->name('CreateContact');
 });
 
 Route::post('/Register/GetNumber', [RegisterController::class, 'GetNumber'])->name('GetNumber');

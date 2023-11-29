@@ -3,9 +3,11 @@
 namespace Modules\Article\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Blog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\Article\app\Models\Article;
 
 class ArticleController extends Controller
 {
@@ -20,9 +22,54 @@ class ArticleController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create_article(Request $request)
     {
-        return view('article::create');
+        $validateDate = $request->validate([
+            'title_article' => 'required|max:255',
+            'text_article' => 'required',
+        ]);
+        $article = Article::create($validateDate);
+        return response()->json([
+            'massage' => 'مثاله با موفقیت ایجاد شد',
+            'article' => $article,
+        ]);
+
+    }
+
+    public function edit_article(Request $request ,$id)
+    {
+     $article = Article::find($id);
+        if (!$article) {
+            return response()->json(['message' => 'مقاله پیدا نشد.'], 404);
+        }
+     $article->update($request->toArray());
+     return response()->json([
+         'massage' => 'مقاله با موفقیت ویرایش شد',
+         'article' => $article
+     ]);
+    }
+
+    public function delete_article($id)
+    {
+        // یافتن مقاله با استفاده از شناسه
+        $article = Article::find($id);
+
+        // بررسی آیا مقاله یافت شده است یا خیر
+        if (!$article) {
+            return response()->json(['message' => 'مقاله پیدا نشد.'], 404);
+        }
+
+        // حذف مقاله
+        $article->delete();
+
+        // بازگشت پاسخ JSON
+        return response()->json(['message' => 'مقاله با موفقیت حذف شد']);
+    }
+
+    public function list_article()
+    {
+        $articles = Article::all();
+        return response()->json($articles);
     }
 
     /**
@@ -33,29 +80,9 @@ class ArticleController extends Controller
         //
     }
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('article::show');
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('article::edit');
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //
-    }
+
 
     /**
      * Remove the specified resource from storage.
