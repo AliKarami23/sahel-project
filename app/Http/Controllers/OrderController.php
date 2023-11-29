@@ -87,11 +87,14 @@ class OrderController extends Controller
 
                 $Capacity_remains_Man = $Sans->Capacity_remains_Man - $Reservation->Tickets_Sold_Man;
                 $Capacity_remains_Woman = $Sans->Capacity_remains_Woman - $Reservation->Tickets_Sold_Woman;
-
-                $Sans->update([
-                    'Capacity_remains_Man' => $Capacity_remains_Man,
-                    'Capacity_remains_Woman' => $Capacity_remains_Woman,
-                ]);
+                if ($Capacity_remains_Man >= 0 && $Capacity_remains_Woman >= 0) {
+                    $Sans->update([
+                        'Capacity_remains_Man' => $Capacity_remains_Man,
+                        'Capacity_remains_Woman' => $Capacity_remains_Woman,
+                    ]);
+                }else{
+                    return response()->json(['message' => 'There is not enough capacity to reserve.'], 400);
+                }
             }
         }
 
@@ -176,8 +179,9 @@ class OrderController extends Controller
             foreach ($sansData as $sansId => $ticketsSold) {
 
                 $Sans = Sans::where('product_id', $productId)
-                    ->where('sans_id', $sansId)
+                    ->where('id', $sansId)
                     ->first();
+
 
                 if ($Sans) {
                     $totalTicketsSoldMan = Reservation::where('product_id', $productId)
@@ -191,14 +195,17 @@ class OrderController extends Controller
                     $newCapacityRemainsMan = $Sans->Capacity_Man - $totalTicketsSoldMan;
                     $newCapacityRemainsWoman = $Sans->Capacity_Woman - $totalTicketsSoldWoman;
 
-                    $Sans->update([
-                        'Capacity_remains_Man' => $newCapacityRemainsMan,
-                        'Capacity_remains_Woman' => $newCapacityRemainsWoman,
-                    ]);
+                    if ($newCapacityRemainsMan >= 0 && $newCapacityRemainsWoman >= 0) {
+                        $Sans->update([
+                            'Capacity_remains_Man' => $newCapacityRemainsMan,
+                            'Capacity_remains_Woman' => $newCapacityRemainsWoman,
+                        ]);
+                    }else{
+                        return response()->json(['message' => 'There is not enough capacity to reserve.'], 400);
+                    }
                 }
             }
         }
-
 
 
         return response()->json([
