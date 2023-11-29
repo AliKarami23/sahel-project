@@ -68,7 +68,7 @@ return [
         ],
         'videos' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/videos'), // مسیر دلخواه شما
+            'root' => storage_path('app/public/videos'),
             'url' => env('APP_URL').'/storage/videos',
             'visibility' => 'public',
         ],

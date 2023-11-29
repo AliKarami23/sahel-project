@@ -17,7 +17,11 @@ return new class extends Migration
             $table->integer('Start');
             $table->integer('End');
             $table->string('Date');
-            $table->string('Status')->default('OK');
+            $table->integer('Capacity_Man')->default(0);
+            $table->integer('Capacity_Woman')->default(0);
+            $table->integer('Capacity_remains_Man')->default(0);
+            $table->integer('Capacity_remains_Woman')->default(0);
+            $table->string('Status')->default('active');
             $table->timestamps();
         });
     }
@@ -30,5 +34,3 @@ return new class extends Migration
         Schema::dropIfExists('sans');
     }
 };
-// $data = json_decode($request->all(),true);
-// Sans::create($data[sans]);

@@ -23,9 +23,6 @@ return new class extends Migration
             $table->integer('Total_Start');
             $table->integer('Total_End');
             $table->integer('Break_Time');
-            $table->integer('Capacity_Men')->default(0);
-            $table->integer('Capacity_Women')->default(0);
-            $table->integer('Capacity_Total')->default(0);
             $table->longText('Rules');
             $table->string('Description');
             $table->integer('Discounted_price');

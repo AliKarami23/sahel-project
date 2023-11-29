@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\extradition;
 use App\Models\Product;
 use App\Models\Sans;
+use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -13,24 +14,66 @@ class ProductController extends Controller
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('main_image')->singleFile();
-        $this->addMediaCollection('additional_images1')->singleFile();
-        $this->addMediaCollection('additional_images2')->singleFile();
-        $this->addMediaCollection('additional_images3')->singleFile();
-        $this->addMediaCollection('additional_images4')->singleFile();
+        $this->addMediaCollection('additional_images')->singleFile();
         $this->addMediaCollection('videos')->singleFile();
     }
 
-    private function deleteAndSaveMedia($product, $request, $inputName, $collectionName, $mediaName)
+    public function UploadVideo(Request $request, $id)
     {
-        $newMedia = $request->file($inputName);
 
-        if ($newMedia instanceof UploadedFile) {
-            $product->clearMediaCollection($collectionName);
+        $product = Product::find($id);
 
-            $mediaPath = $product->addMedia($newMedia)
-                ->toMediaCollection($mediaName, $collectionName)
+        $video = $request->file('video');
+
+        if (isset($video)) {
+            $videoPath = $product->addMedia($video)
+                ->toMediaCollection('videos', 'videos')
                 ->getPath();
         }
+
+        return response()->json([
+            'product' => $product,
+            'media' => $product->getMedia()
+        ]);
+    }
+
+    public function UploadMainImage(Request $request, $id)
+    {
+
+        $product = Product::find($id);
+
+        $mainImage = $request->file('main_image');
+
+        if (isset($mainImage)) {
+            $mainImagePath = $product->addMedia($mainImage)
+                ->toMediaCollection('main_image', 'images')
+                ->getPath();
+        }
+
+        return response()->json([
+            'product' => $product,
+            'media' => $product->getMedia()
+        ]);
+    }
+
+    public function UploadImage(Request $request, $id)
+    {
+
+        $product = Product::find($id);
+
+        $additionalImages = $request->file('additional_images');
+
+        if (isset($additionalImages)) {
+            $mainImagePath = $product->addMedia($additionalImages)
+                ->toMediaCollection('additional_images', 'images')
+                ->getPath();
+        }
+
+        return response()->json([
+            'product' => $product,
+            'media' => $product->getMedia()
+        ]);
+
     }
 
     public function Create(Request $request)
@@ -47,64 +90,16 @@ class ProductController extends Controller
             $Discounted_price = $request->Price;
         }
 
-        $Capacity_Total = $request->Capacity_Men + $request->Capacity_Women;
+        $Capacity_Total = $request->Capacity_Man + $request->Capacity_Woman;
 
 
-        $product = Product::create([
-            'Title' => $request->Title,
-            'Price' => $request->Price,
-            'Discount' => $request->Discount,
-            'Discount_Amount' => $request->Discount_Amount,
-            'Discount_Type' => $request->Discount_Type,
-            'Age_Limit' => $request->Age_Limit,
-            'Age_Limit_Value' => $request->Age_Limit_Value,
-            'Total_Start' => $request->Total_Start,
-            'Total_End' => $request->Total_End,
-            'Break_Time' => $request->Break_Time,
-            'Capacity_Men' => $request->Capacity_Men,
-            'Capacity_Women' => $request->Capacity_Women,
+        $productData = array_merge($request->all(), [
             'Capacity_Total' => $Capacity_Total,
-            'Tickets_Sold' => $request->Tickets_Sold,
-            'Rules' => $request->Rules,
-            'Description' => $request->Description,
             'Discounted_price' => $Discounted_price,
         ]);
 
+        $product = Product::create($productData);
 
-        $mainImage = $request->file('main_image');
-        $mainImagePath = $product->addMedia($mainImage)
-            ->toMediaCollection('main_image', 'images')
-            ->getPath();
-
-        $additionalImages1 = $request->file('additional_images1');
-        $additionalImages2 = $request->file('additional_images2');
-        $additionalImages3 = $request->file('additional_images3');
-        $additionalImages4 = $request->file('additional_images4');
-        if (isset($additionalImages1)) {
-            $additionalImagePath = $product->addMedia($additionalImages1)
-                ->toMediaCollection('additional_images1', 'images')
-                ->getPath();
-        }
-        if (isset($additionalImages2)) {
-            $additionalImagePath = $product->addMedia($additionalImages2)
-                ->toMediaCollection('additional_images2', 'images')
-                ->getPath();
-        }
-        if (isset($additionalImages3)) {
-            $additionalImagePath = $product->addMedia($additionalImages3)
-                ->toMediaCollection('additional_images3', 'images')
-                ->getPath();
-        }
-        if (isset($additionalImages4)) {
-            $additionalImagePath = $product->addMedia($additionalImages4)
-                ->toMediaCollection('additional_images4', 'images')
-                ->getPath();
-        }
-
-        $video = $request->file('video');
-        $videoPath = $product->addMedia($video)
-            ->toMediaCollection('videos', 'videos')
-            ->getPath();
 
         foreach ($request->json('sans') as $sansData) {
             Sans::create([
@@ -112,7 +107,10 @@ class ProductController extends Controller
                 'Start' => $sansData['Start'],
                 'End' => $sansData['End'],
                 'Date' => $sansData['Date'],
-                'Status' => $sansData['Status'],
+                'Capacity_Man' => $sansData['Capacity_Man'],
+                'Capacity_Woman' => $sansData['Capacity_Woman'],
+                'Capacity_remains_Man' => $sansData['Capacity_Man'],
+                'Capacity_remains_Woman' => $sansData['Capacity_Woman'],
             ]);
         }
 
@@ -131,6 +129,19 @@ class ProductController extends Controller
         ]);
     }
 
+
+    private function deleteAndSaveMedia($product, $request, $inputName, $collectionName, $mediaName)
+    {
+        $newMedia = $request->file($inputName);
+
+        if ($newMedia instanceof UploadedFile) {
+            $product->clearMediaCollection($collectionName);
+
+            $mediaPath = $product->addMedia($newMedia)
+                ->toMediaCollection($mediaName, $collectionName)
+                ->getPath();
+        }
+    }
 
     public function Edit(Request $request, $id)
     {
@@ -152,70 +163,14 @@ class ProductController extends Controller
             $Discounted_price = $request->Price;
         }
 
-        $Capacity_Total = $request->Capacity_Men + $request->Capacity_Women;
+        $Capacity_Total = $request->Capacity_Man + $request->Capacity_WoMan;
 
-        $product->update([
-            'Title' => $request->Title,
-            'Price' => $request->Price,
-            'Discount' => $request->Discount,
-            'Discount_Amount' => $request->Discount_Amount,
-            'Discount_Type' => $request->Discount_Type,
-            'Age_Limit' => $request->Age_Limit,
-            'Age_Limit_Value' => $request->Age_Limit_Value,
-            'Total_Start' => $request->Total_Start,
-            'Total_End' => $request->Total_End,
-            'Break_Time' => $request->Break_Time,
-            'Capacity_Men' => $request->Capacity_Men,
-            'Capacity_Women' => $request->Capacity_Women,
+        $productData = $product->toArray();
+        $mergedData = array_merge($productData, [
             'Capacity_Total' => $Capacity_Total,
-            'Tickets_Sold' => $request->Tickets_Sold,
-            'Rules' => $request->Rules,
-            'Description' => $request->Description,
             'Discounted_price' => $Discounted_price,
         ]);
-
-        $mainImage = $request->file('main_image');
-        if (isset($mainImage)) {
-            $mainImagePath = $product->addMedia($mainImage)
-                ->toMediaCollection('main_image', 'images')
-                ->getPath();
-        }
-        $additionalImages1 = $request->file('additional_images1');
-        $additionalImages2 = $request->file('additional_images2');
-        $additionalImages3 = $request->file('additional_images3');
-        $additionalImages4 = $request->file('additional_images4');
-        if (isset($additionalImages1)) {
-            $this->deleteAndSaveMedia($product, $request, 'additional_images1', 'images', 'additional_images1');
-            $additionalImagePath = $product->addMedia($additionalImages1)
-                ->toMediaCollection('additional_images1', 'images')
-                ->getPath();
-        }
-        if (isset($additionalImages2)) {
-            $this->deleteAndSaveMedia($product, $request, 'additional_images2', 'images', 'additional_images2');
-            $additionalImagePath = $product->addMedia($additionalImages2)
-                ->toMediaCollection('additional_images2', 'images')
-                ->getPath();
-        }
-        if (isset($additionalImages3)) {
-            $this->deleteAndSaveMedia($product, $request, 'additional_images3', 'images', 'additional_images3');
-            $additionalImagePath = $product->addMedia($additionalImages3)
-                ->toMediaCollection('additional_images3', 'images')
-                ->getPath();
-        }
-        if (isset($additionalImages4)) {
-            $this->deleteAndSaveMedia($product, $request, 'additional_images4', 'images', 'additional_images4');
-            $additionalImagePath = $product->addMedia($additionalImages4)
-                ->toMediaCollection('additional_images4', 'images')
-                ->getPath();
-        }
-
-        $video = $request->file('video');
-        if (isset($video)) {
-            $this->deleteAndSaveMedia($product, $request, 'video', 'videos', 'videos');
-            $videoPath = $product->addMedia($video)
-                ->toMediaCollection('videos', 'videos')
-                ->getPath();
-        }
+        $product->update($mergedData);
 
         $product->sans()->delete();
 
@@ -225,7 +180,10 @@ class ProductController extends Controller
                 'Start' => $sansData['Start'],
                 'End' => $sansData['End'],
                 'Date' => $sansData['Date'],
-                'Status' => $sansData['Status'],
+                'Capacity_Man' => $sansData['Capacity_Man'],
+                'Capacity_Woman' => $sansData['Capacity_Woman'],
+                'Capacity_remains_Man' => $sansData['Capacity_Man'],
+                'Capacity_remains_Woman' => $sansData['Capacity_Woman'],
             ]);
         }
 

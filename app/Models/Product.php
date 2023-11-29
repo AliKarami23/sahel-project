@@ -22,9 +22,6 @@ class Product extends Model implements HasMedia
         'Total_Start',
         'Total_End',
         'Break_Time',
-        'Capacity_Men',
-        'Capacity_Women',
-        'Capacity_Total',
         'Rules',
         'Description',
         'Discounted_price',
@@ -38,5 +35,9 @@ class Product extends Model implements HasMedia
     public function extraditions()
     {
         return $this->hasMany(Extradition::class);
+    }
+    public function products()
+    {
+        return $this->belongsTo(Product::class);
     }
 }
