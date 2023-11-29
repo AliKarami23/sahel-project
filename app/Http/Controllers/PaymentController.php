@@ -16,13 +16,13 @@ class PaymentController extends Controller
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
-
         $data = [
             'order_id' => $order->id,
             'amount' => $order->Total_Price,
             'name' => $user->Full_Name,
             'phone' => $user->Phone_Number,
             'mail' => $user->Email,
+            'callback' => '/Payment/CallBack',
         ];
 
         $client = new Client();
@@ -31,8 +31,8 @@ class PaymentController extends Controller
             $response = $client->post('https://api.idpay.ir/v1.1/payment', [
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'X-API-KEY' => 'Your-API-Key',
-                    'X-SANDBOX' => 1, // اگر در محیط تست هستید از مقدار 1 استفاده کنید، در محیط اصلی این را حذف کنید
+                    'X-API-KEY' => '52b7cd0d-fef6-4da8-9a39-298c3f8fb9ad',
+                    'X-SANDBOX' => 1,
                 ],
                 'json' => $data,
             ]);
