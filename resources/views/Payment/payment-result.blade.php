@@ -31,16 +31,20 @@
 </head>
 <body>
 @if(isset($data))
-    <h2 class="success">Payment Successful</h2>
-    <p>Transaction ID: {{ $data['id'] }}</p>
-    <p>Invoice Number: {{ $data['invoice_number'] }}</p>
-    <p>Payment Date: {{ $data['payment_date'] }}</p>
-    <p>Status: {{ $data['status'] }}</p>
+    <h2 class="success">پرداخت با موفقیت انجام شد</h2>
+    <p>وضعیت: {{ $data['status'] }}</p>
+    <p>شناسه تراکنش: {{ $data['id'] }}</p>
+    <p>کد رهگیری: {{ $data['track_id'] }}</p>
+    <p>شماره فاکتور: {{ $data['order_id'] }}</p>
+    <p>مقدار پرداخت: {{ $data['amount'] }}</p>
+    <p>شماره کارت: {{ $data['card_no'] }}</p>
+    <p>تاریخ پرداخت: {{ $data['date'] }}</p>
 @elseif(isset($error))
-    <h2 class="error">Payment Failed</h2>
-    <p>Error: {{ $error }}</p>
+    <h2 class="error">خطا در پرداخت</h2>
+    <p>کد خطا: {{ $error['error_code'] }}</p>
+    <p>پیام خطا: {{ $error['error_message'] }}</p>
 @else
-    <h2 class="error">Invalid Response</h2>
+    <h2 class="error">پاسخ نامعتبر</h2>
 @endif
 </body>
 </html>

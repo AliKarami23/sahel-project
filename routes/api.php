@@ -30,7 +30,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
 // Customer
-    Route::put('/Customer/Edit/{id}', [\App\Http\Controllers\UserController::class, 'Edit'])->name('EditCustomer');
+    Route::put('/Customer/Edit/{id}', [UserController::class, 'Edit'])->name('EditCustomer');
     Route::put('/Customer/Update', [UserController::class, 'Update'])->name('UpdateCustomer');
     Route::delete('/Customer/Delete/{id}', [UserController::class, 'Delete'])->name('DeleteCustomer');
     Route::get('/Customer/List', [UserController::class, 'List'])->name('ListCustomer');
@@ -65,15 +65,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
 
-
-
-
-
-    //Blog
-//    Route::post('/blog/create', [BlogController::class, 'Create'])->name('CreateBloge');
-//    Route::put('/blog/edit/{id}', [BlogController::class, 'Edit'])->name('EditBlog');
-//    Route::delete('/blog/delete/{id}', [BlogController::class, 'delete'])->name('DeleteBlog');
-//    Route::get('/blog/list', [BlogController::class, 'list'])->name('listblog');
 
     //Article
     Route::post('/article/create', [ArticleController::class, 'create_article'])->name('CreateArticle');
