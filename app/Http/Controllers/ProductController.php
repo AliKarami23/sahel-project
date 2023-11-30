@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\extradition;
+use App\Models\Extradition;
 use App\Models\Product;
 use App\Models\Sans;
 use GuzzleHttp\Psr7\UploadedFile;
