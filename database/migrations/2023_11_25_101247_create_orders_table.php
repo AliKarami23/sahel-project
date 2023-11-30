@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('product_id');
             $table->integer('Total_Price');
-            $table->boolean('Patent_Status')->default(false);
+            $table->boolean('Payment_Status')->default(false);
             $table->timestamps();
         });
     }
