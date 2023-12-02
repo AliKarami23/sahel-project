@@ -10,7 +10,7 @@ use Modules\Question\app\Http\Controllers\QuestionController;
 use \App\Http\Controllers\OrderController;
 use \App\Http\Controllers\UserController;
 use \App\Http\Controllers\PaymentController;
-
+use \App\Http\Controllers\CardController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -60,6 +60,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 //Payment
     Route::post('/Payment', [PaymentController::class, 'Payment'])->name('Payment');
+
+// Card
+    Route::get('Card/showUserTickets', [CardController::class, 'showUserTickets'])->name('showUserTickets');
+    Route::get('Card/showAllTickets', [CardController::class, 'showAllTickets'])->name('showAllTickets');
+    Route::get('/download-pdf/{id}', [CardController::class, 'downloadPdf'])->name('download_pdf');
+    Route::get('/showTicketsByTimeRange', [CardController::class, 'showTicketsByTimeRange'])->name('showTicketsByTimeRange');
 
 
 

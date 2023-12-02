@@ -1,21 +1,20 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تفریحات دریایی ساحل - بلیط</title>
+    <title>Ticket</title>
 </head>
 <body>
-<h1>اطلاعات بلیط</h1>
-<p>شماره کارت: {{ $cardNumber }}</p>
-<p>لینک کارت: {{ $cardLink }}</p>
-<p>تعداد بلیط (مرد): {{ $ticketsSoldMan }}</p>
-<p>تعداد بلیط (زن): {{ $ticketsSoldWoman }}</p>
-<p>اطلاعات سانس:</p>
+<h1>Ticket Information</h1>
+<p>Card Number: {{ $cardNumber }}</p>
+<p>Tickets Sold (Man): {{ $ticketsSoldMan }}</p>
+<p>Tickets Sold (Woman): {{ $ticketsSoldWoman }}</p>
+<p>Sans Information:</p>
 <ul>
-    <li>شروع: {{ $sansStart }}</li>
-    <li>پایان: {{ $sansEnd }}</li>
-    <li>تاریخ: {{ $sansDate }}</li>
+    <li>Start: {{ $sansStart }}</li>
+    <li>End: {{ $sansEnd }}</li>
+    <li>Date: {{ $sansDate }}</li>
 </ul>
 </body>
 </html>

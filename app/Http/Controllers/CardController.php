@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class CardController extends Controller
@@ -59,5 +61,64 @@ class CardController extends Controller
         }
 
         return $uniqueCardNumber;
+    }
+
+    public function showUserTickets()
+    {
+        $userOrders = Auth::user()->orders()->with('cards')->get();
+
+        return response()->json($userOrders);
+    }
+
+    public function showAllTickets()
+    {
+        $allOrders = Order::with('cards')->get();
+
+        return response()->json($allOrders);
+    }
+
+    public function downloadPdf($id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            abort(404, 'Order not found');
+        }
+
+        $pdfPath = 'tickets/' . $order->id . '_ticket.pdf';
+
+        if (Storage::exists($pdfPath)) {
+            $headers = [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="ticket.pdf"',
+            ];
+
+            return Response::download(storage_path("app/{$pdfPath}"), 'ticket.pdf', $headers);
+        } else {
+            abort(404, 'PDF not found');
+        }
+
+    }
+
+    public function showTicketsByTimeRange(Request $request)
+    {
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+        $cardNumber = $request->card_number;
+
+        $orders = Order::with(['reserves.sans', 'reserves.sans.product', 'cards'])
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereHas('reserves.sans', function ($query) use ($startDate, $endDate) {
+                    $query->whereBetween('Date', [$startDate, $endDate]);
+                });
+            })
+            ->when($cardNumber, function ($query) use ($cardNumber) {
+                $query->whereHas('cards', function ($query) use ($cardNumber) {
+                    $query->where('Card_Number', $cardNumber);
+                });
+            })
+            ->get();
+
+        return response()->json($orders);
     }
 }

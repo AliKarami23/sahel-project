@@ -17,8 +17,9 @@ class OrderController extends Controller
         $updatedTicketsSold = [];
         $allReservations = [];
         $allSans = [];
-
+        $user = optional(Auth::user());
         $order = Order::create([
+            'user_id' => $user->id,
             "product_id" => $request->product_id,
             "Total_Price" => $Total_Price
         ]);
@@ -172,7 +173,8 @@ class OrderController extends Controller
         }
 
         $order->update([
-            "Total_Price" => $Total_Price
+            "Total_Price" => $Total_Price,
+            "product_id" => $request->product_id,
         ]);
 
         foreach ($updatedTicketsSold as $productId => $sansData) {
