@@ -22,4 +22,11 @@ class Reservation extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    public function sans()
+    {
+        return $this->belongsTo(Sans::class);
+    }
+
+
 }

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Card;
 use App\Models\Order;
 use Evryn\LaravelToman\Facades\Toman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CardController;
 
 class PaymentController extends Controller
 {
@@ -17,7 +19,7 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Order not found'], 404);
         }
         $request = Toman::orderId($order->id)
-            ->amount(50000)
+            ->amount($order->Total_Price)
             ->description('Payment for buying entertainment on the Sahel website')
             ->callback(route('callback'))
             ->mobile($user->Phone_Number)
@@ -26,10 +28,19 @@ class PaymentController extends Controller
             ->request();
 
         if ($request->successful()) {
+            $cardController = new CardController();
+            $uniqueCardNumber = $cardController->generateUniqueCardNumber();
+
+            $card = Card::updateOrCreate(
+                ['order_id' => $order->id],
+                ['Card_Number' => $uniqueCardNumber, 'Card_Link' => route('download_pdf', ['order_id' => $order->id])]
+            );
 
             $order->update([
-               'Patent_Status' => true
+                'Patent_Status' => true
             ]);
+
+            $pdfUrl = $cardController->CreateCard($order, $uniqueCardNumber);
 
             return response()->json(['message' => 'Payment was successful'], 400);
 //            $transactionId = $request->transactionId();

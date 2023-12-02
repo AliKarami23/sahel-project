@@ -26,4 +26,10 @@ class Sans extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function reserves()
+    {
+        return $this->belongsTo(Reservation::class);
+    }
+
 }

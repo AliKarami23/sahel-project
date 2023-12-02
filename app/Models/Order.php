@@ -28,6 +28,10 @@ class Order extends Model
         return $this->hasMany(Reservation::class);
     }
 
+    public function cards(){
+        return $this->hasMany(Card::class);
+    }
+
     protected $casts = [
         "product_id" => "array"
     ];
