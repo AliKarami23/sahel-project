@@ -221,11 +221,15 @@ class OrderController extends Controller
 
     public function list()
     {
-        $Order = Order::all();
+        $user = Auth::user();
 
-        return response()->json([
-            'Order' => $Order
-        ]);
+        if ($user->hasRole('Admin')) {
+            $orders = Order::all();
+        } else {
+            $orders = Order::where('user_id', $user->id)->get();
+        }
+
+        return response()->json(['orders' => $orders]);
     }
 
     public function ShowEdit($id)
@@ -243,17 +247,22 @@ class OrderController extends Controller
 
     }
 
-    public function Delete($id)
+    public function delete($id)
     {
+        $user = Auth::user();
 
-        if ($Order = Order::find($id)) {
-            $Order->delete();
+        $order = Order::find($id);
 
-            return response()->json(['message' => 'Order Deleted']);
-        } else {
-            return response()->json(['message' => 'Order not find']);
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
         }
 
+        if ($user->hasRole('Admin') || $user->id === $order->user_id) {
+            $order->delete();
+            return response()->json(['message' => 'Order deleted successfully']);
+        } else {
+            return response()->json(['message' => 'Unauthorized to delete this order'], 403);
+        }
     }
 
 }

@@ -46,7 +46,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 //Order
     Route::post('/Order/Create', [OrderController::class, 'Create'])->name('CreateOrder');
-    Route::put('/Order/Edit/{id}', [OrderController::class, 'Edit'])->name('EditOrder');
+    Route::put('/Order/Edit/{id}', [OrderController::class, 'Edit'])->name('EditOrder')->middleware(['permission:Order.Edit', 'checkOrderPermission']);
     Route::put('/Order/Show/Edit', [OrderController::class, 'ShowEdit'])->name('ShowEditOrder');
     Route::get('/Order/List', [OrderController::class, 'List'])->name('ListOrder');
     Route::delete('/Order/Delete/{id}', [OrderController::class, 'Delete'])->name('DeleteOrder');
