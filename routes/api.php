@@ -24,7 +24,7 @@ use \App\Http\Controllers\CardController;
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
-
+//Auth
     Route::post('/Register/GetInformation', [RegisterController::class, 'GetInformation'])->name('GetInformation');
     Route::post('/Logout', [RegisterController::class, 'Logout'])->name('Logout');
 
@@ -64,8 +64,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 // Card
     Route::get('Card/showUserTickets', [CardController::class, 'showUserTickets'])->name('showUserTickets');
     Route::get('Card/showAllTickets', [CardController::class, 'showAllTickets'])->name('showAllTickets');
-    Route::get('/download-pdf/{id}', [CardController::class, 'downloadPdf'])->name('download_pdf');
-    Route::get('/showTicketsByTimeRange', [CardController::class, 'showTicketsByTimeRange'])->name('showTicketsByTimeRange');
+    Route::get('Card/download-pdf/{id}', [CardController::class, 'downloadPdf'])->name('download_pdf');
+    Route::get('Card/FilterCard', [CardController::class, 'FilterCard'])->name('FilterCard');
 
 
 
@@ -88,6 +88,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/contact/create', [ContactController::class, 'create_contact'])->name('CreateContact');
 });
 
+//Auth
 Route::post('/Register/GetNumber', [RegisterController::class, 'GetNumber'])->name('GetNumber');
 Route::post('/Register/GetCodeSent', [RegisterController::class, 'GetCodeSent'])->name('GetCodeSent');
 Route::post('/Register/Admin/Login', [RegisterController::class, 'AdminLogin'])->name('AdminLogin');
+Route::post('/Register/Admin/EmailPassword', [RegisterController::class, 'EmailPassword'])->name('EmailPassword');
+Route::post('/Register/Admin/VerifyCode', [RegisterController::class, 'VerifyCode'])->name('VerifyCode');
+Route::post('/Register/Admin/UpdatePassword', [RegisterController::class, 'UpdatePassword'])->name('UpdatePassword');

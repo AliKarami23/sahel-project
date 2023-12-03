@@ -15,29 +15,24 @@ class CardController extends Controller
     {
         $orderDetails = Order::with(['reserves', 'reserves.sans', 'reserves.sans.product'])->find($order->id);
 
-        // Extract relevant information
 
         $cardNumber = $uniqueCardNumber;
         $cardLink = $orderDetails->cards->first()->Card_Link;
 
-        $reservation = $orderDetails->reserves->first(); // Assuming there's only one reservation per order
+        $reservation = $orderDetails->reserves->first();
         $ticketsSoldMan = $reservation->Tickets_Sold_Man;
         $ticketsSoldWoman = $reservation->Tickets_Sold_Woman;
 
-        // Extract Sans information from the reservation
         $sans = $reservation->sans;
         $sansStart = $sans->Start;
         $sansEnd = $sans->End;
         $sansDate = $sans->Date;
 
-        // Create PDF
         $pdf = PDF::loadView('pdf.ticket', compact('cardNumber', 'cardLink', 'ticketsSoldMan', 'ticketsSoldWoman', 'sansStart', 'sansEnd', 'sansDate'));
 
-        // Store PDF in storage
         $pdfPath = 'tickets/' . $orderDetails->id . '_ticket.pdf';
         Storage::put($pdfPath, $pdf->output());
 
-        // Provide the user with a link to download the PDF
         $pdfUrl = Storage::url($pdfPath);
 
         return $pdfUrl;
@@ -54,7 +49,6 @@ class CardController extends Controller
                 $query->where('Card_Number', $randomNumber);
             })->first();
 
-            // If the number doesn't exist, use it as the unique card number
             if (!$existingOrder) {
                 $uniqueCardNumber = $randomNumber;
             }
@@ -100,7 +94,7 @@ class CardController extends Controller
 
     }
 
-    public function showTicketsByTimeRange(Request $request)
+    public function FilterCard(Request $request)
     {
         $startDate = $request->start_date;
         $endDate = $request->end_date;
