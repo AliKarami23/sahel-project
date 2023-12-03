@@ -19,9 +19,23 @@ class UserController extends Controller
         ]);
     }
 
-    public function operation()
+    public function operation($id)
     {
-//        اسم و شماره و ایمیل و تعداد خرید ها count(order) و فاکتور ها کامل
+        try {
+            $user = User::find($id);
+
+            $orders = $user->orders()->with('reserves.sans.product')->get();
+
+            $CountOrders = $user->orders->count();
+
+            return response()->json([
+                'orders' => $orders,
+                'CountOrders' => $CountOrders,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
 
@@ -38,7 +52,7 @@ class UserController extends Controller
         return response()->json(['message' => 'Customer deleted successfully']);
     }
 
-    public function Obstruction($id)
+    public function BlockOrActive($id)
     {
         $user = User::find($id);
 
@@ -46,12 +60,15 @@ class UserController extends Controller
             return response()->json(['message' => 'Customer not found'], 404);
         }
 
+        $newStatus = ($user->Status == 'Active') ? 'Block' : 'Active';
+
         $user->update([
-            'Status' => 'blocked'
+            'Status' => $newStatus
         ]);
 
-        return response()->json(['message' => 'The user was blocked']);
+        return response()->json(['message' => "The user's status has been changed to $newStatus"]);
     }
+
 
     public function Edit(Request $request, $id)
     {

@@ -22,7 +22,7 @@ use \App\Http\Controllers\CardController;
 |
 */
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () {
 
 //Auth
     Route::post('/Register/GetInformation', [RegisterController::class, 'GetInformation'])->name('GetInformation');
@@ -34,6 +34,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/Customer/Update', [UserController::class, 'Update'])->name('UpdateCustomer');
     Route::delete('/Customer/Delete/{id}', [UserController::class, 'Delete'])->name('DeleteCustomer');
     Route::get('/Customer/List', [UserController::class, 'List'])->name('ListCustomer');
+    Route::get('/User/operation/{id}', [UserController::class, 'operation'])->name('operation')->middleware(['permission:User.operation', 'CheckOrderAccess']);
+    Route::get('/User/BlockOrActive/{id}', [UserController::class, 'BlockOrActive'])->name('BlockOrActive')->middleware(['permission:User.BlockOrActive']);
 
 
 //Product
