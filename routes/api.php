@@ -41,7 +41,7 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
     Route::put('/Customer/Edit/{id}', [UserController::class, 'Edit'])->name('EditCustomer')->middleware(['permission:Customer.Edit']);
     Route::put('/Customer/Update', [UserController::class, 'Update'])->name('UpdateCustomer')->middleware(['permission:Customer.Update']);
     Route::delete('/Customer/Delete/{id}', [UserController::class, 'Delete'])->name('DeleteCustomer')->middleware(['permission:Customer.Delete']);
-    Route::get('/Customer/List', [UserController::class, 'List'])->name('ListCustomer')->middleware(['permission:User.BlockOrActive']);
+    Route::get('/Customer/List', [UserController::class, 'List'])->name('ListCustomer')->middleware(['permission:Customer.List']);
     Route::get('/User/operation/{id}', [UserController::class, 'operation'])->name('operation')->middleware(['permission:User.operation', 'CheckOrderAccess']);
     Route::get('/User/BlockOrActive/{id}', [UserController::class, 'BlockOrActive'])->name('BlockOrActive')->middleware(['permission:User.BlockOrActive']);
 

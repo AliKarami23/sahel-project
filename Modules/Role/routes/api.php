@@ -18,10 +18,10 @@ use \Modules\Role\app\Http\Controllers\RoleController;
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
-    Route::post('/AddRole', [RoleController::class, 'create'])->name('AddRole')->middleware('permission:Role.Add');
-    Route::get('/ListRole', [RoleController::class, 'index'])->name('ListRole')->middleware('permission:Role.List');
-    Route::put('/EditRole/{id}', [RoleController::class, 'edit'])->name('EditRole')->middleware('permission:Role.Edit');
-    Route::delete('/DeleteRole/{id}', [RoleController::class, 'destroy'])->name('DeleteRole')->middleware('permission:Role.Delete');
+    Route::post('/CreateRole', [RoleController::class, 'Create'])->name('CreateRole')->middleware('permission:Role.Create');
+    Route::get('/ListRole', [RoleController::class, 'List'])->name('ListRole')->middleware('permission:Role.List');
+    Route::put('/EditRole/{id}', [RoleController::class, 'Edit'])->name('EditRole')->middleware('permission:Role.Edit');
+    Route::delete('/DeleteRole/{id}', [RoleController::class, 'Delete'])->name('DeleteRole')->middleware('permission:Role.Delete');
 
 
 
