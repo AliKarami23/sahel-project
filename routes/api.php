@@ -11,6 +11,7 @@ use \App\Http\Controllers\OrderController;
 use \App\Http\Controllers\UserController;
 use \App\Http\Controllers\PaymentController;
 use \App\Http\Controllers\CardController;
+use \App\Http\Controllers\ReportController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,6 +24,10 @@ use \App\Http\Controllers\CardController;
 */
 
 Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () {
+
+//Dashboard
+
+    Route::get('/Admin/Dashboard', [ReportController::class, 'Dashboard'])->name('Dashboard');
 
 //Auth
     Route::post('/Register/GetInformation', [RegisterController::class, 'GetInformation'])->name('GetInformation');

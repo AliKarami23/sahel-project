@@ -35,7 +35,13 @@ class Order extends Model
     }
 
     public function cards(){
+
         return $this->hasMany(Card::class);
+    }
+
+    public function sans()
+    {
+        return $this->hasMany(Sans::class);
     }
 
     protected $casts = [

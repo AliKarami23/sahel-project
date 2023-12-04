@@ -128,21 +128,6 @@ class ProductController extends Controller
             'product' => $product_back
         ]);
     }
-
-
-    private function deleteAndSaveMedia($product, $request, $inputName, $collectionName, $mediaName)
-    {
-        $newMedia = $request->file($inputName);
-
-        if ($newMedia instanceof UploadedFile) {
-            $product->clearMediaCollection($collectionName);
-
-            $mediaPath = $product->addMedia($newMedia)
-                ->toMediaCollection($mediaName, $collectionName)
-                ->getPath();
-        }
-    }
-
     public function Edit(Request $request, $id)
     {
 

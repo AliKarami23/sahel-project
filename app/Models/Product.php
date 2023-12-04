@@ -37,9 +37,29 @@ class Product extends Model implements HasMedia
         return $this->hasMany(Extradition::class);
     }
 
-    public function order()
+    public function orders()
     {
-        return $this->belongsTo(Order::class);
+        return $this->hasMany(Order::class);
+    }
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    public function getTotalSales()
+    {
+        return $this->orders()->sum('Total_Price');
+    }
+
+    public function updateTicketsSold()
+    {
+        $totalSoldMan = Reservation::where('product_id', $this->id)->sum('Tickets_Sold_Man');
+        $totalSoldWoman = Reservation::where('product_id', $this->id)->sum('Tickets_Sold_Woman');
+
+        return [
+            'totalSoldMan' => $totalSoldMan,
+            'totalSoldWoman' => $totalSoldWoman,
+        ];
     }
 
 }
