@@ -13,7 +13,7 @@ class Contact extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['name_contact','email_contact','text_contact'];
+    protected $fillable = ['name_contact','email_contact','text_contact', 'answer_text'];
 
     protected static function newFactory(): ContactFactory
     {

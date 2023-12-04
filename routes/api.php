@@ -56,6 +56,11 @@ use Modules\Question\app\Http\Controllers\QuestionController;
 
     //Contact
     Route::post('/contact/create', [ContactController::class, 'create_contact'])->name('CreateContact');
+    Route::get('/contact/list', [ContactController::class, 'list_contact'])->name('ListContact');
+    Route::delete('/contact/delete/{id}', [ContactController::class, 'delete_contact'])->name('DeleteContact');
+    Route::get('/contact/answer/{id}', [ContactController::class, 'show_answer_contact'])->name('ShowAnswerPage');
+    Route::post('/contact/answer/{id}', [ContactController::class, 'answer_contact'])->name('AnswerContact');
+
 
 
 
