@@ -62,9 +62,9 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
 
 
 //Media
-    Route::post('/Order/UploadImage/{id}', [ProductController::class, 'UploadImage'])->name('UploadImage')->middleware(['permission:Order.UploadImage']);
-    Route::post('/Order/UploadMainImage/{id}', [ProductController::class, 'UploadMainImage'])->name('UploadMainImage')->middleware(['permission:Order.UploadMainImage']);
-    Route::post('/Order/UploadVideo/{id}', [ProductController::class, 'UploadVideo'])->name('UploadVideo')->middleware(['permission:Order.UploadVideo']);
+    Route::post('/Product/UploadImage/{id}', [ProductController::class, 'UploadImage'])->name('UploadImage')->middleware(['permission:Product.UploadImage']);
+    Route::post('/Product/UploadMainImage/{id}', [ProductController::class, 'UploadMainImage'])->name('UploadMainImage')->middleware(['permission:Product.UploadMainImage']);
+    Route::post('/Product/UploadVideo/{id}', [ProductController::class, 'UploadVideo'])->name('UploadVideo')->middleware(['permission:Product.UploadVideo']);
 
 
 //Payment

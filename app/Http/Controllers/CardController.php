@@ -64,13 +64,6 @@ class CardController extends Controller
         return response()->json($userOrders);
     }
 
-    public function AllTickets()
-    {
-        $allOrders = Order::with('cards')->get();
-
-        return response()->json($allOrders);
-    }
-
     public function DownloadPdf($id)
     {
         $order = Order::find($id);
@@ -115,4 +108,13 @@ class CardController extends Controller
 
         return response()->json($orders);
     }
+
+    public function AllTickets()
+    {
+        $orders = Order::with(['reserves.sans', 'reserves.sans.product', 'cards', 'payments'])
+            ->get();
+
+        return response()->json($orders);
+    }
+
 }
