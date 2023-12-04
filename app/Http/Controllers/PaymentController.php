@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Card;
 use App\Models\Order;
+use App\Models\Payment;
+use Carbon\Carbon;
 use Evryn\LaravelToman\Facades\Toman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +20,17 @@ class PaymentController extends Controller
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
+
+        $payment = Payment::create([
+            'status' => 'pending',
+            'track_id' => rand(100000, 999999),
+            'order_id' => $order->id,
+            'amount' => $order->Total_Price,
+            'card_no' => 1234567890123456,
+            'hashed_card_no' => md5('1234567890123456'),
+            'date' => now(),
+        ]);
+
         $request = Toman::orderId($order->id)
             ->amount($order->Total_Price)
             ->description('Payment for buying entertainment on the Sahel website')
@@ -40,18 +53,17 @@ class PaymentController extends Controller
                 'Patent_Status' => true
             ]);
 
+            $payment->update(['status' => 'successful']);
+
             $pdfUrl = $cardController->CreateCard($order, $uniqueCardNumber);
 
-            return response()->json(['message' => 'Payment was successful'], 400);
-//            $transactionId = $request->transactionId();
-//            return $request->pay();
+            return response()->json(['message' => 'Payment was successful'], 200);
+        } else {
+
+            $payment->update(['status' => 'failed']);
+
+            return response()->json(['error' => 'Payment request failed'], 400);
         }
-
-//        if ($request->failed()) {
-//            return response()->json(['error' => 'Payment request failed'], 400);
-//        }
-
-
     }
 
     public function callback(Request $request)
@@ -66,5 +78,51 @@ class PaymentController extends Controller
 //        if ($payment->failed()) {
 //            return response()->json(['error' => 'Payment verification failed'], 400);
 //        }
+    }
+
+
+    public function PaymentList()
+    {
+
+        $PaymentList = Payment::all();
+        return response()->json([
+            'PaymentList' => $PaymentList
+        ]);
+    }
+
+    public function PaymentFilter(Request $request)
+    {
+        $filterType = $request->filter_type;
+        $startDate = $request->start_date;
+        $endDate = $request->end_date;
+
+        $paymentsQuery = Payment::query();
+
+        switch ($filterType) {
+            case 'daily':
+                $paymentsQuery->whereDate('date', Carbon::today());
+                break;
+
+            case 'weekly':
+                $paymentsQuery->whereBetween('date', [Carbon::now()->subWeek(), Carbon::now()]);
+                break;
+
+            case 'monthly':
+                $paymentsQuery->whereMonth('date', Carbon::now()->subMonth()->month);
+                break;
+
+            case 'custom':
+                $paymentsQuery->whereBetween('date', [$startDate, $endDate]);
+                break;
+
+            default:
+                break;
+        }
+
+        $filteredPayments = $paymentsQuery->get();
+
+        return response()->json([
+            'PaymentList' => $filteredPayments
+        ]);
     }
 }

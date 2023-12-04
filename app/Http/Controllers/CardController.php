@@ -57,21 +57,21 @@ class CardController extends Controller
         return $uniqueCardNumber;
     }
 
-    public function showUserTickets()
+    public function UserTickets()
     {
         $userOrders = Auth::user()->orders()->with('cards')->get();
 
         return response()->json($userOrders);
     }
 
-    public function showAllTickets()
+    public function AllTickets()
     {
         $allOrders = Order::with('cards')->get();
 
         return response()->json($allOrders);
     }
 
-    public function downloadPdf($id)
+    public function DownloadPdf($id)
     {
         $order = Order::find($id);
 

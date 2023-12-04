@@ -65,4 +65,8 @@ class ReportController extends Controller
             'productsWithSales' => $productsWithSales,
         ]);
     }
+
+    public function FinancialReport(){
+
+    }
 }
