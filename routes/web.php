@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\PaymentController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,3 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/Payment/CallBack', [PaymentController::class, 'callback'])->name('callback');
+Route::get('/download-pdf/{order_id}', 'YourController@downloadPdf')->name('download_pdf');
+

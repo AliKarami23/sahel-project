@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PhoneNumber;
+use App\Events\CleanUpVerificationCodes;
+use App\Jobs\CleanUpVerificationCodesJob;
+use App\Mail\VerificationCodeMail;
+use App\Models\Register;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Modules\Sms\app\Http\Controllers\SmsController;
 use Illuminate\Validation\ValidationException;
 
@@ -20,12 +25,17 @@ class RegisterController extends Controller
         $Verification_Code = mt_rand(10000, 99999);
         $tmp = new SmsController();
         $tmp->VerificationCode($Phone_Number, $Verification_Code);
-        PhoneNumber::create([
+
+        Register::create([
             'number' => $Phone_Number,
             'verification_code' => $Verification_Code,
         ]);
 
+        event(new CleanUpVerificationCodes());
+        CleanUpVerificationCodesJob::dispatch()->delay(now()->addMinutes(3));
+
         return response()->json(['message' => 'Verification code has been sent.']);
+
     }
 
 
@@ -34,12 +44,12 @@ class RegisterController extends Controller
         $Phone_Number = $request->Phone_Number;
         $verificationCode = $request->verification_code;
 
-        $phoneNumber = PhoneNumber::where('number', $Phone_Number)
+        $Register = Register::where('number', $Phone_Number)
             ->where('verification_code', $verificationCode)
             ->first();
 
-        if (!$phoneNumber) {
-            return response()->json(['message' => 'Invalid verification code.'], 401);
+        if (!$Register || $Register->created_at < now()->subMinutes(3)) {
+            return response()->json(['message' => 'Invalid or expired verification code.'], 401);
         }
 
         $User = User::updateOrcreate([
@@ -102,5 +112,76 @@ class RegisterController extends Controller
         ]);
     }
 
+    public function EmailPassword(Request $request)
+    {
+        $email = $request->Email;
+
+        $code = mt_rand(100000, 999999);
+
+        Register::create([
+            'Email' => $email,
+            'verification_code' => $code,
+        ]);
+
+        Mail::to($email)->send(new VerificationCodeMail($code));
+
+        return response()->json([
+            'message' => 'Verification code sent successfully',
+        ]);
+    }
+
+    public function VerifyCode(Request $request)
+    {
+        $user = optional(Auth::user());
+        $email = $request->Email;
+        $code = $request->code;
+
+        $record = Register::where('Email', $email)
+            ->where('verification_code', $code)
+            ->first();
+
+        if (!$record) {
+            return response()->json([
+                'error' => 'Invalid verification code',
+            ], 400);
+        }
+
+        $createdAt = Carbon::parse($record->created_at);
+        $now = Carbon::now();
+        $codeExpiration = $createdAt->addMinutes(3);
+
+        if ($now > $codeExpiration) {
+            $record->delete();
+            return response()->json([
+                'error' => 'Verification code has expired',
+            ], 400);
+        }
+
+        $record->delete();
+        $token = $user->createToken('UserToken')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Verification code true',
+            'token' => $token,
+
+        ]);
+    }
+
+    public function UpdatePassword(Request $request)
+    {
+        $email = $request->Email;
+        $newPassword = $request->new_password;
+
+        $user = User::where('Email', $email)->first();
+
+        $hashedPassword = Hash::make($newPassword);
+
+        $user->update(['Password' => $hashedPassword]);
+
+        return response()->json([
+            'message' => 'Password updated successfully',
+            'user' => $user
+        ]);
+    }
 
 }

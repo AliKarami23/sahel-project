@@ -12,7 +12,7 @@ use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    public function create(RoleRequest $request){
+    public function Create(RoleRequest $request){
 
 
 
@@ -31,7 +31,7 @@ class RoleController extends Controller
             ]);
 
     }
-    public function edit(RoleRequest $request, $id)
+    public function Edit(RoleRequest $request, $id)
     {
         $role = Role::findOrFail($id);
 
@@ -45,7 +45,7 @@ class RoleController extends Controller
         return response()->json(['message' => 'Role is Edit', 'role' => $role]);
     }
 
-    public function destroy($id)
+    public function Delete($id)
     {
         $role = Role::findOrFail($id);
 
@@ -54,7 +54,7 @@ class RoleController extends Controller
         return response()->json(['message' => 'Role is Delete']);
     }
 
-    public function index(){
+    public function List(){
 
         $roles = Role::all();
         $permission = Permission::all();

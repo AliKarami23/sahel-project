@@ -14,11 +14,22 @@ class Sans extends Model
         'Start',
         'End',
         'Date',
-        'Status'
+        'Status',
+        'Capacity_Man',
+        'Capacity_Woman',
+        'Capacity_remains_Man',
+        'Capacity_remains_Woman',
+        'Status',
     ];
 
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function reserves()
+    {
+        return $this->belongsTo(Reservation::class);
+    }
+
 }

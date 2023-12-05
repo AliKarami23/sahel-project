@@ -28,5 +28,8 @@ class User extends Authenticatable
         'Password',
     ];
 
-
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

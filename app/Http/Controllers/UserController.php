@@ -11,16 +11,32 @@ class UserController extends Controller
     public function List()
     {
         $Customers = User::role('Customer')
-            ->select('id', 'FullName', 'PhoneNumber')
+            ->select('id', 'Full_Name', 'Phone_Number','Status')
             ->get();
 
         return response()->json([
             'Customer' => $Customers
         ]);
     }
-    public function operation()
+
+    public function operation($id)
     {
-//        اسم و شماره و ایمیل و تعداد خرید ها count(order) و فاکتور ها کامل
+        try {
+            $user = User::find($id);
+
+            $orders = $user->orders()->with('reserves.sans.product')->get();
+
+            $CountOrders = $user->orders->count();
+
+            return response()->json([
+                'user' => $user,
+                'orders' => $orders,
+                'CountOrders' => $CountOrders,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
 
@@ -37,7 +53,7 @@ class UserController extends Controller
         return response()->json(['message' => 'Customer deleted successfully']);
     }
 
-    public function Obstruction($id)
+    public function BlockOrActive($id)
     {
         $user = User::find($id);
 
@@ -45,12 +61,15 @@ class UserController extends Controller
             return response()->json(['message' => 'Customer not found'], 404);
         }
 
+        $newStatus = ($user->Status == 'Active') ? 'Block' : 'Active';
+
         $user->update([
-            'Full_Name' => 'blocked'
+            'Status' => $newStatus
         ]);
 
-        return response()->json(['message' => 'The user was blocked']);
+        return response()->json(['message' => "The user's status has been changed to $newStatus"]);
     }
+
 
     public function Edit(Request $request, $id)
     {
@@ -68,20 +87,33 @@ class UserController extends Controller
             'customer' => $user
         ]);
     }
+    public function ShowEdit($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Customer not found'], 404);
+        }
+
+        return response()->json([
+            'customer' => $user
+        ]);
+    }
+
     public function Update(Request $request)
     {
         $user = Auth::user();
 
         if (!$user) {
-            return response()->json(['message' => 'Customer not found'], 404);
+            return response()->json(['message' => 'User not found'], 404);
         }
 
 
         $user->update($request->all());
 
         return response()->json([
-            'message' => 'Customer information updated successfully',
-            'customer' => $user
+            'message' => 'User information updated successfully',
+            'User' => $user
         ]);
     }
 

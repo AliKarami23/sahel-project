@@ -22,9 +22,6 @@ class Product extends Model implements HasMedia
         'Total_Start',
         'Total_End',
         'Break_Time',
-        'Capacity_Men',
-        'Capacity_Women',
-        'Capacity_Total',
         'Rules',
         'Description',
         'Discounted_price',
@@ -39,4 +36,30 @@ class Product extends Model implements HasMedia
     {
         return $this->hasMany(Extradition::class);
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    public function getTotalSales()
+    {
+        return $this->orders()->sum('Total_Price');
+    }
+
+    public function updateTicketsSold()
+    {
+        $totalSoldMan = Reservation::where('product_id', $this->id)->sum('Tickets_Sold_Man');
+        $totalSoldWoman = Reservation::where('product_id', $this->id)->sum('Tickets_Sold_Woman');
+
+        return [
+            'totalSoldMan' => $totalSoldMan,
+            'totalSoldWoman' => $totalSoldWoman,
+        ];
+    }
+
 }
