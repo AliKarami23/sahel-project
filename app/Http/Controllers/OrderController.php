@@ -137,7 +137,7 @@ class OrderController extends Controller
                 return response()->json(['message' => 'Sans record not found for the given product and sans ID.'], 404);
             }
 
-            if (0 >= ($Sans->Capacity_remains_Man - $productSans['Capacity_Man']) && 0 >= ($Sans->Capacity_remains_Woman - $productSans['Capacity_Woman'])) {
+            if ($productSans['Capacity_Man'] <= $Sans->Capacity_remains_Man && $productSans['Capacity_Woman'] <= $Sans->Capacity_remains_Woman) {
                 $Total_Price += ($product->Price * $productSans['Capacity_Man']) + ($product->Price * $productSans['Capacity_Woman']);
 
                 $user = optional(Auth::user());

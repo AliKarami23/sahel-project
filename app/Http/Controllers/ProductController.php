@@ -183,13 +183,14 @@ class ProductController extends Controller
             ]);
         }
 
+        $product_back = $request->all();
         return response()->json([
             'message' => 'Product Updated',
-            'product' => $product
+            'product' => $product_back
         ]);
     }
 
-    public function showEdit(Request $request, $id)
+    public function showEdit($id)
     {
 
         $product = Product::find($id);

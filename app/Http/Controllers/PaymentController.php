@@ -22,6 +22,7 @@ class PaymentController extends Controller
         }
 
         $payment = Payment::create([
+            'user_id' =>$user->id ,
             'status' => 'pending',
             'track_id' => rand(100000, 999999),
             'order_id' => $order->id,
@@ -50,14 +51,14 @@ class PaymentController extends Controller
             );
 
             $order->update([
-                'Patent_Status' => true
+                'Payment_Status' => true
             ]);
 
             $payment->update(['status' => 'successful']);
 
             $pdfUrl = $cardController->CreateCard($order, $uniqueCardNumber);
 
-            return response()->json(['message' => 'Payment was successful'], 200);
+            return response()->json(['message' => 'Payment was successful', 'pdf_url' => $pdfUrl], 200);
         } else {
 
             $payment->update(['status' => 'failed']);
@@ -83,7 +84,6 @@ class PaymentController extends Controller
 
     public function PaymentList()
     {
-
         $PaymentList = Payment::all();
         return response()->json([
             'PaymentList' => $PaymentList
@@ -100,7 +100,7 @@ class PaymentController extends Controller
 
         switch ($filterType) {
             case 'daily':
-                $paymentsQuery->whereDate('date', Carbon::today());
+                $paymentsQuery->whereDate('date', Carbon::today()->toDateString());
                 break;
 
             case 'weekly':
@@ -112,7 +112,7 @@ class PaymentController extends Controller
                 break;
 
             case 'custom':
-                $paymentsQuery->whereBetween('date', [$startDate, $endDate]);
+                $paymentsQuery->whereBetween('date', [Carbon::parse($startDate), Carbon::parse($endDate)]);
                 break;
 
             default:
@@ -125,4 +125,5 @@ class PaymentController extends Controller
             'PaymentList' => $filteredPayments
         ]);
     }
+
 }

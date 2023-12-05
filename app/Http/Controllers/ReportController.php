@@ -25,7 +25,7 @@ class ReportController extends Controller
         $productsWithSales = Product::all()->map(function ($product) {
             return [
                 'product' => $product,
-                'totalSales' =>     $product->updateTicketsSold(),
+                'totalSales' => $product->updateTicketsSold(),
             ];
         });
 
@@ -55,7 +55,7 @@ class ReportController extends Controller
         $ticketsSoldToday = $ticketsSoldTodayMan + $ticketsSoldTodayWoman;
 
         return response()->json([
-            'CountCustomer' => $Customers,
+            'Customer' => $Customers,
             'totalPriceToday' => $totalPriceToday,
             'ticketsSoldToday' => $ticketsSoldToday,
             'LastMonth' => [

@@ -43,6 +43,11 @@ class Order extends Model
     {
         return $this->hasMany(Sans::class);
     }
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
 
     protected $casts = [
         "product_id" => "array"

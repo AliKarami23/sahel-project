@@ -37,26 +37,27 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
     Route::get('/Admin/Dashboard', [ReportController::class, 'Dashboard'])->name('Dashboard')->middleware(['permission:Dashboard']);
 
 
-// Customer
-    Route::put('/Customer/Edit/{id}', [UserController::class, 'Edit'])->name('EditCustomer')->middleware(['permission:Customer.Edit']);
-    Route::put('/Customer/Update', [UserController::class, 'Update'])->name('UpdateCustomer')->middleware(['permission:Customer.Update']);
-    Route::delete('/Customer/Delete/{id}', [UserController::class, 'Delete'])->name('DeleteCustomer')->middleware(['permission:Customer.Delete']);
-    Route::get('/Customer/List', [UserController::class, 'List'])->name('ListCustomer')->middleware(['permission:Customer.List']);
+// Customer && User
+    Route::put('/User/Update', [UserController::class, 'Update'])->name('UpdateCustomer')->middleware(['permission:Customer.Update']);
     Route::get('/User/operation/{id}', [UserController::class, 'operation'])->name('operation')->middleware(['permission:User.operation', 'CheckOrderAccess']);
     Route::get('/User/BlockOrActive/{id}', [UserController::class, 'BlockOrActive'])->name('BlockOrActive')->middleware(['permission:User.BlockOrActive']);
+    Route::put('/Customer/Edit/{id}', [UserController::class, 'Edit'])->name('EditCustomer')->middleware(['permission:Customer.Edit']);
+    Route::get('/Customer/ShowEdit/{id}', [UserController::class, 'ShowEdit'])->name('ShowEditCustomer')->middleware(['permission:Customer.ShowEdit']);
+    Route::delete('/Customer/Delete/{id}', [UserController::class, 'Delete'])->name('DeleteCustomer')->middleware(['permission:Customer.Delete']);
+    Route::get('/Customer/List', [UserController::class, 'List'])->name('ListCustomer')->middleware(['permission:Customer.List']);
 
 
 //Product
     Route::post('/Product/Create', [ProductController::class, 'Create'])->name('CreateProduct')->middleware(['permission:Product.Create']);
     Route::put('/Product/Edit/{id}', [ProductController::class, 'Edit'])->name('EditProduct')->middleware(['permission:Product.Edit']);
-    Route::put('/Product/show/Edit', [ProductController::class, 'showEdit'])->name('showEditProduct')->middleware(['permission:Product.showEdit']);
+    Route::get('/Product/ShowEdit/{id}', [ProductController::class, 'showEdit'])->name('ShowEditOrder')->middleware(['permission:Product.ShowEdit']);
     Route::get('/Product/List', [ProductController::class, 'List'])->name('ListProduct')->middleware(['permission:Product.List']);
     Route::delete('/Product/Delete/{id}', [ProductController::class, 'Delete'])->name('DeleteProduct')->middleware(['permission:Product.Delete']);
 
 //Order
     Route::post('/Order/Create', [OrderController::class, 'Create'])->name('CreateOrder')->middleware(['permission:Order.Create']);
-    Route::put('/Order/Edit/{id}', [OrderController::class, 'Edit'])->name('EditOrder')->middleware(['permission:Order.Edit', 'checkOrderPermission']);
-    Route::put('/Order/Show/Edit', [OrderController::class, 'ShowEdit'])->name('ShowEditOrder')->middleware(['permission:Order.ShowEdit']);
+    Route::put('/Order/Edit/{id}', [OrderController::class, 'Edit'])->name('EditOrder')->middleware(['permission:Order.Edit', 'checkOrderPermission', 'checkPaymentStatus']);
+    Route::get('/Order/ShowEdit/{id}', [OrderController::class, 'ShowEdit'])->name('ShowEditOrder')->middleware(['permission:Order.ShowEdit', 'checkPaymentStatus']);
     Route::get('/Order/List', [OrderController::class, 'List'])->name('ListOrder')->middleware(['permission:Order.List']);
     Route::delete('/Order/Delete/{id}', [OrderController::class, 'Delete'])->name('DeleteOrder')->middleware(['permission:Order.Delete']);
 
@@ -69,8 +70,8 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
 
 //Payment
     Route::post('/Payment', [PaymentController::class, 'Payment'])->name('Payment');
-    Route::post('Admin/PaymentList', [PaymentController::class, 'PaymentList'])->name('PaymentList')->middleware(['permission:PaymentList']);
-    Route::post('Admin/PaymentFilter', [PaymentController::class, 'PaymentFilter'])->name('PaymentFilter')->middleware(['permission:PaymentFilter']);
+    Route::get('Admin/PaymentList', [PaymentController::class, 'PaymentList'])->name('PaymentList')->middleware(['permission:PaymentList']);
+    Route::get('Admin/PaymentFilter', [PaymentController::class, 'PaymentFilter'])->name('PaymentFilter')->middleware(['permission:PaymentFilter']);
 
 // Card
     Route::get('Card/UserTickets', [CardController::class, 'UserTickets'])->name('UserTickets')->middleware(['permission:Card.UserTickets']);

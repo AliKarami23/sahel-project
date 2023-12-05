@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\PhoneNumber;
+use App\Models\Register;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -27,7 +27,7 @@ class CleanUpVerificationCodesJob implements ShouldQueue
      */
     public function handle(): void
     {
-        PhoneNumber::where('created_at', '<', now()->subMinutes(3))->delete();
+        Register::where('created_at', '<', now()->subMinutes(3))->delete();
     }
 
 }

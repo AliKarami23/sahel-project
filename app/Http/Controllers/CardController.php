@@ -111,7 +111,7 @@ class CardController extends Controller
 
     public function AllTickets()
     {
-        $orders = Order::with(['reserves.sans', 'reserves.sans.product', 'cards', 'payments'])
+        $orders = Order::with(['reserves.sans', 'reserves.sans.product', 'cards'])
             ->get();
 
         return response()->json($orders);

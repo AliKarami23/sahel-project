@@ -32,7 +32,6 @@ class RegisterController extends Controller
         ]);
 
         event(new CleanUpVerificationCodes());
-
         CleanUpVerificationCodesJob::dispatch()->delay(now()->addMinutes(3));
 
         return response()->json(['message' => 'Verification code has been sent.']);
