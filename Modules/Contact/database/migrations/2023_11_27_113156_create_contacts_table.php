@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name_contact');
             $table->string('email_contact');
             $table->text('text_contact');
+            $table->text('answer_text')->nullable();
             $table->timestamps();
         });
     }

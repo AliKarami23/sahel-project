@@ -79,22 +79,25 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
     Route::get('Card/DownloadPdf/{id}', [CardController::class, 'DownloadPdf'])->name('DownloadPdf')->middleware(['permission:Card.DownloadPdf']);
     Route::get('Card/FilterCard', [CardController::class, 'FilterCard'])->name('FilterCard')->middleware(['permission:Card.FilterCard']);
 
-
-    //Article
+//Article
     Route::post('/article/create', [ArticleController::class, 'create_article'])->name('CreateArticle');
     Route::put('/article/edit/{id}', [ArticleController::class, 'edit_article'])->name('EditArticle');
     Route::delete('/article/delete/{id}', [ArticleController::class, 'delete_article'])->name('DeleteArticle');
     Route::get('/article/list', [ArticleController::class, 'list_article'])->name('listArticle');
 
-    //Question
+//Question
     Route::post('/question/create', [QuestionController::class, 'create_question'])->name('CreateQuestion');
     Route::put('/question/edit/{id}', [QuestionController::class, 'edit_question'])->name('EditQuestion');
     Route::delete('/question/delete/{id}', [QuestionController::class, 'delete_question'])->name('DeleteQuestion');
     Route::get('/question/list', [QuestionController::class, 'list_question'])->name('listQuestion');
 
-    //Contact
+//Contact
     Route::post('/contact/create', [ContactController::class, 'create_contact'])->name('CreateContact');
-});
+    Route::get('/contact/list', [ContactController::class, 'list_contact'])->name('ListContact');
+    Route::delete('/contact/delete/{id}', [ContactController::class, 'delete_contact'])->name('DeleteContact');
+    Route::get('/contact/answer/{id}', [ContactController::class, 'show_answer_contact'])->name('ShowAnswerPage');
+    Route::post('/contact/answer/{id}', [ContactController::class, 'answer_contact'])->name('AnswerContact');
+  });
 
 //Auth
 Route::post('/Register/GetNumber', [RegisterController::class, 'GetNumber'])->name('GetNumber');

@@ -15,5 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('contact', fn (Request $request) => $request->user())->name('contact');
+    Route::get('contact', fn(Request $request) => $request->user())->name('contact');
+});
+
+Route::get('/send', function () {
+
 });
