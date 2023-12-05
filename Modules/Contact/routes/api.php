@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Contact\app\Http\Controllers\ContactController;
 
 /*
     |--------------------------------------------------------------------------
@@ -14,10 +15,12 @@ use Illuminate\Support\Facades\Route;
     |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('contact', fn(Request $request) => $request->user())->name('contact');
-});
+Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () {
 
-Route::get('/send', function () {
+    Route::post('/contact/create', [ContactController::class, 'create_contact'])->name('CreateContact');
+    Route::get('/contact/list', [ContactController::class, 'list_contact'])->name('ListContact');
+    Route::delete('/contact/delete/{id}', [ContactController::class, 'delete_contact'])->name('DeleteContact');
+    Route::get('/contact/answer/{id}', [ContactController::class, 'show_answer_contact'])->name('ShowAnswerPage');
+    Route::post('/contact/answer/{id}', [ContactController::class, 'answer_contact'])->name('AnswerContact');
 
 });

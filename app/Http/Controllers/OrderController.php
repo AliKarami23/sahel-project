@@ -232,7 +232,7 @@ class OrderController extends Controller
         return response()->json(['orders' => $orders]);
     }
 
-    public function ShowEdit($id)
+    public function Show($id)
     {
 
         $Order = Order::find($id);

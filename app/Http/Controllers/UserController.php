@@ -87,7 +87,7 @@ class UserController extends Controller
             'customer' => $user
         ]);
     }
-    public function ShowEdit($id)
+    public function Show($id)
     {
         $user = User::find($id);
 

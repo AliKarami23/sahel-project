@@ -32,12 +32,10 @@ class AnswerContactMail extends Mailable
      */
     public function envelope(): Envelope
     {
-//        dd($this->message);
         return new Envelope(
             to: $this->to_user,
             subject: $this->subject
         );
-//        dd('2');
     }
 
     /**

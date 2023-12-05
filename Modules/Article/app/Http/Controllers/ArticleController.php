@@ -3,92 +3,112 @@
 namespace Modules\Article\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Blog;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Modules\Article\app\Models\Article;
 
 class ArticleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return view('article::index');
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create_article(Request $request)
+
+    public function Create(Request $request)
     {
-        $validateDate = $request->validate([
-            'title_article' => 'required|max:255',
-            'text_article' => 'required',
-        ]);
-        $article = Article::create($validateDate);
+        $article = Article::create($request->all());
         return response()->json([
-            'massage' => 'مثاله با موفقیت ایجاد شد',
+            'message' => 'Article created successfully',
             'article' => $article,
         ]);
 
     }
 
-    public function edit_article(Request $request ,$id)
+    public function Show($id)
+    {
+        $article = Article::find($id);
+
+        if (!$article) {
+            return response()->json(['message' => 'Article not found.'], 404);
+        }
+
+        $mediaItems = $article->getMedia();
+
+        return response()->json([
+            'article' => $article,
+            'mediaItems' => $mediaItems
+        ]);
+    }
+
+
+    public function Edit(Request $request ,$id)
     {
      $article = Article::find($id);
         if (!$article) {
-            return response()->json(['message' => 'مقاله پیدا نشد.'], 404);
+            return response()->json(['message' => 'Article not found.'], 404);
         }
      $article->update($request->toArray());
      return response()->json([
-         'massage' => 'مقاله با موفقیت ویرایش شد',
+         'message' => 'Article updated successfully',
          'article' => $article
      ]);
     }
 
-    public function delete_article($id)
-    {
-        // یافتن مقاله با استفاده از شناسه
-        $article = Article::find($id);
 
-        // بررسی آیا مقاله یافت شده است یا خیر
-        if (!$article) {
-            return response()->json(['message' => 'مقاله پیدا نشد.'], 404);
-        }
-
-        // حذف مقاله
-        $article->delete();
-
-        // بازگشت پاسخ JSON
-        return response()->json(['message' => 'مقاله با موفقیت حذف شد']);
-    }
-
-    public function list_article()
+    public function List()
     {
         $articles = Article::all();
         return response()->json($articles);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
+
+    public function Delete($id)
     {
-        //
+        $article = Article::find($id);
+
+        if (!$article) {
+            return response()->json(['message' => 'Article not found.'], 404);
+        }
+
+        $article->delete();
+        return response()->json(['message' => 'The article has been successfully deleted']);
+    }
+
+    public function UploadImage(Request $request, $id)
+    {
+        $Article = Article::find($id);
+        $Image = $request->file('Image');
+
+        if (isset($Image)) {
+            $media = $Article->addMedia($Image)
+                ->toMediaCollection('Article_image', 'images');
+            $imageUrl = $media->getUrl();
+        } else {
+            $imageUrl = null;
+        }
+
+        return response()->json([
+            'Article' => $Article,
+            'imageUrl' => $imageUrl,
+        ]);
     }
 
 
 
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
+    public function UploadVideo(Request $request, $id)
     {
-        //
+        $Article = Article::find($id);
+        $video = $request->file('video');
+
+        if (isset($video)) {
+            $media = $Article->addMedia($video)
+                ->toMediaCollection('Article_video', 'videos');
+
+            $videoUrl = $media->getUrl();
+        } else {
+            $videoUrl = null;
+        }
+
+        return response()->json([
+            'product' => $Article,
+            'video_url' => $videoUrl,
+        ]);
     }
+
 }

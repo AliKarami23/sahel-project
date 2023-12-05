@@ -4,14 +4,18 @@ namespace Modules\Article\app\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
-class Article extends Model
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+class Article extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory,InteractsWithMedia;
 
-    protected $fillable =[
-        'title_article',
-        'text_article',
-    ];
+    protected $fillable = ['Title', 'Text'];
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images')->singleFile();
+        $this->addMediaCollection('videos')->singleFile();
+    }
 }
 

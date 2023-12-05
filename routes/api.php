@@ -4,9 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\RegisterController;
 use \App\Http\Controllers\ProductController;
-use \Modules\Article\app\Http\Controllers\ArticleController;
-use Modules\Contact\app\Http\Controllers\ContactController;
-use Modules\Question\app\Http\Controllers\QuestionController;
 use \App\Http\Controllers\OrderController;
 use \App\Http\Controllers\UserController;
 use \App\Http\Controllers\PaymentController;
@@ -39,10 +36,10 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
 
 // Customer && User
     Route::put('/User/Update', [UserController::class, 'Update'])->name('UpdateCustomer')->middleware(['permission:Customer.Update']);
-    Route::get('/User/operation/{id}', [UserController::class, 'operation'])->name('operation')->middleware(['permission:User.operation', 'CheckOrderAccess']);
+    Route::get('/User/Operation/{id}', [UserController::class, 'Operation'])->name('Operation')->middleware(['permission:User.Operation', 'CheckOrderAccess']);
     Route::get('/User/BlockOrActive/{id}', [UserController::class, 'BlockOrActive'])->name('BlockOrActive')->middleware(['permission:User.BlockOrActive']);
     Route::put('/Customer/Edit/{id}', [UserController::class, 'Edit'])->name('EditCustomer')->middleware(['permission:Customer.Edit']);
-    Route::get('/Customer/ShowEdit/{id}', [UserController::class, 'ShowEdit'])->name('ShowEditCustomer')->middleware(['permission:Customer.ShowEdit']);
+    Route::get('/Customer/Show/{id}', [UserController::class, 'Show'])->name('ShowCustomer')->middleware(['permission:Customer.Show']);
     Route::delete('/Customer/Delete/{id}', [UserController::class, 'Delete'])->name('DeleteCustomer')->middleware(['permission:Customer.Delete']);
     Route::get('/Customer/List', [UserController::class, 'List'])->name('ListCustomer')->middleware(['permission:Customer.List']);
 
@@ -50,14 +47,14 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
 //Product
     Route::post('/Product/Create', [ProductController::class, 'Create'])->name('CreateProduct')->middleware(['permission:Product.Create']);
     Route::put('/Product/Edit/{id}', [ProductController::class, 'Edit'])->name('EditProduct')->middleware(['permission:Product.Edit']);
-    Route::get('/Product/ShowEdit/{id}', [ProductController::class, 'showEdit'])->name('ShowEditOrder')->middleware(['permission:Product.ShowEdit']);
+    Route::get('/Product/Show/{id}', [ProductController::class, 'Show'])->name('ShowOrder')->middleware(['permission:Product.Show']);
     Route::get('/Product/List', [ProductController::class, 'List'])->name('ListProduct')->middleware(['permission:Product.List']);
     Route::delete('/Product/Delete/{id}', [ProductController::class, 'Delete'])->name('DeleteProduct')->middleware(['permission:Product.Delete']);
 
 //Order
     Route::post('/Order/Create', [OrderController::class, 'Create'])->name('CreateOrder')->middleware(['permission:Order.Create']);
     Route::put('/Order/Edit/{id}', [OrderController::class, 'Edit'])->name('EditOrder')->middleware(['permission:Order.Edit', 'checkOrderPermission', 'checkPaymentStatus']);
-    Route::get('/Order/ShowEdit/{id}', [OrderController::class, 'ShowEdit'])->name('ShowEditOrder')->middleware(['permission:Order.ShowEdit', 'checkPaymentStatus']);
+    Route::get('/Order/Show/{id}', [OrderController::class, 'Show'])->name('ShowOrder')->middleware(['permission:Order.Show', 'checkPaymentStatus']);
     Route::get('/Order/List', [OrderController::class, 'List'])->name('ListOrder')->middleware(['permission:Order.List']);
     Route::delete('/Order/Delete/{id}', [OrderController::class, 'Delete'])->name('DeleteOrder')->middleware(['permission:Order.Delete']);
 
@@ -79,24 +76,6 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
     Route::get('Card/DownloadPdf/{id}', [CardController::class, 'DownloadPdf'])->name('DownloadPdf')->middleware(['permission:Card.DownloadPdf']);
     Route::get('Card/FilterCard', [CardController::class, 'FilterCard'])->name('FilterCard')->middleware(['permission:Card.FilterCard']);
 
-//Article
-    Route::post('/article/create', [ArticleController::class, 'create_article'])->name('CreateArticle');
-    Route::put('/article/edit/{id}', [ArticleController::class, 'edit_article'])->name('EditArticle');
-    Route::delete('/article/delete/{id}', [ArticleController::class, 'delete_article'])->name('DeleteArticle');
-    Route::get('/article/list', [ArticleController::class, 'list_article'])->name('listArticle');
-
-//Question
-    Route::post('/question/create', [QuestionController::class, 'create_question'])->name('CreateQuestion');
-    Route::put('/question/edit/{id}', [QuestionController::class, 'edit_question'])->name('EditQuestion');
-    Route::delete('/question/delete/{id}', [QuestionController::class, 'delete_question'])->name('DeleteQuestion');
-    Route::get('/question/list', [QuestionController::class, 'list_question'])->name('listQuestion');
-
-//Contact
-    Route::post('/contact/create', [ContactController::class, 'create_contact'])->name('CreateContact');
-    Route::get('/contact/list', [ContactController::class, 'list_contact'])->name('ListContact');
-    Route::delete('/contact/delete/{id}', [ContactController::class, 'delete_contact'])->name('DeleteContact');
-    Route::get('/contact/answer/{id}', [ContactController::class, 'show_answer_contact'])->name('ShowAnswerPage');
-    Route::post('/contact/answer/{id}', [ContactController::class, 'answer_contact'])->name('AnswerContact');
   });
 
 //Auth

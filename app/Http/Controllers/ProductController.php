@@ -11,69 +11,61 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
 
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('main_image')->singleFile();
-        $this->addMediaCollection('additional_images')->singleFile();
-        $this->addMediaCollection('videos')->singleFile();
-    }
 
     public function UploadVideo(Request $request, $id)
     {
-
         $product = Product::find($id);
-
         $video = $request->file('video');
 
+        $videoUrl = null;
+
         if (isset($video)) {
-            $videoPath = $product->addMedia($video)
-                ->toMediaCollection('videos', 'videos')
-                ->getPath();
+            $media = $product->addMedia($video)
+                ->toMediaCollection('Product_videos', 'videos');
+            $videoUrl = $media->getUrl();
         }
 
         return response()->json([
             'product' => $product,
-            'media' => $product->getMedia()
+            'video_url' => $videoUrl,
         ]);
     }
-
     public function UploadMainImage(Request $request, $id)
     {
-
         $product = Product::find($id);
-
         $mainImage = $request->file('main_image');
 
+        $mainImageUrl = null;
+
         if (isset($mainImage)) {
-            $mainImagePath = $product->addMedia($mainImage)
-                ->toMediaCollection('main_image', 'images')
-                ->getPath();
+            $media = $product->addMedia($mainImage)
+                ->toMediaCollection('Product_main_image', 'images');
+            $mainImageUrl = $media->getUrl();
         }
 
         return response()->json([
             'product' => $product,
-            'media' => $product->getMedia()
+            'main_image_url' => $mainImageUrl,
         ]);
     }
 
     public function UploadImage(Request $request, $id)
     {
-
         $product = Product::find($id);
-
         $additionalImages = $request->file('additional_images');
 
+        $additionalImagesUrl = null;
+
         if (isset($additionalImages)) {
-            $mainImagePath = $product->addMedia($additionalImages)
-                ->toMediaCollection('additional_images', 'images')
-                ->getPath();
+            $media = $product->addMedia($additionalImages)
+                ->toMediaCollection('Product_additional_images', 'images');
+            $additionalImagesUrl = $media->getUrl();
         }
 
         return response()->json([
             'product' => $product,
-            'media' => $product->getMedia()
+            'additional_images_url' => $additionalImagesUrl,
         ]);
-
     }
 
     public function Create(Request $request)
