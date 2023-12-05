@@ -13,65 +13,64 @@ use App\Mail\AnswerContactMail;
 class ContactController extends Controller
 {
 
-    public function create_contact(Request $request)
+    public function Create(Request $request)
     {
-        $validateDate = $request->validate([
-            'name_contact' => 'required',
-            'email_contact' => 'required',
-            'text_contact' => 'required'
-        ]);
 
-        $contact = Contact::create($validateDate);
+        $contact = Contact::create($request->all());
+        $Contact = $request->all();
         return response()->json([
-            'massage' => 'پیام شما دریافت شد',
-            'contact' => $contact,
+            'massage' => 'Your message has been received',
+            'contact' => $Contact,
         ]);
 
     }
 
-    public function list_contact()
+    public function List()
     {
         $contact = Contact::all();
         return response()->json($contact);
     }
 
-    public function show_answer_contact($id)
+    public function ShowContact($id)
     {
-        $contact = Contact::find($id);
+        $Contact = Contact::find($id);
         return response()->json([
-            'date' => $contact
+            'Contact' => $Contact
         ]);
     }
 
-    public function answer_contact(Request $request, $id)
+    public function Answer(Request $request, $id)
     {
         $contact = Contact::find($id);
 
-        $validatedData = $request->validate([
-            'answer_text' => 'required'
+        if (!$contact) {
+            return response()->json([
+                'message' => 'Contact not found',
+            ], 404);
+        }
+
+        $contact->update([
+            'Answer' => $request->Answer
         ]);
 
+        $Email = $contact->Email;
+        $Answer = $request->Answer;
 
-        $contact->answer_text = $validatedData['answer_text'];
-        $contact->save();
-//dd($contact->answer_text);
-        $to_user = $contact->email_contact;
-        $subject = 'پاسخ به سوال شما';
-        $message = ':پاسخ شما' . $validatedData['answer_text'];
-        Mail::send(new \App\Mail\AnswerContactMail($subject, $message, $to_user));
+        Mail::to($Email)->send(new AnswerContactMail($Answer));
+
         return response()->json([
-            'mail' => $message,
-            'message' => 'پاسخ با موفقیت ارسال شد',
+            'Answer' => $Answer,
+            'message' => 'Reply sent successfully',
         ]);
     }
 
 
-    public function delete_contact($id)
+    public function Delete($id)
     {
         $contact = Contact::find($id);
         $contact->delete();
         return response()->json([
-            'massage' => 'پیام مورد نظر خذف شد'
+            'massage' => 'The desired message was deleted'
         ]);
 
     }

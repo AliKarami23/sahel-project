@@ -4,5 +4,6 @@
     "Question": true,
     "Role": true,
     "Sms": true,
-    "Contact": true
+    "Contact": true,
+    "Ticket": true
 }

@@ -8,6 +8,6 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>{{ $text }}</h1>
+    <p>{{ $text }}</p>
 </body>
 </html>

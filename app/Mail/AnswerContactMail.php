@@ -16,15 +16,13 @@ class AnswerContactMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public $message;
-    public $subject;
-    public $to_user;
+public $Answer;
 
-    public function __construct($subject, $message, $to_user)
+
+    public function __construct($Answer)
     {
-        $this->subject = $subject;
-        $this->message = $message;
-        $this->to_user = $to_user;
+        $this->Answer = $Answer;
+
     }
 
     /**
@@ -33,8 +31,7 @@ class AnswerContactMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            to: $this->to_user,
-            subject: $this->subject
+            subject: 'Answer to the user question'
         );
     }
 
@@ -44,9 +41,9 @@ class AnswerContactMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mails.answer',
+            view: 'Email.answer',
             with: [
-                'text' => (string)$this->message,
+                'text' => (string)$this->Answer,
             ]
         );
     }
