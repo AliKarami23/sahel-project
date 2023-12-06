@@ -57,6 +57,18 @@ class RoleSeeder extends Seeder
             ['name' => 'Article.Delete', 'guard_name' => 'api'],
             ['name' => 'Article.UploadImage', 'guard_name' => 'api'],
             ['name' => 'Article.UploadVideo', 'guard_name' => 'api'],
+            ['name' => 'Contact.Create', 'guard_name' => 'api'],
+            ['name' => 'Contact.Edit', 'guard_name' => 'api'],
+            ['name' => 'Contact.List', 'guard_name' => 'api'],
+            ['name' => 'Contact.Delete', 'guard_name' => 'api'],
+            ['name' => 'Contact.Show', 'guard_name' => 'api'],
+            ['name' => 'Contact.Answer', 'guard_name' => 'api'],
+            ['name' => 'Question.Create', 'guard_name' => 'api'],
+            ['name' => 'Question.Edit', 'guard_name' => 'api'],
+            ['name' => 'Question.List', 'guard_name' => 'api'],
+            ['name' => 'Question.Delete', 'guard_name' => 'api'],
+            ['name' => 'Question.Show', 'guard_name' => 'api'],
+            ['name' => 'Question.Answer', 'guard_name' => 'api'],
         ];
 
         $CustomerPermissions = [

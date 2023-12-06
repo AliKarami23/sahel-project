@@ -17,10 +17,10 @@ use Modules\Contact\app\Http\Controllers\ContactController;
 
 Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () {
 
-    Route::get('/Contact/List', [ContactController::class, 'List'])->name('ListContact');
-    Route::delete('/Contact/Delete/{id}', [ContactController::class, 'Delete'])->name('DeleteContact');
-    Route::get('/Contact/ShowContact/{id}', [ContactController::class, 'ShowContact'])->name('ShowContact');
-    Route::post('/Contact/Answer/{id}', [ContactController::class, 'Answer'])->name('AnswerContact');
+    Route::get('/Contact/List', [ContactController::class, 'List'])->name('ListContact')->middleware(['permission:Contact.List']);
+    Route::delete('/Contact/Delete/{id}', [ContactController::class, 'Delete'])->name('DeleteContact')->middleware(['permission:Contact.Delete']);
+    Route::get('/Contact/Show/{id}', [ContactController::class, 'Show'])->name('ShowContact')->middleware(['permission:Contact.Show']);
+    Route::post('/Contact/Answer/{id}', [ContactController::class, 'Answer'])->name('AnswerContact')->middleware(['permission:Contact.Answer']);
 
 });
 

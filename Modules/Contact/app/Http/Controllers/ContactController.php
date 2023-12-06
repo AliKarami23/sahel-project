@@ -31,7 +31,7 @@ class ContactController extends Controller
         return response()->json($contact);
     }
 
-    public function ShowContact($id)
+    public function Show($id)
     {
         $Contact = Contact::find($id);
         return response()->json([
