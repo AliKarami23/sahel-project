@@ -17,7 +17,7 @@ class QuestionController extends Controller
         $question = Question::create($validateDate);
         return response()->json([
             'massage' => 'Question created successfully',
-            'article' => $question,
+            'Question' => $question,
         ]);
 
     }
@@ -30,7 +30,7 @@ class QuestionController extends Controller
         $question->update($request->toArray());
         return response()->json([
             'massage' => 'Question edited successfully',
-            'question' => $question
+            'Question' => $question
         ]);
     }
 
@@ -49,7 +49,7 @@ class QuestionController extends Controller
         $question->delete();
         return response()->json([
             'massage' => 'The question was deleted',
-            'question' => $question
+            'Question' => $question
         ]);
     }
 

@@ -35,7 +35,7 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
 
 
 // Customer && User
-    Route::put('/User/Update', [UserController::class, 'Update'])->name('UpdateCustomer')->middleware(['permission:Customer.Update']);
+    Route::put('/User/Update', [UserController::class, 'Update'])->name('UpdateUser')->middleware(['permission:User.Update']);
     Route::get('/User/Operation/{id}', [UserController::class, 'Operation'])->name('Operation')->middleware(['permission:User.Operation', 'CheckOrderAccess']);
     Route::get('/User/BlockOrActive/{id}', [UserController::class, 'BlockOrActive'])->name('BlockOrActive')->middleware(['permission:User.BlockOrActive']);
     Route::put('/Customer/Edit/{id}', [UserController::class, 'Edit'])->name('EditCustomer')->middleware(['permission:Customer.Edit']);
