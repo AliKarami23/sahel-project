@@ -69,6 +69,12 @@ class RoleSeeder extends Seeder
             ['name' => 'Question.Delete', 'guard_name' => 'api'],
             ['name' => 'Question.Show', 'guard_name' => 'api'],
             ['name' => 'Question.Answer', 'guard_name' => 'api'],
+            ['name' => 'Comment.Create', 'guard_name' => 'api'],
+            ['name' => 'Comment.Activate', 'guard_name' => 'api'],
+            ['name' => 'Comment.List', 'guard_name' => 'api'],
+            ['name' => 'Comment.Delete', 'guard_name' => 'api'],
+            ['name' => 'Comment.Show', 'guard_name' => 'api'],
+            ['name' => 'Comment.Answer', 'guard_name' => 'api'],
         ];
 
         $CustomerPermissions = [

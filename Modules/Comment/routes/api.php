@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Comment\app\Http\Controllers\CommentController;
 
 /*
     |--------------------------------------------------------------------------
@@ -14,6 +15,13 @@ use Illuminate\Support\Facades\Route;
     |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('comment', fn (Request $request) => $request->user())->name('comment');
+Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () {
+
+    Route::post('/Comment/Create', [CommentController::class, 'Create'])->name('CreateComment')->middleware(['permission:Comment.Create']);
+    Route::get('/Comment/List', [CommentController::class, 'List'])->name('ListComment')->middleware(['permission:Comment.List']);
+    Route::delete('/Comment/Delete/{id}', [CommentController::class, 'Delete'])->name('DeleteComment')->middleware(['permission:Comment.Delete']);
+    Route::get('/Comment/Show/{id}', [CommentController::class, 'Show'])->name('ShowComment')->middleware(['permission:Comment.Show']);
+    Route::post('/Comment/Activate/{id}', [CommentController::class, 'Activate'])->name('ActivateComment')->middleware(['permission:Comment.Activate']);
+    Route::post('/Comment/Answer/{id}', [CommentController::class, 'Answer'])->name('AnswerComment')->middleware(['permission:Comment.Answer']);
+
 });

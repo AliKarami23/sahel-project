@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Sans;
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
+use Modules\Comment\app\Models\Comment;
 
 class ProductController extends Controller
 {
@@ -182,7 +183,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function showEdit($id)
+    public function show($id)
     {
 
         $product = Product::find($id);
@@ -190,9 +191,13 @@ class ProductController extends Controller
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
+        $comments = Comment::where('product_id', $id)
+            ->where('Status', 'Active')
+            ->get();
 
         return response()->json([
-            'product' => $product
+            'product' => $product,
+            'comments' => $comments
         ]);
     }
 
