@@ -17,9 +17,10 @@ use Modules\Question\app\Http\Controllers\QuestionController;
 
 Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () {
 
-    Route::post('/question/create', [QuestionController::class, 'create_question'])->name('CreateQuestion');
-    Route::put('/question/edit/{id}', [QuestionController::class, 'edit_question'])->name('EditQuestion');
-    Route::delete('/question/delete/{id}', [QuestionController::class, 'delete_question'])->name('DeleteQuestion');
-    Route::get('/question/list', [QuestionController::class, 'list_question'])->name('listQuestion');
+    Route::post('/Question/Create', [QuestionController::class, 'Create'])->name('CreateQuestion')->middleware(['permission:Question.Create']);
+    Route::put('/Question/Edit/{id}', [QuestionController::class, 'Edit'])->name('EditQuestion')->middleware(['permission:Question.Edit']);
+    Route::get('/Question/Show/{id}', [QuestionController::class, 'Show'])->name('ShowQuestion')->middleware(['permission:Question.Show']);
+    Route::delete('/Question/Delete/{id}', [QuestionController::class, 'Delete'])->name('DeleteQuestion')->middleware(['permission:Question.Delete']);
+    Route::get('/Question/List', [QuestionController::class, 'List'])->name('listQuestion')->middleware(['permission:Question.List']);
 
 });

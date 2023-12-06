@@ -3,50 +3,57 @@
 namespace Modules\Question\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Modules\Question\app\Models\Question;
 
 class QuestionController extends Controller
 {
-    public function create_question(Request $request)
+    public function Create(Request $request)
     {
         $validateDate = $request->validate([
-            'title_question' => 'required|max:255',
-            'text_question' => 'required',
+            'Title' => 'required|max:255',
+            'Text' => 'required',
         ]);
         $question = Question::create($validateDate);
         return response()->json([
-            'massage' => 'سوال جدید با موفقیت ایجاد شد',
+            'massage' => 'Question created successfully',
             'article' => $question,
         ]);
 
     }
 
 
-    public function edit_question(Request $request ,$id)
+    public function Edit(Request $request ,$id)
     {
         $question = Question::find($id);
 
         $question->update($request->toArray());
         return response()->json([
-            'massage' => 'سوال با موفقیت ویرایش شد',
+            'massage' => 'Question edited successfully',
             'question' => $question
         ]);
     }
 
-    public function delete_question($id)
+    public function Show($id)
+    {
+        $question = Question::find($id);
+
+        return response()->json([
+            'question' => $question
+        ]);
+    }
+
+    public function Delete($id)
     {
         $question = Question::find($id);
         $question->delete();
         return response()->json([
-            'massage' => 'سوال حذف شد',
+            'massage' => 'The question was deleted',
             'question' => $question
         ]);
     }
 
-    public function list_question()
+    public function List()
     {
         $question = Question::all();
         return response()->json($question);
