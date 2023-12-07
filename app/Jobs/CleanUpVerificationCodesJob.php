@@ -25,9 +25,12 @@ class CleanUpVerificationCodesJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle()
     {
-        Register::where('created_at', '<', now()->subMinutes(3))->delete();
-    }
+        $expiredRecords = Register::where('created_at', '<=', now()->subMinutes(3))->get();
 
+        foreach ($expiredRecords as $record) {
+            $record->delete();
+        }
+    }
 }

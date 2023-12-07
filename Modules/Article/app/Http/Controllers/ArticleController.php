@@ -3,6 +3,7 @@
 namespace Modules\Article\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Media;
 use Illuminate\Http\Request;
 use Modules\Article\app\Models\Article;
 
@@ -70,45 +71,30 @@ class ArticleController extends Controller
         return response()->json(['message' => 'The article has been successfully deleted']);
     }
 
-    public function UploadImage(Request $request, $id)
+    public function UploadImage(Request $request)
     {
-        $Article = Article::find($id);
-        $Image = $request->file('Image');
+        $imageFile = $request->file('Image');
 
-        if (isset($Image)) {
-            $media = $Article->addMedia($Image)
-                ->toMediaCollection('Article_image', 'images');
-            $imageUrl = $media->getUrl();
-        } else {
-            $imageUrl = null;
+        if ($request->hasFile('Image') && $imageFile->isValid()) {
+            $media->addMedia($imageFile)->toMediaCollection('Article_image', 'images');
         }
 
         return response()->json([
-            'Article' => $Article,
-            'imageUrl' => $imageUrl,
+            'Media' => $media,
         ]);
     }
-
-
 
     public function UploadVideo(Request $request, $id)
     {
-        $Article = Article::find($id);
-        $video = $request->file('video');
+        $videoFile = $request->file('video');
+        $media = new Media();
 
-        if (isset($video)) {
-            $media = $Article->addMedia($video)
-                ->toMediaCollection('Article_video', 'videos');
-
-            $videoUrl = $media->getUrl();
-        } else {
-            $videoUrl = null;
+        if ($request->hasFile('video') && $videoFile->isValid()) {
+            $media->addMedia($videoFile)->toMediaCollection('Article_video', 'videos');
         }
 
         return response()->json([
-            'product' => $Article,
-            'video_url' => $videoUrl,
+            'Media' => $media,
         ]);
     }
-
 }

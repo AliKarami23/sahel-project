@@ -9,6 +9,7 @@ use \App\Http\Controllers\UserController;
 use \App\Http\Controllers\PaymentController;
 use \App\Http\Controllers\CardController;
 use \App\Http\Controllers\ReportController;
+use \App\Http\Controllers\MediaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,9 +61,8 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
 
 
 //Media
-    Route::post('/Product/UploadImage/{id}', [ProductController::class, 'UploadImage'])->name('UploadImage')->middleware(['permission:Product.UploadImage']);
-    Route::post('/Product/UploadMainImage/{id}', [ProductController::class, 'UploadMainImage'])->name('UploadMainImage')->middleware(['permission:Product.UploadMainImage']);
-    Route::post('/Product/UploadVideo/{id}', [ProductController::class, 'UploadVideo'])->name('UploadVideo')->middleware(['permission:Product.UploadVideo']);
+    Route::post('/UploadImage', [MediaController::class, 'UploadImage'])->name('UploadImage');
+    Route::post('/UploadVideo', [MediaController::class, 'UploadVideo'])->name('UploadVideo');
 
 
 //Payment

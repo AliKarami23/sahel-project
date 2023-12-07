@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    public function create(Request $request)
+    public function Create(Request $request)
     {
         $Total_Price = 0;
         $updatedTicketsSold = [];

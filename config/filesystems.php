@@ -72,7 +72,6 @@ return [
             'url' => env('APP_URL').'/storage/videos',
             'visibility' => 'public',
         ],
-
     ],
 
     /*

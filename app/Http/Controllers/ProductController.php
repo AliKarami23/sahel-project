@@ -5,69 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Extradition;
 use App\Models\Product;
 use App\Models\Sans;
-use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
 use Modules\Comment\app\Models\Comment;
 
 class ProductController extends Controller
 {
 
-
-    public function UploadVideo(Request $request, $id)
-    {
-        $product = Product::find($id);
-        $video = $request->file('video');
-
-        $videoUrl = null;
-
-        if (isset($video)) {
-            $media = $product->addMedia($video)
-                ->toMediaCollection('Product_videos', 'videos');
-            $videoUrl = $media->getUrl();
-        }
-
-        return response()->json([
-            'product' => $product,
-            'video_url' => $videoUrl,
-        ]);
-    }
-    public function UploadMainImage(Request $request, $id)
-    {
-        $product = Product::find($id);
-        $mainImage = $request->file('main_image');
-
-        $mainImageUrl = null;
-
-        if (isset($mainImage)) {
-            $media = $product->addMedia($mainImage)
-                ->toMediaCollection('Product_main_image', 'images');
-            $mainImageUrl = $media->getUrl();
-        }
-
-        return response()->json([
-            'product' => $product,
-            'main_image_url' => $mainImageUrl,
-        ]);
-    }
-
-    public function UploadImage(Request $request, $id)
-    {
-        $product = Product::find($id);
-        $additionalImages = $request->file('additional_images');
-
-        $additionalImagesUrl = null;
-
-        if (isset($additionalImages)) {
-            $media = $product->addMedia($additionalImages)
-                ->toMediaCollection('Product_additional_images', 'images');
-            $additionalImagesUrl = $media->getUrl();
-        }
-
-        return response()->json([
-            'product' => $product,
-            'additional_images_url' => $additionalImagesUrl,
-        ]);
-    }
 
     public function Create(Request $request)
     {
