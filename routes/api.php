@@ -62,6 +62,7 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
 
 //Media
     Route::post('/UploadImage', [MediaController::class, 'UploadImage'])->name('UploadImage');
+    Route::post('/UploadMainImage', [MediaController::class, 'UploadMainImage'])->name('UploadMainImage');
     Route::post('/UploadVideo', [MediaController::class, 'UploadVideo'])->name('UploadVideo');
 
 

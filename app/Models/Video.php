@@ -11,6 +11,9 @@ class Video extends Model implements HasMedia
 {
     use HasFactory,InteractsWithMedia;
 
+    protected $fillable = [
+        'Status',
+    ];
 
     public function registerMediaCollections(): void
     {

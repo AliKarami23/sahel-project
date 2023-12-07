@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 
-class Product extends Model
+class Product extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
         'Title',
@@ -24,6 +26,13 @@ class Product extends Model
         'Rules',
         'Description',
         'Discounted_price',
+        'video_id',
+        'image_id',
+        'imageMain_id'
+    ];
+
+    protected $casts = [
+        "image_id" => "array"
     ];
 
     public function sans()
@@ -40,6 +49,7 @@ class Product extends Model
     {
         return $this->hasMany(Order::class);
     }
+
     public function reservations()
     {
         return $this->hasMany(Reservation::class);

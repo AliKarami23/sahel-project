@@ -26,6 +26,9 @@ return new class extends Migration
             $table->longText('Rules');
             $table->string('Description');
             $table->integer('Discounted_price');
+            $table->integer('video_id');
+            $table->string('image_id');
+            $table->integer('imageMain_id');
             $table->timestamps();
         });
     }

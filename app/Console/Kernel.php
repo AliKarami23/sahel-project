@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->job(new CleanUpOrders())->everyMinute();
         $schedule->job(new \App\Jobs\CleanUpVerificationCodesJob())->everyMinute();
-
+        $schedule->job(new ClearInactiveMediaJob)->daily();
     }
 
     /**
