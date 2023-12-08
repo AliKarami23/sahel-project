@@ -12,33 +12,33 @@ use App\Mail\AnswerContactMail;
 
 class ContactController extends Controller
 {
-
-    public function Create(Request $request)
+    public function create(Request $request)
     {
-
         $contact = Contact::create($request->all());
+
         return response()->json([
-            'massage' => 'Your message has been received',
+            'message' => 'Your message has been received',
             'contact' => $contact,
         ]);
-
     }
 
-    public function List()
+    public function list()
     {
-        $contact = Contact::all();
-        return response()->json($contact);
+        $contacts = Contact::all();
+
+        return response()->json($contacts);
     }
 
-    public function Show($id)
+    public function show($id)
     {
-        $Contact = Contact::find($id);
+        $contact = Contact::find($id);
+
         return response()->json([
-            'Contact' => $Contact
+            'contact' => $contact
         ]);
     }
 
-    public function Answer(Request $request, $id)
+    public function answer(Request $request, $id)
     {
         $contact = Contact::find($id);
 
@@ -49,27 +49,26 @@ class ContactController extends Controller
         }
 
         $contact->update([
-            'Answer' => $request->Answer
+            'answer' => $request->answer
         ]);
 
-        $Email = $contact->Email;
-        $Answer = $request->Answer;
+        $email = $contact->email;
+        $answer = $request->answer;
 
-        Mail::to($Email)->send(new AnswerContactMail($Answer));
+        Mail::to($email)->send(new AnswerContactMail($answer));
 
         return response()->json([
-            'Answer' => $Answer,
+            'answer' => $answer,
             'message' => 'Reply sent successfully',
         ]);
     }
 
-
-    public function Delete($id)
+    public function destroy($id)
     {
-        Contact::distroy($id);
-        return response()->json([
-            'massage' => 'The desired message was deleted'
-        ]);
+        Contact::destroy($id);
 
+        return response()->json([
+            'message' => 'The desired message was deleted'
+        ]);
     }
 }

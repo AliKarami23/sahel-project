@@ -17,7 +17,7 @@ use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {
-    public function getNumber(Request $request)
+    public function GetNumber(Request $request)
     {
         $phoneNumber = intval($request->phone_number);
 
@@ -35,7 +35,7 @@ class RegisterController extends Controller
         return response()->json(['message' => 'Verification code has been sent.']);
     }
 
-    public function getCodeSent(Request $request)
+    public function GetCodeSent(Request $request)
     {
         $phoneNumber = $request->phone_number;
         $verificationCode = $request->verification_code;
@@ -57,10 +57,10 @@ class RegisterController extends Controller
         return response()->json(['token' => $token, 'message' => 'Token created successfully.']);
     }
 
-    public function getInformation(Request $request)
+    public function GetInformation(Request $request)
     {
         $fullName = $request->full_name;
-        $email = $request->email;
+        $Email = $request->Email;
 
         $user = Auth::user();
 
@@ -70,7 +70,7 @@ class RegisterController extends Controller
 
         $user->update([
             'full_name' => $fullName,
-            'email' => $email,
+            'Email' => $Email,
         ]);
 
         return response()->json([
@@ -79,13 +79,13 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function adminLogin(Request $request)
+    public function AdminLogin(Request $request)
     {
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('Email', $request->Email)->first();
 
         if (!$user || !Hash::check($request->Password, $user->Password)) {
             throw ValidationException::withMessages([
-                'email' => ['Invalid credentials']
+                'Email' => ['Invalid credentials']
             ]);
         }
 
@@ -105,31 +105,30 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function emailPassword(Request $request)
+    public function EmailPassword(Request $request)
     {
-        $email = $request->email;
+        $Email = $request->Email;
 
         $code = mt_rand(100000, 999999);
 
         Register::create([
-            'email' => $email,
+            'Email' => $Email,
             'verification_code' => $code,
         ]);
 
-        Mail::to($email)->send(new VerificationCodeMail($code));
+        Mail::to($Email)->send(new VerificationCodEmail($code));
 
         return response()->json([
             'message' => 'Verification code sent successfully',
         ]);
     }
 
-    public function verifyCode(Request $request)
+    public function VerifyCode(Request $request)
     {
-        $user = Auth::user();
-        $email = $request->email;
+        $email = $request->Email;
         $code = $request->code;
 
-        $record = Register::where('email', $email)
+        $record = Register::where('Email', $email)
             ->where('verification_code', $code)
             ->first();
 
@@ -151,20 +150,30 @@ class RegisterController extends Controller
         }
 
         $record->delete();
+
+        $user = User::firstOrNew(['Email' => $email]);
+
+        if (!$user->exists) {
+            $user->full_name = 'Default Full Name';
+            $user->Password = Hash::make('default_password');
+            $user->save();
+        }
+
         $token = $user->createToken('UserToken')->plainTextToken;
 
         return response()->json([
-            'message' => 'Verification code true',
+            'message' => 'Verification code is valid',
             'token' => $token,
+            'user' => $user
         ]);
     }
 
-    public function updatePassword(Request $request)
+    public function UpdatePassword(Request $request)
     {
-        $email = $request->email;
+        $Email = $request->Email;
         $newPassword = $request->new_Password;
 
-        $user = User::where('email', $email)->first();
+        $user = User::where('Email', $Email)->first();
 
         $hashedPassword = Hash::make($newPassword);
 

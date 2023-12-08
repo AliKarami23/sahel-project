@@ -26,9 +26,9 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
 
 
 //Auth
-    Route::post('/Register/GetInformation', [RegisterController::class, 'getInformation'])->name('GetInformation')->middleware(['permission:GetInformation']);
+    Route::post('/Register/GetInformation', [RegisterController::class, 'GetInformation'])->name('GetInformation')->middleware(['permission:GetInformation']);
     Route::post('/Logout', [RegisterController::class, 'Logout'])->name('Logout');
-    Route::post('/Register/Admin/UpdatePassword', [RegisterController::class, 'updatePassword'])->name('UpdatePassword')->middleware(['permission:Admin.UpdatePassword']);
+    Route::post('/Register/Admin/UpdatePassword', [RegisterController::class, 'UpdatePassword'])->name('UpdatePassword')->middleware(['permission:Admin.UpdatePassword']);
 
 
 //Dashboard
@@ -80,8 +80,8 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
 });
 
 //Auth
-Route::post('/Register/GetNumber', [RegisterController::class, 'getNumber'])->name('GetNumber');
-Route::post('/Register/GetCodeSent', [RegisterController::class, 'getCodeSent'])->name('GetCodeSent');
-Route::post('/Register/Admin/Login', [RegisterController::class, 'adminLogin'])->name('AdminLogin');
-Route::post('/Register/Admin/EmailPassword', [RegisterController::class, 'emailPassword'])->name('EmailPassword');
-Route::post('/Register/Admin/VerifyCode', [RegisterController::class, 'verifyCode'])->name('VerifyCode');
+Route::post('/Register/GetNumber', [RegisterController::class, 'GetNumber'])->name('GetNumber');
+Route::post('/Register/GetCodeSent', [RegisterController::class, 'GetCodeSent'])->name('GetCodeSent');
+Route::post('/Register/Admin/Login', [RegisterController::class, 'AdminLogin'])->name('AdminLogin');
+Route::post('/Register/Admin/EmailPassword', [RegisterController::class, 'EmailPassword'])->name('EmailPassword');
+Route::post('/Register/Admin/VerifyCode', [RegisterController::class, 'VerifyCode'])->name('VerifyCode');

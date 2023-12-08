@@ -8,53 +8,57 @@ use Modules\Question\app\Models\Question;
 
 class QuestionController extends Controller
 {
-    public function Create(Request $request)
+    public function create(Request $request)
     {
-        $validateDate = $request->validate([
+        $validatedData = $request->validate([
             'Title' => 'required|max:255',
             'Text' => 'required',
         ]);
-        $question = Question::create($validateDate);
+
+        $question = Question::create($validatedData);
+
         return response()->json([
-            'massage' => 'Question created successfully',
+            'message' => 'Question created successfully',
             'Question' => $question,
         ]);
-
     }
-    public function Edit(Request $request ,$id)
+
+    public function edit(Request $request, $id)
     {
         $question = Question::find($id);
 
-        $question->update($request->toArray());
+        $question->update($request->all());
+
         return response()->json([
-            'massage' => 'Question edited successfully',
-            'Question' => $question
+            'message' => 'Question edited successfully',
+            'Question' => $question,
         ]);
     }
 
-    public function Show($id)
+    public function show($id)
     {
         $question = Question::find($id);
 
         return response()->json([
-            'question' => $question
+            'question' => $question,
         ]);
     }
 
-    public function Delete($id)
+    public function delete($id)
     {
         $question = Question::find($id);
         $question->delete();
+
         return response()->json([
-            'massage' => 'The question was deleted',
-            'Question' => $question
+            'message' => 'The question was deleted',
+            'Question' => $question,
         ]);
     }
 
-    public function List()
+    public function list()
     {
-        $question = Question::all();
-        return response()->json($question);
-    }
+        $questions = Question::all();
 
+        return response()->json($questions);
+    }
 }

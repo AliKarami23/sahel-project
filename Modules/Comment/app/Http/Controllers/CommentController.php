@@ -8,69 +8,71 @@ use Modules\Comment\app\Models\Comment;
 
 class CommentController extends Controller
 {
-    public function Create(Request $request){
+    public function create(Request $request)
+    {
         $user = auth()->user()->id;
 
-        $Comment = Comment::create($request->merge(['user_id' => $user])->all());
+        $comment = Comment::create($request->merge(['user_id' => $user])->all());
 
         return response()->json([
             'message' => 'Comment created successfully.',
-            'Comment' => $Comment
+            'comment' => $comment
         ]);
     }
 
-        public function Answer(Request $request,$id){
-
+    public function answer(Request $request, $id)
+    {
         $comment = Comment::findOrFail($id);
         $comment->update([
-            'Response' => $request->Response,
+            'response' => $request->response,
         ]);
+
         return response()->json([
             'message' => 'Response to the comment has been successfully recorded.',
-            'Comment' => $comment
+            'comment' => $comment
         ]);
     }
 
-    public function Activate($id){
-
+    public function activate($id)
+    {
         $comment = Comment::findOrFail($id);
         $comment->update([
-            'Status' => 'Active',
+            'status' => 'Active',
         ]);
 
         return response()->json([
             'message' => 'Comment has been successfully activated.',
-            'Comment' => $comment
+            'comment' => $comment
         ]);
     }
 
-    public function List(){
-
+    public function list()
+    {
         $comments = Comment::all();
 
         return response()->json([
-            'Comment' => $comments
+            'comment' => $comments
         ]);
     }
 
-    public function Show($id){
-
+    public function show($id)
+    {
         $comments = Comment::where('product_id', $id)
-            ->where('Status', 'Active')
+            ->where('status', 'Active')
             ->get();
 
         return response()->json([
-            'Comment' => $comments
+            'comment' => $comments
         ]);
     }
 
-    public function Delete($id){
-
-        $comment = Comment::findOrFailOrFail($id);
+    public function destroy($id)
+    {
+        $comment = Comment::findOrFail($id);
         $comment->delete();
 
         return response()->json([
-            'message' => 'Comment deleted successfully.'
+            'message' => 'Comment deleted successfully.',
         ]);
     }
 }

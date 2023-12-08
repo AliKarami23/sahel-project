@@ -10,17 +10,16 @@ use Modules\Article\app\Models\Article;
 
 class ArticleController extends Controller
 {
-    public function Create(Request $request)
+    public function create(Request $request)
     {
         try {
             $video = Video::findOrFail($request->video_id);
             $image = Image::findOrFail($request->image_id);
 
-            $image->update(['Status' => 'Active']);
-            $video->update(['Status' => 'Active']);
+            $image->update(['status' => 'Active']);
+            $video->update(['status' => 'Active']);
 
             $article = Article::create($request->all());
-
 
             return response()->json([
                 'message' => 'Article created successfully',
@@ -28,7 +27,6 @@ class ArticleController extends Controller
             ]);
 
         } catch (\Exception $e) {
-
             return response()->json([
                 'error' => 'Error creating article',
                 'message' => $e->getMessage(),
@@ -36,44 +34,34 @@ class ArticleController extends Controller
         }
     }
 
-    public function Show($id)
+    public function show($id)
     {
         $article = Article::find($id);
 
         if (!$article) {
             return response()->json(['message' => 'Article not found.'], 404);
         }
-        $image_id = $article->image_id;
-        if ($image_id){
-            $image = Image::find($image_id);
-            $article_image = $image->getMedia('*');
-        }
-        $video_id = $article->video_id;
-        if ($video_id){
-            $video = video::find($video_id);
-            $article_video = $video->getMedia('*');
-        }
+
+        $articleImage = $article->image_id ? Image::find($article->image_id)->getMedia('*') : null;
+        $articleVideo = $article->video_id ? Video::find($article->video_id)->getMedia('*') : null;
 
         return response()->json([
             'article' => $article,
-            'article_image' => $article_image,
-            'article_video' => $article_video,
+            'article_image' => $articleImage,
+            'article_video' => $articleVideo,
         ]);
     }
 
-
-    public function Edit(Request $request, $id)
+    public function edit(Request $request, $id)
     {
         try {
             $video = Video::findOrFail($request->video_id);
             $image = Image::findOrFail($request->image_id);
 
-            $image->update(['Status' => 'Active']);
-            $video->update(['Status' => 'Active']);
+            $image->update(['status' => 'Active']);
+            $video->update(['status' => 'Active']);
 
             $article = Article::findOrFail($id);
-
-
             $article->update($request->all());
 
             return response()->json([
@@ -89,15 +77,13 @@ class ArticleController extends Controller
         }
     }
 
-
-    public function List()
+    public function list()
     {
-        $articles = Article::select('Title', 'Text')->get();
+        $articles = Article::select('title', 'text')->get();
         return response()->json($articles);
     }
 
-
-    public function Delete($id)
+    public function destroy($id)
     {
         try {
             $article = Article::find($id);
@@ -106,18 +92,16 @@ class ArticleController extends Controller
                 return response()->json(['message' => 'Article not found.'], 404);
             }
 
-            $Image = $article->image_id;
-
-            if ($Image){
-                $image_Main = Image::find($Image);
-                $image_Main->update(['Status' => 'Inactive']);
-
+            $imageId = $article->image_id;
+            if ($imageId) {
+                $image = Image::find($imageId);
+                $image->update(['status' => 'Inactive']);
             }
 
-            $video_id = $article->video_id;
-            if ($video_id){
-                $video = video::find($video_id);
-                $video->update(['Status' => 'Inactive']);
+            $videoId = $article->video_id;
+            if ($videoId) {
+                $video = Video::find($videoId);
+                $video->update(['status' => 'Inactive']);
             }
 
             $article->delete();
