@@ -21,8 +21,6 @@ class QuestionController extends Controller
         ]);
 
     }
-
-
     public function Edit(Request $request ,$id)
     {
         $question = Question::find($id);

@@ -5,14 +5,11 @@ namespace Modules\Article\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Image;
 use App\Models\Video;
-use Dotenv\Validator;
 use Illuminate\Http\Request;
 use Modules\Article\app\Models\Article;
 
 class ArticleController extends Controller
 {
-
-
     public function Create(Request $request)
     {
         try {
@@ -134,7 +131,4 @@ class ArticleController extends Controller
             ], 500);
         }
     }
-
-
-
 }

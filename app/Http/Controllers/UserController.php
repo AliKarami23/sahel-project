@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function List()
+    public function list()
     {
-        $Customers = User::role('Customer')
-            ->select('id', 'Full_Name', 'Phone_Number','Status')
+        $customers = User::role('Customer')
+            ->select('id', 'full_name', 'phone_number', 'Status')
             ->get();
 
         return response()->json([
-            'Customer' => $Customers
+            'customers' => $customers
         ]);
     }
 
@@ -24,14 +24,17 @@ class UserController extends Controller
         try {
             $user = User::find($id);
 
-            $orders = $user->orders()->with('reserves.sans.product')->get();
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
 
-            $CountOrders = $user->orders->count();
+            $orders = $user->orders()->with('reserves.sans.product')->get();
+            $countOrders = $user->orders->count();
 
             return response()->json([
                 'user' => $user,
                 'orders' => $orders,
-                'CountOrders' => $CountOrders,
+                'count_orders' => $countOrders,
             ], 200);
 
         } catch (\Exception $e) {
@@ -39,26 +42,25 @@ class UserController extends Controller
         }
     }
 
-
-    public function Delete($id)
+    public function delete($id)
     {
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['message' => 'Customer not found'], 404);
+            return response()->json(['message' => 'User not found'], 404);
         }
 
         $user->delete();
 
-        return response()->json(['message' => 'Customer deleted successfully']);
+        return response()->json(['message' => 'User deleted successfully']);
     }
 
-    public function BlockOrActive($id)
+    public function blockOrActive($id)
     {
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['message' => 'Customer not found'], 404);
+            return response()->json(['message' => 'User not found'], 404);
         }
 
         $newStatus = ($user->Status == 'Active') ? 'Block' : 'Active';
@@ -67,40 +69,39 @@ class UserController extends Controller
             'Status' => $newStatus
         ]);
 
-        return response()->json(['message' => "The user's status has been changed to $newStatus"]);
+        return response()->json(['message' => "The user's Status has been changed to $newStatus"]);
     }
 
-
-    public function Edit(Request $request, $id)
+    public function edit(Request $request, $id)
     {
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['message' => 'Customer not found'], 404);
+            return response()->json(['message' => 'User not found'], 404);
         }
-
 
         $user->update($request->all());
 
         return response()->json([
-            'message' => 'Customer information updated successfully',
-            'customer' => $user
+            'message' => 'User information updated successfully',
+            'user' => $user
         ]);
     }
-    public function Show($id)
+
+    public function show($id)
     {
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['message' => 'Customer not found'], 404);
+            return response()->json(['message' => 'User not found'], 404);
         }
 
         return response()->json([
-            'customer' => $user
+            'user' => $user
         ]);
     }
 
-    public function Update(Request $request)
+    public function update(Request $request)
     {
         $user = Auth::user();
 
@@ -108,14 +109,11 @@ class UserController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
 
-
         $user->update($request->all());
 
         return response()->json([
             'message' => 'User information updated successfully',
-            'User' => $user
+            'user' => $user
         ]);
     }
-
-
 }

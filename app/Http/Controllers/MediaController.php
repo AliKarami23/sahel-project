@@ -10,29 +10,41 @@ class MediaController extends Controller
 {
     public function UploadImage(Request $request)
     {
-        $image = new Image();
-        $image->addMediaFromRequest('image')->toMediaCollection('image', 'images');
-        $image->save();
+        try {
+            $image = new Image();
+            $image->addMediaFromRequest('image')->toMediaCollection('image', 'images');
+            $image->save();
 
-        return response()->json($image);
+            return response()->json($image);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function UploadMainImage(Request $request)
     {
-        $image = new Image();
-        $image->addMediaFromRequest('image')->toMediaCollection('image_Main', 'images');
-        $image->save();
+        try {
+            $image = new Image();
+            $image->addMediaFromRequest('image')->toMediaCollection('image_Main', 'images');
+            $image->save();
 
-        return response()->json($image);
+            return response()->json($image);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function UploadVideo(Request $request)
     {
-        $video = new Video();
-        $video->addMediaFromRequest('video')->toMediaCollection('videos', 'videos');
-        $video->save();
+        try {
+            $video = new Video();
+            $video->addMediaFromRequest('video')->toMediaCollection('videos', 'videos');
+            $video->save();
 
-        return response()->json($video);
+            return response()->json($video);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
 }

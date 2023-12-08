@@ -17,10 +17,9 @@ class ContactController extends Controller
     {
 
         $contact = Contact::create($request->all());
-        $Contact = $request->all();
         return response()->json([
             'massage' => 'Your message has been received',
-            'contact' => $Contact,
+            'contact' => $contact,
         ]);
 
     }
@@ -67,8 +66,7 @@ class ContactController extends Controller
 
     public function Delete($id)
     {
-        $contact = Contact::find($id);
-        $contact->delete();
+        Contact::distroy($id);
         return response()->json([
             'massage' => 'The desired message was deleted'
         ]);

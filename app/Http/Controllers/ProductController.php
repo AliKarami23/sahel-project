@@ -12,7 +12,7 @@ use Modules\Comment\app\Models\Comment;
 
 class ProductController extends Controller
 {
-    public function Create(Request $request)
+    public function create(Request $request)
     {
         if (isset($request->image_id)) {
             $imageIds = is_array($request->image_id) ? $request->image_id : [$request->image_id];
@@ -21,14 +21,13 @@ class ProductController extends Controller
             foreach ($imageIds as $imageId) {
                 $image = Image::findOrFail($imageId);
                 $images[] = $image;
+                $image->update([
+                    'Status' => 'Active'
+                ]);
             }
-            $image->update([
-                'Status' => 'Active'
-            ]);
         } else {
             return response()->json(['error' => 'image_id is required.'], 400);
         }
-
 
         if (isset($request->video_id)) {
             $video = Video::findOrFail($request->video_id);
@@ -45,13 +44,13 @@ class ProductController extends Controller
                 'Status' => 'Active'
             ]);
         } else {
-            return response()->json(['error' => 'image_id is required.'], 400);
+            return response()->json(['error' => 'imageMain_id is required.'], 400);
         }
 
-        if ($request->Discount_Type == 'Percent') {
+        if ($request->Discount_Type === 'Percent') {
             $Discount = 'Percent';
             $Discounted_price = $request->Price - ($request->Price * $request->Discount_Amount / 100);
-        } elseif ($request->Discount_Type == 'Amount') {
+        } elseif ($request->Discount_Type === 'Amount') {
             $Discount = 'Amount';
             $Discounted_price = $request->Price - $request->Discount_Amount;
         } else {
@@ -61,7 +60,6 @@ class ProductController extends Controller
 
         $Capacity_Total = $request->Capacity_Man + $request->Capacity_Woman;
 
-
         $productData = array_merge($request->all(), [
             'Capacity_Total' => $Capacity_Total,
             'Discounted_price' => $Discounted_price,
@@ -69,9 +67,8 @@ class ProductController extends Controller
 
         $product = Product::create($productData);
 
-
         foreach ($request->json('sans') as $sansData) {
-            Sans::create([
+            $Sans = Sans::create([
                 'product_id' => $product->id,
                 'Start' => $sansData['Start'],
                 'End' => $sansData['End'],
@@ -84,21 +81,23 @@ class ProductController extends Controller
         }
 
         foreach ($request->json('extradition') as $extraditionData) {
-            Extradition::create([
+            $Extradition = Extradition::create([
                 'product_id' => $product->id,
                 'extradition' => $extraditionData['extradition'],
                 'extradition_Time' => $extraditionData['extradition_Time'],
                 'extradition_Percent' => $extraditionData['extradition_Percent'],
             ]);
         }
-        $product_back = $request->all();
+
         return response()->json([
             'message' => 'Product Added',
-            'product' => $product_back
+            'product' => $product,
+            'extradition' => $Extradition,
+            'sans' => $Sans
         ]);
     }
 
-    public function Edit(Request $request, $id)
+    public function edit(Request $request, $id)
     {
         if (isset($request->image_id)) {
             $imageIds = is_array($request->image_id) ? $request->image_id : [$request->image_id];
@@ -107,14 +106,13 @@ class ProductController extends Controller
             foreach ($imageIds as $imageId) {
                 $image = Image::findOrFail($imageId);
                 $images[] = $image;
+                $image->update([
+                    'Status' => 'Active'
+                ]);
             }
-            $image->update([
-                'Status' => 'Active'
-            ]);
         } else {
             return response()->json(['error' => 'image_id is required.'], 400);
         }
-
 
         if (isset($request->video_id)) {
             $video = Video::findOrFail($request->video_id);
@@ -131,7 +129,7 @@ class ProductController extends Controller
                 'Status' => 'Active'
             ]);
         } else {
-            return response()->json(['error' => 'image_id is required.'], 400);
+            return response()->json(['error' => 'imageMain_id is required.'], 400);
         }
 
         $product = Product::find($id);
@@ -140,10 +138,10 @@ class ProductController extends Controller
             return response()->json(['message' => 'Product not found'], 404);
         }
 
-        if ($request->Discount_Type == 'Percent') {
+        if ($request->Discount_Type === 'Percent') {
             $Discount = 'Percent';
             $Discounted_price = $request->Price - ($request->Price * $request->Discount_Amount / 100);
-        } elseif ($request->Discount_Type == 'Amount') {
+        } elseif ($request->Discount_Type === 'Amount') {
             $Discount = 'Amount';
             $Discounted_price = $request->Price - $request->Discount_Amount;
         } else {
@@ -151,7 +149,7 @@ class ProductController extends Controller
             $Discounted_price = $request->Price;
         }
 
-        $Capacity_Total = $request->Capacity_Man + $request->Capacity_WoMan;
+        $Capacity_Total = $request->Capacity_Man + $request->Capacity_Woman;
 
         $productData = $product->toArray();
         $mergedData = array_merge($productData, [
@@ -163,7 +161,7 @@ class ProductController extends Controller
         $product->sans()->delete();
 
         foreach ($request->json('sans') as $sansData) {
-            Sans::create([
+            $Sans = Sans::create([
                 'product_id' => $product->id,
                 'Start' => $sansData['Start'],
                 'End' => $sansData['End'],
@@ -178,7 +176,7 @@ class ProductController extends Controller
         $product->extraditions()->delete();
 
         foreach ($request->json('extradition') as $extraditionData) {
-            Extradition::create([
+            $Extradition = Extradition::create([
                 'product_id' => $product->id,
                 'extradition' => $extraditionData['extradition'],
                 'extradition_Time' => $extraditionData['extradition_Time'],
@@ -186,46 +184,46 @@ class ProductController extends Controller
             ]);
         }
 
-        $product_back = $request->all();
         return response()->json([
-            'message' => 'Product Updated',
-            'product' => $product_back
+            'message' => 'Product Added',
+            'product' => $product,
+            'extradition' => $Extradition,
+            'sans' => $Sans
         ]);
     }
 
     public function show($id)
     {
-
         $product = Product::find($id);
 
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
+
         $comments = Comment::where('product_id', $id)
             ->where('Status', 'Active')
             ->get();
 
-
         $MainImage = $product->imageMain_id;
-        $image_ids = $product->image_id;
+        $imageIds = $product->image_id;
         $images = [];
 
-        if ($image_ids) {
-            foreach ($image_ids as $image_id) {
-                $image = Image::find($image_id);
+        if ($imageIds) {
+            foreach ($imageIds as $imageId) {
+                $image = Image::find($imageId);
                 if ($image) {
                     $images[] = $image->getMedia('*');
                 }
             }
         }
 
-        if ($MainImage){
-            $image_Main = Image::find($MainImage);
-            $Main_image = $image_Main->getMedia('*');
+        if ($MainImage) {
+            $imageMain = Image::find($MainImage);
+            $Main_image = $imageMain->getMedia('*');
         }
-        $video_id = $product->video_id;
-        if ($video_id){
-            $video = video::find($video_id);
+        $videoId = $product->video_id;
+        if ($videoId) {
+            $video = Video::find($videoId);
             $product_video = $video->getMedia('*');
         }
 
@@ -239,7 +237,7 @@ class ProductController extends Controller
     }
 
 
-    public function List()
+    public function list()
     {
         $products = Product::all();
         $productsWithImages = [];
@@ -256,21 +254,19 @@ class ProductController extends Controller
                 }
             }
 
-            $productData = [
+            $productDataItem = [
                 'id' => $product->id,
                 'title' => $product->title,
                 'images' => $Main_image,
             ];
 
-            $productsWithImages[] = $productData;
+            $productsWithImages[] = $productDataItem;
         }
 
         return response()->json($productsWithImages);
     }
 
-
-
-    public function Delete($id)
+    public function destroy($id)
     {
         $product = Product::find($id);
 
@@ -279,35 +275,32 @@ class ProductController extends Controller
         }
 
         $MainImage = $product->imageMain_id;
-        $image_ids = $product->image_id;
-        $images = [];
+        $imageIds = $product->image_id;
 
-        if ($image_ids) {
-            foreach ($image_ids as $image_id) {
-                $image = Image::find($image_id);
+        if ($imageIds) {
+            foreach ($imageIds as $imageId) {
+                $image = Image::find($imageId);
                 if ($image) {
-                    $image->update(['Status' => 'Inactive']);
+                    $image->update(['Status' => 'delete']);
                 }
             }
         }
 
-        if ($MainImage){
-            $image_Main = Image::find($MainImage);
-            $image_Main->update(['Status' => 'Inactive']);
-
+        if ($MainImage) {
+            $imageMain = Image::find($MainImage);
+            $imageMain->update(['Status' => 'delete']);
         }
-        $video_id = $product->video_id;
-        if ($video_id){
-            $video = video::find($video_id);
-            $video->update(['Status' => 'Inactive']);
+
+        $videoId = $product->video_id;
+        if ($videoId) {
+            $video = Video::find($videoId);
+            $video->update(['Status' => 'delete']);
         }
 
         $product->sans()->delete();
         $product->extraditions()->delete();
-
         $product->delete();
 
         return response()->json(['message' => 'Product Deleted']);
     }
-
 }

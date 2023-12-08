@@ -7,7 +7,6 @@ use App\Models\Product;
 use App\Models\Reservation;
 use App\Models\User;
 use Carbon\Carbon;
-use App\Http\Controllers\Controller;
 
 class ReportController extends Controller
 {
