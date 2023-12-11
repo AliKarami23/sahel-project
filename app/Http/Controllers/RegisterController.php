@@ -11,19 +11,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Modules\Sms\app\Http\Controllers\SmsController;
 use Illuminate\Validation\ValidationException;
 
 
 class RegisterController extends Controller
 {
-    public function GetNumber(Request $request)
+    public function getNumber(Request $request)
     {
         $phoneNumber = intval($request->phone_number);
 
         $verificationCode = mt_rand(10000, 99999);
         $smsController = new SmsController();
-        $smsController->verificationCode($phoneNumber, $verificationCode);
+        $smsController->VerificationCode($phoneNumber, $verificationCode);
 
         Register::create([
             'number' => $phoneNumber,
@@ -35,7 +34,7 @@ class RegisterController extends Controller
         return response()->json(['message' => 'Verification code has been sent.']);
     }
 
-    public function GetCodeSent(Request $request)
+    public function getCodeSent(Request $request)
     {
         $phoneNumber = $request->phone_number;
         $verificationCode = $request->verification_code;
@@ -57,10 +56,10 @@ class RegisterController extends Controller
         return response()->json(['token' => $token, 'message' => 'Token created successfully.']);
     }
 
-    public function GetInformation(Request $request)
+    public function getInformation(Request $request)
     {
         $fullName = $request->full_name;
-        $Email = $request->Email;
+        $email = $request->email;
 
         $user = Auth::user();
 
@@ -70,7 +69,7 @@ class RegisterController extends Controller
 
         $user->update([
             'full_name' => $fullName,
-            'Email' => $Email,
+            'email' => $email,
         ]);
 
         return response()->json([
@@ -79,13 +78,13 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function AdminLogin(Request $request)
+    public function adminLogin(Request $request)
     {
-        $user = User::where('Email', $request->Email)->first();
+        $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->Password, $user->Password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'Email' => ['Invalid credentials']
+                'email' => ['Invalid credentials']
             ]);
         }
 
@@ -97,7 +96,7 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function logout(Request $request)
+    public function Logout(Request $request)
     {
         $request->user()->tokens()->delete();
         return response()->json([
@@ -105,30 +104,30 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function EmailPassword(Request $request)
+    public function emailPassword(Request $request)
     {
-        $Email = $request->Email;
+        $email = $request->email;
 
         $code = mt_rand(100000, 999999);
 
         Register::create([
-            'Email' => $Email,
+            'email' => $email,
             'verification_code' => $code,
         ]);
 
-        Mail::to($Email)->send(new VerificationCodEmail($code));
+        Mail::to($email)->send(new VerificationCodEmail($code));
 
         return response()->json([
             'message' => 'Verification code sent successfully',
         ]);
     }
 
-    public function VerifyCode(Request $request)
+    public function verifyCode(Request $request)
     {
-        $email = $request->Email;
+        $email = $request->email;
         $code = $request->code;
 
-        $record = Register::where('Email', $email)
+        $record = Register::where('email', $email)
             ->where('verification_code', $code)
             ->first();
 
@@ -151,11 +150,11 @@ class RegisterController extends Controller
 
         $record->delete();
 
-        $user = User::firstOrNew(['Email' => $email]);
+        $user = User::firstOrNew(['email' => $email]);
 
         if (!$user->exists) {
-            $user->full_name = 'Default Full Name';
-            $user->Password = Hash::make('default_password');
+            $user->full_name = 'Default full Name';
+            $user->password = Hash::make('default_password');
             $user->save();
         }
 
@@ -168,16 +167,16 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function UpdatePassword(Request $request)
+    public function updatePassword(Request $request)
     {
-        $Email = $request->Email;
-        $newPassword = $request->new_Password;
+        $email = $request->email;
+        $newPassword = $request->new_password;
 
-        $user = User::where('Email', $Email)->first();
+        $user = User::where('email', $email)->first();
 
         $hashedPassword = Hash::make($newPassword);
 
-        $user->update(['Password' => $hashedPassword]);
+        $user->update(['password' => $hashedPassword]);
 
         return response()->json([
             'message' => 'Password updated successfully',

@@ -83,7 +83,7 @@ class ArticleController extends Controller
         return response()->json($articles);
     }
 
-    public function destroy($id)
+    public function delete($id)
     {
         try {
             $article = Article::find($id);

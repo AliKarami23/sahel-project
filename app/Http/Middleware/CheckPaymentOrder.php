@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckUserStatus
+class checkPaymentOrder
 {
     /**
      * Handle an incoming request.
@@ -15,10 +15,9 @@ class CheckUserStatus
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user();
 
-        if ($user && $user->status == 'Block') {
-            return response()->json(['message' => 'Access denied. User is blocked.'], 403);
+        if ($order->payment_status == true) {
+            return response()->json(['message' => 'Order payment has already been completed. Cannot edit.'], 403);
         }
 
         return $next($request);

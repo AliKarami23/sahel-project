@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('product_id');
-            $table->integer('Score');
-            $table->string('Massage');
-            $table->string('Status')->default('Inactive');
-            $table->string('Response')->nullable();
+            $table->integer('score');
+            $table->string('massage');
+            $table->string('status')->default('Inactive');
+            $table->string('response')->nullable();
             $table->timestamps();
         });
     }

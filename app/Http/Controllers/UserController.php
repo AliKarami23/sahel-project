@@ -11,7 +11,7 @@ class UserController extends Controller
     public function list()
     {
         $customers = User::role('Customer')
-            ->select('id', 'full_name', 'phone_number', 'Status')
+            ->select('id', 'full_name', 'phone_number', 'status')
             ->get();
 
         return response()->json([
@@ -63,10 +63,10 @@ class UserController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        $newStatus = ($user->Status == 'Active') ? 'Block' : 'Active';
+        $newStatus = ($user->status == 'Active') ? 'Block' : 'Active';
 
         $user->update([
-            'Status' => $newStatus
+            'status' => $newStatus
         ]);
 
         return response()->json(['message' => "The user's Status has been changed to $newStatus"]);

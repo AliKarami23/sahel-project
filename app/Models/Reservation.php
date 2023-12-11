@@ -14,8 +14,8 @@ class Reservation extends Model
         'sans_id',
         'order_id',
         'product_id',
-        'Tickets_Sold_Man',
-        'Tickets_Sold_Woman',
+        'tickets_sold_man',
+        'tickets_sold_woman',
     ];
 
     public function order()
@@ -27,6 +27,4 @@ class Reservation extends Model
     {
         return $this->belongsTo(Sans::class);
     }
-
-
 }

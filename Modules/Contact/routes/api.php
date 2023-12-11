@@ -16,11 +16,11 @@ use Modules\Contact\app\Http\Controllers\ContactController;
 
 Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () {
 
-    Route::get('/Contact/List', [ContactController::class, 'List'])->name('ListContact')->middleware(['permission:Contact.List']);
-    Route::delete('/Contact/Delete/{id}', [ContactController::class, 'Delete'])->name('DeleteContact')->middleware(['permission:Contact.Delete']);
-    Route::get('/Contact/Show/{id}', [ContactController::class, 'Show'])->name('ShowContact')->middleware(['permission:Contact.Show']);
-    Route::post('/Contact/Answer/{id}', [ContactController::class, 'Answer'])->name('AnswerContact')->middleware(['permission:Contact.Answer']);
+    Route::get('/Contact/List', [ContactController::class, 'list'])->name('listContact')->middleware(['permission:Contact.List']);
+    Route::delete('/Contact/Destroy/{id}', [ContactController::class, 'destroy'])->name('destroyContact')->middleware(['permission:Contact.Destroy']);
+    Route::get('/Contact/Show/{id}', [ContactController::class, 'show'])->name('showContact')->middleware(['permission:Contact.Show']);
+    Route::post('/Contact/Answer/{id}', [ContactController::class, 'answer'])->name('answerContact')->middleware(['permission:Contact.Answer']);
 
 });
 
-Route::post('/Contact/Create', [ContactController::class, 'Create'])->name('CreateContact');
+Route::post('/Contact/Create', [ContactController::class, 'create'])->name('createContact');

@@ -17,14 +17,14 @@ class User extends Authenticatable
     protected $fillable = [
         'full_name',
         'phone_number',
-        'Email',
-        'Password',
-        'Status'
+        'email',
+        'password',
+        'status'
     ];
 
 
     protected $hidden = [
-        'Password',
+        'password',
     ];
 
     public function orders()

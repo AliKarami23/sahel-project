@@ -81,7 +81,7 @@ class PaymentController extends Controller
     }
 
 
-    public function PaymentList()
+    public function paymentList()
     {
         $PaymentList = Payment::all();
         return response()->json([
@@ -89,7 +89,7 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function PaymentFilter(Request $request)
+    public function paymentFilter(Request $request)
     {
         $filterType = $request->filter_type;
         $startDate = $request->start_date;

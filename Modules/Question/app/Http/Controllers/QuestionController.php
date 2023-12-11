@@ -10,12 +10,8 @@ class QuestionController extends Controller
 {
     public function create(Request $request)
     {
-        $validatedData = $request->validate([
-            'Title' => 'required|max:255',
-            'Text' => 'required',
-        ]);
 
-        $question = Question::create($validatedData);
+        $question = Question::create($request->all());
 
         return response()->json([
             'message' => 'Question created successfully',

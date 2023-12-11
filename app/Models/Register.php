@@ -12,7 +12,7 @@ class Register extends Model
 
     protected $fillable = [
         'number',
-        'Email',
+        'email',
         'verification_code'
     ];
 

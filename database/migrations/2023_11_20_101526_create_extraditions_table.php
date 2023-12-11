@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->integer('product_id');
             $table->string('extradition');
-            $table->string('extradition_Time');
-            $table->integer('extradition_Percent');
+            $table->string('extradition_time');
+            $table->integer('extradition_percent');
             $table->timestamps();
         });
     }

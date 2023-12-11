@@ -11,15 +11,15 @@ class Sans extends Model
 
     protected $fillable = [
         'product_id',
-        'Start',
-        'End',
-        'Date',
-        'Status',
-        'Capacity_Man',
-        'Capacity_Woman',
-        'Capacity_remains_Man',
-        'Capacity_remains_Woman',
-        'Status',
+        'start',
+        'end',
+        'date',
+        'status',
+        'capacity_man',
+        'capacity_woman',
+        'capacity_remains_man',
+        'capacity_remains_woman',
+        'status',
     ];
 
     public function product()

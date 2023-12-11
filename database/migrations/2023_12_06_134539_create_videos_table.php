@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('videos', function (Blueprint $table) {
             $table->id();
-            $table->string('Status')->default('Inactive');
+            $table->string('status')->default('Inactive');
             $table->timestamps();
         });
     }

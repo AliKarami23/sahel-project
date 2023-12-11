@@ -16,8 +16,8 @@ return new class extends Migration {
             $table->integer('order_id');
             $table->integer('product_id');
             $table->integer('sans_id');
-            $table->integer('Tickets_Sold_Man');
-            $table->integer('Tickets_Sold_Woman');
+            $table->integer('tickets_sold_man');
+            $table->integer('tickets_sold_woman');
             $table->timestamps();
         });
     }

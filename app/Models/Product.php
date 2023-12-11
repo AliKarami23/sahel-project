@@ -13,22 +13,22 @@ class Product extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
-        'Title',
-        'Price',
-        'Discount',
-        'Discount_Amount',
-        'Discount_Type',
-        'Age_Limit',
-        'Age_Limit_Value',
-        'Total_Start',
-        'Total_End',
-        'Break_Time',
-        'Rules',
-        'Description',
-        'Discounted_price',
+        'title',
+        'price',
+        'discount',
+        'discount_amount',
+        'discount_type',
+        'age_limit',
+        'age_limit_value',
+        'total_start',
+        'total_end',
+        'break_time',
+        'rules',
+        'description',
+        'discounted_price',
         'video_id',
         'image_id',
-        'imageMain_id'
+        'image_main_id'
     ];
 
     protected $casts = [

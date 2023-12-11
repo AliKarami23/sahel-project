@@ -11,17 +11,16 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    public function Create(Request $request)
+    public function create(Request $request)
     {
-        $Total_Price = 0;
+        $total_price = 0;
         $updatedTicketsSold = [];
         $allReservations = [];
         $allSans = [];
         $user = optional(Auth::user());
         $order = Order::create([
             'user_id' => $user->id,
-            "product_id" => $request->product_id,
-            "Total_Price" => $Total_Price
+            'total_price' => $total_price
         ]);
 
 
@@ -40,9 +39,9 @@ class OrderController extends Controller
                 return response()->json(['message' => 'Sans record not found for the given product and sans ID.'], 404);
             }
 
-            if ($productSans['Capacity_Man'] <= $Sans->Capacity_remains_Man && $productSans['Capacity_Woman'] <= $Sans->Capacity_remains_Woman) {
+            if ($productSans['capacity_man'] <= $Sans->capacity_remains_man && $productSans['capacity_woman'] <= $Sans->capacity_remains_woman) {
 
-                $Total_Price += ($product->Price * $productSans['Capacity_Man']) + ($product->Price * $productSans['Capacity_Woman']);
+                $total_price += ($product->price * $productSans['capacity_man']) + ($product->price * $productSans['capacity_woman']);
 
                 $user = optional(Auth::user());
                 $reservationsData = [
@@ -50,19 +49,19 @@ class OrderController extends Controller
                     'order_id' => $order->id,
                     'sans_id' => $Sans->id,
                     'product_id' => $productSans['product_id'],
-                    'Tickets_Sold_Man' => $productSans['Capacity_Man'],
-                    'Tickets_Sold_Woman' => $productSans['Capacity_Woman'],
+                    'tickets_sold_man' => $productSans['capacity_man'],
+                    'tickets_sold_woman' => $productSans['capacity_woman'],
                 ];
                 $Reservation = Reservation::create($reservationsData);
                 $allReservations[] = $Reservation;
 
 
-                $Tickets_Sold_Men = $Sans->Tickets_Sold_Man + $productSans['Capacity_Man'];
-                $Tickets_Sold_Woman = $Sans->Tickets_Sold_Woman + $productSans['Capacity_Woman'];
+                $tickets_sold_men = $Sans->tickets_sold_man + $productSans['capacity_man'];
+                $tickets_sold_woman = $Sans->tickets_sold_woman + $productSans['capacity_woman'];
 
                 $updatedTicketsSold[$productSans['product_id']][$productSans['sans_id']] = [
-                    'Tickets_Sold_Man' => $Tickets_Sold_Men,
-                    'Tickets_Sold_Woman' => $Tickets_Sold_Woman,
+                    'tickets_sold_man' => $tickets_sold_men,
+                    'tickets_sold_woman' => $tickets_sold_woman,
                 ];
 
             } else {
@@ -78,7 +77,7 @@ class OrderController extends Controller
         }
 
         $order->update([
-            "Total_Price" => $Total_Price
+            'total_price' => $total_price
         ]);
 
         foreach ($updatedTicketsSold as $productId => $sansData) {
@@ -86,14 +85,15 @@ class OrderController extends Controller
                 $Sans = Sans::where('product_id', $productId)->where('id', $sansId)->first();
                 $Reservation = Reservation::where('product_id', $productId)->first();
 
-                $Capacity_remains_Man = $Sans->Capacity_remains_Man - $Reservation->Tickets_Sold_Man;
-                $Capacity_remains_Woman = $Sans->Capacity_remains_Woman - $Reservation->Tickets_Sold_Woman;
-                if ($Capacity_remains_Man >= 0 && $Capacity_remains_Woman >= 0) {
+                $capacity_remains_man = $Sans->capacity_remains_man - $Reservation->tickets_sold_man;
+                $capacity_remains_woman = $Sans->capacity_remains_woman - $Reservation->tickets_sold_woman;
+
+                if ($capacity_remains_man >= 0 && $capacity_remains_woman >= 0) {
                     $Sans->update([
-                        'Capacity_remains_Man' => $Capacity_remains_Man,
-                        'Capacity_remains_Woman' => $Capacity_remains_Woman,
+                        'capacity_remains_man' => $capacity_remains_man,
+                        'capacity_remains_woman' => $capacity_remains_woman,
                     ]);
-                }else{
+                } else {
                     return response()->json(['message' => 'There is not enough capacity to reserve.'], 400);
                 }
             }
@@ -108,37 +108,25 @@ class OrderController extends Controller
         ], 200);
     }
 
-    public function Edit(Request $request, $id)
+    public function edit(Request $request, $id)
     {
-
-        $Total_Price = 0;
+        $total_price = 0;
         $updatedTicketsSold = [];
         $allReservations = [];
         $allSans = [];
 
-        $order = Order::find($id);
-
-        if (!$order) {
-            return response()->json(['message' => 'Order not found'], 404);
-        }
+        $order = Order::findOrFail($id);
 
         Reservation::where('order_id', $order->id)->delete();
 
-        foreach (($request->json('product')) as $productSans) {
-            $product = Product::find($productSans['product_id']);
+        foreach ($request->json('product') as $productSans) {
+            $product = Product::findOrFail($productSans['product_id']);
+            $Sans = Sans::where('product_id', $productSans['product_id'])
+                ->where('id', $productSans['sans_id'])
+                ->firstOrFail();
 
-            if (!$product) {
-                return response()->json(['message' => 'Product with ID ' . $productSans['product_id'] . ' not found.'], 404);
-            }
-
-            $Sans = Sans::where('product_id', $productSans['product_id'])->first();
-
-            if (!$Sans) {
-                return response()->json(['message' => 'Sans record not found for the given product and sans ID.'], 404);
-            }
-
-            if ($productSans['Capacity_Man'] <= $Sans->Capacity_remains_Man && $productSans['Capacity_Woman'] <= $Sans->Capacity_remains_Woman) {
-                $Total_Price += ($product->Price * $productSans['Capacity_Man']) + ($product->Price * $productSans['Capacity_Woman']);
+            if ($Sans->capacity_remains_man >= $productSans['capacity_man'] && $Sans->capacity_remains_woman >= $productSans['capacity_woman']) {
+                $total_price += ($product->price * $productSans['capacity_man']) + ($product->price * $productSans['capacity_woman']);
 
                 $user = optional(Auth::user());
                 $reservationsData = [
@@ -146,69 +134,55 @@ class OrderController extends Controller
                     'order_id' => $order->id,
                     'sans_id' => $Sans->id,
                     'product_id' => $productSans['product_id'],
-                    'Tickets_Sold_Man' => $productSans['Capacity_Man'],
-                    'Tickets_Sold_Woman' => $productSans['Capacity_Woman'],
+                    'tickets_sold_man' => $productSans['capacity_man'],
+                    'tickets_sold_woman' => $productSans['capacity_woman'],
                 ];
+
                 $Reservation = Reservation::create($reservationsData);
                 $allReservations[] = $Reservation;
 
-                $Tickets_Sold_Men = $Sans->Tickets_Sold_Man + $productSans['Capacity_Man'];
-                $Tickets_Sold_Woman = $Sans->Tickets_Sold_Woman + $productSans['Capacity_Woman'];
+                $tickets_sold_men = $Sans->tickets_sold_man + $productSans['capacity_man'];
+                $tickets_sold_woman = $Sans->tickets_sold_woman + $productSans['capacity_woman'];
 
                 $updatedTicketsSold[$productSans['product_id']][$productSans['sans_id']] = [
-                    'Tickets_Sold_Man' => $Tickets_Sold_Men,
-                    'Tickets_Sold_Woman' => $Tickets_Sold_Woman,
+                    'tickets_sold_man' => $tickets_sold_men,
+                    'tickets_sold_woman' => $tickets_sold_woman,
                 ];
             } else {
                 return response()->json(['message' => 'There is not enough capacity to reserve.'], 400);
             }
         }
 
-
         foreach ($updatedTicketsSold as $productId => $sansData) {
             foreach ($sansData as $sansId => $ticketsSold) {
-                $Sans = Sans::where('product_id', $productId)->where('id', $sansId)->first();
-                $allSans[] = $Sans;
+                $allSans[] = Sans::findOrFail($sansId);
             }
         }
 
-        $order->update([
-            "Total_Price" => $Total_Price,
-            "product_id" => $request->product_id,
-        ]);
-
         foreach ($updatedTicketsSold as $productId => $sansData) {
             foreach ($sansData as $sansId => $ticketsSold) {
+                $Sans = Sans::findOrFail($sansId);
+                $totalTicketsSoldMan = Reservation::where('product_id', $productId)
+                    ->where('sans_id', $sansId)
+                    ->value('tickets_sold_man');
 
-                $Sans = Sans::where('product_id', $productId)
-                    ->where('id', $sansId)
-                    ->first();
+                $totalTicketsSoldWoman = Reservation::where('product_id', $productId)
+                    ->where('sans_id', $sansId)
+                    ->value('tickets_sold_woman');
 
+                $newCapacityRemainsMan = $Sans->capacity_man - $totalTicketsSoldMan;
+                $newCapacityRemainsWoman = $Sans->capacity_woman - $totalTicketsSoldWoman;
 
-                if ($Sans) {
-                    $totalTicketsSoldMan = Reservation::where('product_id', $productId)
-                        ->where('sans_id', $sansId)
-                        ->sum('Tickets_Sold_Man');
-
-                    $totalTicketsSoldWoman = Reservation::where('product_id', $productId)
-                        ->where('sans_id', $sansId)
-                        ->sum('Tickets_Sold_Woman');
-
-                    $newCapacityRemainsMan = $Sans->Capacity_Man - $totalTicketsSoldMan;
-                    $newCapacityRemainsWoman = $Sans->Capacity_Woman - $totalTicketsSoldWoman;
-
-                    if ($newCapacityRemainsMan >= 0 && $newCapacityRemainsWoman >= 0) {
-                        $Sans->update([
-                            'Capacity_remains_Man' => $newCapacityRemainsMan,
-                            'Capacity_remains_Woman' => $newCapacityRemainsWoman,
-                        ]);
-                    }else{
-                        return response()->json(['message' => 'There is not enough capacity to reserve.'], 400);
-                    }
+                if ($newCapacityRemainsMan >= 0 && $newCapacityRemainsWoman >= 0) {
+                    $Sans->update([
+                        'capacity_remains_man' => $newCapacityRemainsMan,
+                        'capacity_remains_woman' => $newCapacityRemainsWoman,
+                    ]);
+                } else {
+                    return response()->json(['message' => 'There is not enough capacity to reserve.'], 400);
                 }
             }
         }
-
 
         return response()->json([
             'message' => 'The order and reservation have been successfully completed.',
@@ -232,7 +206,7 @@ class OrderController extends Controller
         return response()->json(['orders' => $orders]);
     }
 
-    public function Show($id)
+    public function show($id)
     {
 
         $Order = Order::find($id);
@@ -247,7 +221,7 @@ class OrderController extends Controller
 
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
         $user = Auth::user();
 
@@ -258,7 +232,7 @@ class OrderController extends Controller
         }
 
         if ($user->hasRole('Admin') || $user->id === $order->user_id) {
-            $order->delete();
+            $order->destroy();
             return response()->json(['message' => 'Order deleted successfully']);
         } else {
             return response()->json(['message' => 'Unauthorized to delete this order'], 403);

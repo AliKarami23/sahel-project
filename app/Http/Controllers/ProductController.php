@@ -12,7 +12,7 @@ use Modules\Comment\app\Models\Comment;
 
 class ProductController extends Controller
 {
-    public function Create(Request $request)
+    public function create(Request $request)
     {
         if (isset($request->image_id)) {
             $imageIds = is_array($request->image_id) ? $request->image_id : [$request->image_id];
@@ -23,7 +23,7 @@ class ProductController extends Controller
                 $images[] = $image;
             }
             $image->update([
-                'Status' => 'Active'
+                'status' => 'Active'
             ]);
         } else {
             return response()->json(['error' => 'image_id is required.'], 400);
@@ -33,38 +33,38 @@ class ProductController extends Controller
         if (isset($request->video_id)) {
             $video = Video::findOrFail($request->video_id);
             $video->update([
-                'Status' => 'Active'
+                'status' => 'Active'
             ]);
         } else {
             return response()->json(['error' => 'video_id is required.'], 400);
         }
 
-        if (isset($request->imageMain_id)) {
-            $imageMain = Image::findOrFail($request->imageMain_id);
-            $imageMain->update([
-                'Status' => 'Active'
+        if (isset($request->image_main_id)) {
+            $image_main = Image::findOrFail($request->image_main_id);
+            $image_main->update([
+                'status' => 'Active'
             ]);
         } else {
             return response()->json(['error' => 'image_id is required.'], 400);
         }
 
-        if ($request->Discount_Type == 'Percent') {
+        if ($request->discount_type == 'Percent') {
             $Discount = 'Percent';
-            $Discounted_price = $request->Price - ($request->Price * $request->Discount_Amount / 100);
-        } elseif ($request->Discount_Type == 'Amount') {
-            $Discount = 'Amount';
-            $Discounted_price = $request->Price - $request->Discount_Amount;
+            $discounted_price = $request->price - ($request->price * $request->discount_amount / 100);
+        } elseif ($request->discount_type == 'Amount') {
+            $discount = 'Amount';
+            $discounted_price = $request->price - $request->discount_amount;
         } else {
-            $Discount = null;
-            $Discounted_price = $request->Price;
+            $discount = null;
+            $discounted_price = $request->price;
         }
 
-        $Capacity_Total = $request->Capacity_Man + $request->Capacity_Woman;
+        $capacity_total = $request->capacity_man + $request->capacity_woman;
 
 
         $productData = array_merge($request->all(), [
-            'Capacity_Total' => $Capacity_Total,
-            'Discounted_price' => $Discounted_price,
+            'capacity_total' => $capacity_total,
+            'discounted_price' => $discounted_price,
         ]);
 
         $product = Product::create($productData);
@@ -73,13 +73,13 @@ class ProductController extends Controller
         foreach ($request->json('sans') as $sansData) {
             Sans::create([
                 'product_id' => $product->id,
-                'Start' => $sansData['Start'],
-                'End' => $sansData['End'],
-                'Date' => $sansData['Date'],
-                'Capacity_Man' => $sansData['Capacity_Man'],
-                'Capacity_Woman' => $sansData['Capacity_Woman'],
-                'Capacity_remains_Man' => $sansData['Capacity_Man'],
-                'Capacity_remains_Woman' => $sansData['Capacity_Woman'],
+                'start' => $sansData['start'],
+                'end' => $sansData['end'],
+                'date' => $sansData['date'],
+                'capacity_man' => $sansData['capacity_man'],
+                'capacity_woman' => $sansData['capacity_woman'],
+                'capacity_remains_man' => $sansData['capacity_man'],
+                'capacity_remains_woman' => $sansData['capacity_woman'],
             ]);
         }
 
@@ -87,18 +87,17 @@ class ProductController extends Controller
             Extradition::create([
                 'product_id' => $product->id,
                 'extradition' => $extraditionData['extradition'],
-                'extradition_Time' => $extraditionData['extradition_Time'],
-                'extradition_Percent' => $extraditionData['extradition_Percent'],
+                'extradition_time' => $extraditionData['extradition_time'],
+                'extradition_percent' => $extraditionData['extradition_percent'],
             ]);
         }
-        $product_back = $request->all();
         return response()->json([
             'message' => 'Product Added',
-            'product' => $product_back
+            'product' => $product
         ]);
     }
 
-    public function Edit(Request $request, $id)
+    public function edit(Request $request, $id)
     {
         if (isset($request->image_id)) {
             $imageIds = is_array($request->image_id) ? $request->image_id : [$request->image_id];
@@ -109,7 +108,7 @@ class ProductController extends Controller
                 $images[] = $image;
             }
             $image->update([
-                'Status' => 'Active'
+                'status' => 'Active'
             ]);
         } else {
             return response()->json(['error' => 'image_id is required.'], 400);
@@ -119,16 +118,16 @@ class ProductController extends Controller
         if (isset($request->video_id)) {
             $video = Video::findOrFail($request->video_id);
             $video->update([
-                'Status' => 'Active'
+                'status' => 'Active'
             ]);
         } else {
             return response()->json(['error' => 'video_id is required.'], 400);
         }
 
-        if (isset($request->imageMain_id)) {
-            $imageMain = Image::findOrFail($request->imageMain_id);
-            $imageMain->update([
-                'Status' => 'Active'
+        if (isset($request->image_main_id)) {
+            $image_main = Image::findOrFail($request->image_main_id);
+            $image_main->update([
+                'status' => 'Active'
             ]);
         } else {
             return response()->json(['error' => 'image_id is required.'], 400);
@@ -140,23 +139,23 @@ class ProductController extends Controller
             return response()->json(['message' => 'Product not found'], 404);
         }
 
-        if ($request->Discount_Type == 'Percent') {
+        if ($request->discount_type == 'Percent') {
             $Discount = 'Percent';
-            $Discounted_price = $request->Price - ($request->Price * $request->Discount_Amount / 100);
-        } elseif ($request->Discount_Type == 'Amount') {
-            $Discount = 'Amount';
-            $Discounted_price = $request->Price - $request->Discount_Amount;
+            $discounted_price = $request->price - ($request->price * $request->discount_amount / 100);
+        } elseif ($request->discount_type == 'Amount') {
+            $discount = 'Amount';
+            $discounted_price = $request->price - $request->discount_amount;
         } else {
-            $Discount = null;
-            $Discounted_price = $request->Price;
+            $discount = null;
+            $discounted_price = $request->price;
         }
 
-        $Capacity_Total = $request->Capacity_Man + $request->Capacity_WoMan;
+        $capacity_total = $request->capacity_man + $request->capacity_woman;
 
         $productData = $product->toArray();
         $mergedData = array_merge($productData, [
-            'Capacity_Total' => $Capacity_Total,
-            'Discounted_price' => $Discounted_price,
+            'capacity_total' => $capacity_total,
+            'discounted_price' => $discounted_price,
         ]);
         $product->update($mergedData);
 
@@ -165,13 +164,13 @@ class ProductController extends Controller
         foreach ($request->json('sans') as $sansData) {
             Sans::create([
                 'product_id' => $product->id,
-                'Start' => $sansData['Start'],
-                'End' => $sansData['End'],
-                'Date' => $sansData['Date'],
-                'Capacity_Man' => $sansData['Capacity_Man'],
-                'Capacity_Woman' => $sansData['Capacity_Woman'],
-                'Capacity_remains_Man' => $sansData['Capacity_Man'],
-                'Capacity_remains_Woman' => $sansData['Capacity_Woman'],
+                'start' => $sansData['start'],
+                'end' => $sansData['end'],
+                'date' => $sansData['date'],
+                'capacity_man' => $sansData['capacity_man'],
+                'capacity_woman' => $sansData['capacity_woman'],
+                'capacity_remains_man' => $sansData['capacity_man'],
+                'capacity_remains_woman' => $sansData['capacity_woman'],
             ]);
         }
 
@@ -181,15 +180,14 @@ class ProductController extends Controller
             Extradition::create([
                 'product_id' => $product->id,
                 'extradition' => $extraditionData['extradition'],
-                'extradition_Time' => $extraditionData['extradition_Time'],
-                'extradition_Percent' => $extraditionData['extradition_Percent'],
+                'extradition_time' => $extraditionData['extradition_time'],
+                'extradition_percent' => $extraditionData['extradition_percent'],
             ]);
         }
 
-        $product_back = $request->all();
         return response()->json([
             'message' => 'Product Updated',
-            'product' => $product_back
+            'product' => $product
         ]);
     }
 
@@ -202,11 +200,11 @@ class ProductController extends Controller
             return response()->json(['message' => 'Product not found'], 404);
         }
         $comments = Comment::where('product_id', $id)
-            ->where('Status', 'Active')
+            ->where('status', 'Active')
             ->get();
 
 
-        $MainImage = $product->imageMain_id;
+        $MainImage = $product->image_main_id;
         $image_ids = $product->image_id;
         $images = [];
 
@@ -245,7 +243,7 @@ class ProductController extends Controller
         $productsWithImages = [];
 
         foreach ($products as $product) {
-            $MainImage = $product->imageMain_id;
+            $MainImage = $product->image_main_id;
             $Main_image = [];
 
             if ($MainImage) {
@@ -270,7 +268,7 @@ class ProductController extends Controller
 
 
 
-    public function Delete($id)
+    public function destroy($id)
     {
         $product = Product::find($id);
 
@@ -278,7 +276,7 @@ class ProductController extends Controller
             return response()->json(['message' => 'Product not found'], 404);
         }
 
-        $MainImage = $product->imageMain_id;
+        $MainImage = $product->image_main_id;
         $image_ids = $product->image_id;
         $images = [];
 

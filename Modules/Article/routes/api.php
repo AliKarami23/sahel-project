@@ -16,9 +16,9 @@ use \Modules\Article\app\Http\Controllers\ArticleController;
 
 Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () {
 
-    Route::post('/Article/Create', [ArticleController::class, 'Create'])->name('CreateArticle')->middleware(['permission:Article.Create']);
-    Route::get('/Article/Show/{id}', [ArticleController::class, 'Show'])->name('ShowArticle')->middleware(['permission:Article.Show']);
-    Route::put('/Article/Edit/{id}', [ArticleController::class, 'Edit'])->name('EditArticle')->middleware(['permission:Article.Edit']);
-    Route::get('/Article/List', [ArticleController::class, 'List'])->name('ListArticle')->middleware(['permission:Article.List']);
-    Route::delete('/Article/Delete/{id}', [ArticleController::class, 'Delete'])->name('DeleteArticle')->middleware(['permission:Article.Delete']);
+    Route::post('/Article/Create', [ArticleController::class, 'create'])->name('createArticle')->middleware(['permission:Article.Create']);
+    Route::get('/Article/Show/{id}', [ArticleController::class, 'show'])->name('showArticle')->middleware(['permission:Article.Show']);
+    Route::put('/Article/Edit/{id}', [ArticleController::class, 'edit'])->name('editArticle')->middleware(['permission:Article.Edit']);
+    Route::get('/Article/List', [ArticleController::class, 'list'])->name('listArticle')->middleware(['permission:Article.List']);
+    Route::delete('/Article/Delete/{id}', [ArticleController::class, 'delete'])->name('deleteArticle')->middleware(['permission:Article.Delete']);
 });

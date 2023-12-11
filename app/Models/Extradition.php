@@ -12,8 +12,8 @@ class Extradition extends Model
     protected $fillable = [
         'product_id',
         'extradition',
-        'extradition_Time',
-        'extradition_Percent',
+        'extradition_time',
+        'extradition_percent',
     ];
 
     public function product()

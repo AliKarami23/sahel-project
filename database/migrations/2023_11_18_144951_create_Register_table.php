@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('Registers', function (Blueprint $table) {
             $table->id();
-            $table->string('Email')->nullable();
+            $table->string('email')->nullable();
             $table->string('number')->nullable();
             $table->string('verification_code');
             $table->timestamps();

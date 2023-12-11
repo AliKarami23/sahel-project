@@ -34,10 +34,5 @@ class CheckOrderPermission
             return response()->json(['error' => 'Unauthorized.'], 403);
         }
 
-        // Check if the order is already paid
-        if ($order->Payment_Status) {
-            return response()->json(['message' => 'Order payment has already been completed. Cannot edit.'], 403);
-        }
-
         return $next($request);    }
 }

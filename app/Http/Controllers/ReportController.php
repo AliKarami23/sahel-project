@@ -11,14 +11,14 @@ use Carbon\Carbon;
 class ReportController extends Controller
 {
 
-    public function Dashboard()
+    public function dashboard()
     {
         // تعداد کاربران Customer
         $Customers = User::role('Customer')->count();
 
         // مجموع قیمت سفارشات امروز
         $today = Carbon::today();
-        $totalPriceToday = Order::whereDate('created_at', $today)->sum('Total_Price');
+        $totalPriceToday = Order::whereDate('created_at', $today)->sum('total_price');
 
         // لیست تمام محصولات و مجموع قیمت فروش هر محصول
         $productsWithSales = Product::all()->map(function ($product) {
@@ -36,20 +36,20 @@ class ReportController extends Controller
             ->get();
 
 
-        $totalPriceLastMonth = $ordersLastMonth->sum('Total_Price');
+        $totalPriceLastMonth = $ordersLastMonth->sum('total_price');
 
         // تعداد بلیط‌های فروخته شده امروز
         $ticketsSoldTodayMan = Reservation::whereDate('created_at', $today)
             ->orWhereHas('sans', function ($query) use ($today) {
-                $query->whereDate('Date', $today);
+                $query->whereDate('date', $today);
             })
-            ->sum('Tickets_Sold_Man');
+            ->sum('tickets_sold_man');
 
         $ticketsSoldTodayWoman = Reservation::whereDate('created_at', $today)
             ->orWhereHas('sans', function ($query) use ($today) {
-                $query->whereDate('Date', $today);
+                $query->whereDate('date', $today);
             })
-            ->sum('Tickets_Sold_Woman');
+            ->sum('tickets_sold_woman');
 
         $ticketsSoldToday = $ticketsSoldTodayMan + $ticketsSoldTodayWoman;
 
@@ -63,9 +63,5 @@ class ReportController extends Controller
             ],
             'productsWithSales' => $productsWithSales,
         ]);
-    }
-
-    public function FinancialReport(){
-
     }
 }

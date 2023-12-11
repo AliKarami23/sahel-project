@@ -16,11 +16,11 @@ use Modules\Comment\app\Http\Controllers\CommentController;
 
 Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () {
 
-    Route::post('/Comment/Create', [CommentController::class, 'Create'])->name('CreateComment')->middleware(['permission:Comment.Create']);
-    Route::get('/Comment/List', [CommentController::class, 'List'])->name('ListComment')->middleware(['permission:Comment.List']);
-    Route::delete('/Comment/Delete/{id}', [CommentController::class, 'Delete'])->name('DeleteComment')->middleware(['permission:Comment.Delete']);
-    Route::get('/Comment/Show/{id}', [CommentController::class, 'Show'])->name('ShowComment')->middleware(['permission:Comment.Show']);
-    Route::post('/Comment/Activate/{id}', [CommentController::class, 'Activate'])->name('ActivateComment')->middleware(['permission:Comment.Activate']);
-    Route::post('/Comment/Answer/{id}', [CommentController::class, 'Answer'])->name('AnswerComment')->middleware(['permission:Comment.Answer']);
+    Route::post('/Comment/Create', [CommentController::class, 'create'])->name('createComment')->middleware(['permission:Comment.Create']);
+    Route::get('/Comment/List', [CommentController::class, 'list'])->name('listComment')->middleware(['permission:Comment.List']);
+    Route::delete('/Comment/Delete/{id}', [CommentController::class, 'delete'])->name('deleteComment')->middleware(['permission:Comment.Delete']);
+    Route::get('/Comment/Show/{id}', [CommentController::class, 'show'])->name('showComment')->middleware(['permission:Comment.Show']);
+    Route::post('/Comment/Activate/{id}', [CommentController::class, 'activate'])->name('activateComment')->middleware(['permission:Comment.Activate']);
+    Route::post('/Comment/Answer/{id}', [CommentController::class, 'answer'])->name('answerComment')->middleware(['permission:Comment.Answer']);
 
 });

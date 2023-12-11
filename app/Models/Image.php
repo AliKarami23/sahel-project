@@ -12,6 +12,6 @@ class Image extends Model implements HasMedia
     use HasFactory,InteractsWithMedia;
 
     protected $fillable = [
-        'Status',
+        'status',
     ];
 }

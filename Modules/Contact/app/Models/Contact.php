@@ -13,10 +13,10 @@ class Contact extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'FullName',
-        'Email',
-        'Text',
-        'Answer',
+        'full_name',
+        'email',
+        'text',
+        'answer',
     ];
 
 }

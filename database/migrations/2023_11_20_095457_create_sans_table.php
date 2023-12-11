@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('sans', function (Blueprint $table) {
             $table->id();
             $table->integer('product_id');
-            $table->integer('Start');
-            $table->integer('End');
-            $table->string('Date');
-            $table->integer('Capacity_Man')->default(0);
-            $table->integer('Capacity_Woman')->default(0);
-            $table->integer('Capacity_remains_Man')->default(0);
-            $table->integer('Capacity_remains_Woman')->default(0);
-            $table->string('Status')->default('active');
+            $table->integer('start');
+            $table->integer('end');
+            $table->string('date');
+            $table->integer('capacity_man')->default(0);
+            $table->integer('capacity_woman')->default(0);
+            $table->integer('capacity_remains_man')->default(0);
+            $table->integer('capacity_remains_woman')->default(0);
+            $table->string('status')->default('Active');
             $table->timestamps();
         });
     }

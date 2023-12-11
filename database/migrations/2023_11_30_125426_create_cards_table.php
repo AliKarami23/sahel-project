@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('cards', function (Blueprint $table) {
             $table->id();
             $table->integer('order_id');
-            $table->integer('Card_Number');
-            $table->string('Card_Link');
+            $table->integer('card_Number');
+            $table->string('card_Link');
             $table->timestamps();
         });
     }

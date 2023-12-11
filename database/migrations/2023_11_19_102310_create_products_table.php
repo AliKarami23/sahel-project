@@ -13,22 +13,22 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('Title');
-            $table->integer('Price');
-            $table->string('Discount')->nullable();
-            $table->integer('Discount_Amount')->nullable();
-            $table->string('Discount_Type')->nullable();
-            $table->string('Age_Limit')->nullable();
-            $table->integer('Age_Limit_Value')->nullable();
-            $table->integer('Total_Start');
-            $table->integer('Total_End');
-            $table->integer('Break_Time');
-            $table->longText('Rules');
-            $table->string('Description');
-            $table->integer('Discounted_price');
+            $table->string('title');
+            $table->integer('price');
+            $table->string('discount')->nullable();
+            $table->integer('discount_amount')->nullable();
+            $table->string('discount_type')->nullable();
+            $table->string('age_limit')->nullable();
+            $table->integer('age_limit_value')->nullable();
+            $table->integer('total_start');
+            $table->integer('total_end');
+            $table->integer('break_time');
+            $table->longText('rules');
+            $table->string('description');
+            $table->integer('discounted_price');
             $table->integer('video_id');
             $table->string('image_id');
-            $table->integer('imageMain_id');
+            $table->integer('image_main_id');
             $table->timestamps();
         });
     }

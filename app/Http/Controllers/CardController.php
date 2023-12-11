@@ -11,22 +11,22 @@ use Illuminate\Support\Facades\Storage;
 
 class CardController extends Controller
 {
-    public function CreateCard(Order $order, $uniqueCardNumber)
+    public function createCard(Order $order, $uniqueCardNumber)
     {
         $orderDetails = Order::with(['reserves', 'reserves.sans', 'reserves.sans.product'])->find($order->id);
 
 
         $cardNumber = $uniqueCardNumber;
-        $cardLink = $orderDetails->cards->first()->Card_Link;
+        $cardLink = $orderDetails->cards->first()->card_Link;
 
         $reservation = $orderDetails->reserves->first();
-        $ticketsSoldMan = $reservation->Tickets_Sold_Man;
-        $ticketsSoldWoman = $reservation->Tickets_Sold_Woman;
+        $ticketsSoldMan = $reservation->tickets_sold_Man;
+        $ticketsSoldWoman = $reservation->tickets_sold_Woman;
 
         $sans = $reservation->sans;
-        $sansStart = $sans->Start;
-        $sansEnd = $sans->End;
-        $sansDate = $sans->Date;
+        $sansStart = $sans->start;
+        $sansEnd = $sans->end;
+        $sansDate = $sans->date;
 
         $pdf = PDF::loadView('pdf.ticket', compact('cardNumber', 'cardLink', 'ticketsSoldMan', 'ticketsSoldWoman', 'sansStart', 'sansEnd', 'sansDate'));
 
@@ -46,7 +46,7 @@ class CardController extends Controller
             $randomNumber = random_int(1000000, 9999999);
 
             $existingOrder = Order::whereHas('cards', function ($query) use ($randomNumber) {
-                $query->where('Card_Number', $randomNumber);
+                $query->where('card_Number', $randomNumber);
             })->first();
 
             if (!$existingOrder) {
@@ -57,14 +57,14 @@ class CardController extends Controller
         return $uniqueCardNumber;
     }
 
-    public function UserTickets()
+    public function userTickets()
     {
         $userOrders = Auth::user()->orders()->with('cards')->get();
 
         return response()->json($userOrders);
     }
 
-    public function DownloadPdf($id)
+    public function downloadPdf($id)
     {
         $order = Order::find($id);
 
@@ -87,7 +87,7 @@ class CardController extends Controller
 
     }
 
-    public function FilterCard(Request $request)
+    public function filterCard(Request $request)
     {
         $startDate = $request->start_date;
         $endDate = $request->end_date;
@@ -109,7 +109,7 @@ class CardController extends Controller
         return response()->json($orders);
     }
 
-    public function AllTickets()
+    public function allTickets()
     {
         $orders = Order::with(['reserves.sans', 'reserves.sans.product', 'cards'])
             ->get();

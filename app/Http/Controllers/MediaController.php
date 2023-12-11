@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class MediaController extends Controller
 {
-    public function UploadImage(Request $request)
+    public function uploadImage(Request $request)
     {
         $image = new Image();
         $image->addMediaFromRequest('image')->toMediaCollection('image', 'images');
@@ -17,7 +17,7 @@ class MediaController extends Controller
         return response()->json($image);
     }
 
-    public function UploadMainImage(Request $request)
+    public function uploadMainImage(Request $request)
     {
         $image = new Image();
         $image->addMediaFromRequest('image')->toMediaCollection('image_Main', 'images');
@@ -26,7 +26,7 @@ class MediaController extends Controller
         return response()->json($image);
     }
 
-    public function UploadVideo(Request $request)
+    public function uploadVideo(Request $request)
     {
         $video = new Video();
         $video->addMediaFromRequest('video')->toMediaCollection('videos', 'videos');

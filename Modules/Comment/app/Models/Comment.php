@@ -12,9 +12,9 @@ class Comment extends Model
     protected $fillable = [
         'user_id',
         'product_id',
-        'Score',
-        'Massage',
-        'Status',
-        'Response'
+        'score',
+        'massage',
+        'status',
+        'response'
     ];
 }
