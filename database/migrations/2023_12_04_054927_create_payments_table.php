@@ -14,13 +14,10 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->string('status');
-            $table->integer('track_id');
+            $table->string('gateway_result');
+            $table->integer('price');
             $table->integer('order_id');
-            $table->integer('amount');
-            $table->string('card_no');
-            $table->string('hashed_card_no');
-            $table->string('date');
+            $table->string('status');
             $table->timestamps();
         });
     }

@@ -11,8 +11,8 @@ class Card extends Model
 
     protected $fillable = [
         'order_id',
-        'card_Number',
-        'card_Link'
+        'card_number',
+        'card_link'
     ];
 
     public function order(){

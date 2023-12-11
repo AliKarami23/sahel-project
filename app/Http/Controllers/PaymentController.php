@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\checkPaymentOrder;
 use App\Models\Card;
 use App\Models\Order;
 use App\Models\Payment;
 use Carbon\Carbon;
+use Evryn\LaravelToman\CallbackRequest;
 use Evryn\LaravelToman\Facades\Toman;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
-    public function Payment(Request $request)
+    public function payment(Request $request)
     {
         $order = Order::find($request->order_id);
         $user = Auth::user();
@@ -20,64 +23,78 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        $payment = Payment::create([
-            'user_id' =>$user->id ,
-            'status' => 'pending',
-            'track_id' => rand(100000, 999999),
-            'order_id' => $order->id,
-            'amount' => $order->Total_Price,
-            'card_no' => 1234567890123456,
-            'hashed_card_no' => md5('1234567890123456'),
-            'date' => now(),
-        ]);
-
-        $request = Toman::orderId($order->id)
-            ->amount($order->Total_Price)
+        $paymentRequest = Toman::amount($order->total_price)
             ->description('Payment for buying entertainment on the Sahel website')
             ->callback(route('callback'))
-            ->mobile($user->Phone_Number)
-            ->email($user->Email)
-            ->name($user->Full_Name)
+            ->mobile($user->phone_number)
+            ->email($user->email)
             ->request();
 
-        if ($request->successful()) {
-            $cardController = new CardController();
-            $uniqueCardNumber = $cardController->generateUniqueCardNumber();
+        if ($paymentRequest->successful()) {
 
-            $card = Card::updateOrCreate(
-                ['order_id' => $order->id],
-                ['Card_Number' => $uniqueCardNumber, 'Card_Link' => route('download_pdf', ['order_id' => $order->id])]
-            );
-
-            $order->update([
-                'Payment_Status' => true
+            $payment = Payment::create([
+                'user_id' => $user->id,
+                'order_id' => $order->id,
+                'gateway_result' => json_encode(['transactionId' => $paymentRequest->transactionId()]),
+                'price' => $order->total_price,
+                'status' => 'pending',
             ]);
-
-            $payment->update(['status' => 'successful']);
-
-            $pdfUrl = $cardController->CreateCard($order, $uniqueCardNumber);
-
-            return response()->json(['message' => 'Payment was successful', 'pdf_url' => $pdfUrl], 200);
+            return response()->json(['paymentUrl' => $paymentRequest->paymentUrl()]);
         } else {
-
-            $payment->update(['status' => 'failed']);
-
-            return response()->json(['error' => 'Payment request failed'], 400);
+            return response()->json(['error' => $paymentRequest->messages()]);
         }
     }
 
-    public function callback(Request $request)
+    public function callback(CallbackRequest $request)
     {
-//        $payment = $request->amount(50000)->verify();
-//
-//        if ($payment->successful()) {
-//            $referenceId = $payment->referenceId();
-//            return response()->json(['status' => 'ok']);
-//        }
-//
-//        if ($payment->failed()) {
-//            return response()->json(['error' => 'Payment verification failed'], 400);
-//        }
+        $payment = Payment::where('gateway_result->transactionId', $request->transactionId())->first();
+        $order = Order::find($payment->order_id);
+
+        $verifiedPayment = $request
+            ->amount($order->total_price)
+            ->verify();
+
+        if ($verifiedPayment->successful()) {
+            $cardController = app(CardController::class);
+            $uniqueCardNumber = $cardController->generateUniqueCardNumber();
+
+            $card = Card::updateOrCreate(
+                ['order_id' => $payment->order_id],
+                ['card_number' => $uniqueCardNumber, 'card_link' => route('download_pdf', ['order_id' => $payment->order_id])]
+            );
+
+            $order->update(['payment_status' => true]);
+
+            $payment->update(['status' => 'successful']);
+
+            $referenceId = $verifiedPayment->referenceId();
+            $payment->forcefill([
+                'gateway_result->reference_id' => $referenceId,
+                'status' => 'success',
+            ])->save();
+            $pdfUrl = $cardController->createCard($order, $uniqueCardNumber);
+
+            return response()->json([
+                'message' => 'Payment was successful',
+                'pdf_url' => $pdfUrl,
+                'payment' => $payment
+            ], 200);
+        }
+
+        if ($verifiedPayment->alreadyVerified()) {
+            return response()->json(['error' => 'Payment already verified'], 400);
+        }
+
+        if ($verifiedPayment->failed()) {
+            $payment->forcefill([
+                'gateway_result->messages' => $verifiedPayment->messages(),
+                'status' => 'failed',
+            ])->save();
+            $order->update(['status' => 'failed']);
+            return response()->json([
+                'message' => 'Payment was failed',
+                'transaction' => $verifiedPayment]);
+        }
     }
 
 

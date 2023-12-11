@@ -15,20 +15,7 @@ class CardController extends Controller
     {
         $orderDetails = Order::with(['reserves', 'reserves.sans', 'reserves.sans.product'])->find($order->id);
 
-
-        $cardNumber = $uniqueCardNumber;
-        $cardLink = $orderDetails->cards->first()->card_Link;
-
-        $reservation = $orderDetails->reserves->first();
-        $ticketsSoldMan = $reservation->tickets_sold_Man;
-        $ticketsSoldWoman = $reservation->tickets_sold_Woman;
-
-        $sans = $reservation->sans;
-        $sansStart = $sans->start;
-        $sansEnd = $sans->end;
-        $sansDate = $sans->date;
-
-        $pdf = PDF::loadView('pdf.ticket', compact('cardNumber', 'cardLink', 'ticketsSoldMan', 'ticketsSoldWoman', 'sansStart', 'sansEnd', 'sansDate'));
+        $pdf = PDF::loadView('pdf.ticket', compact('orderDetails', 'uniqueCardNumber'));
 
         $pdfPath = 'tickets/' . $orderDetails->id . '_ticket.pdf';
         Storage::put($pdfPath, $pdf->output());
@@ -37,6 +24,7 @@ class CardController extends Controller
 
         return $pdfUrl;
     }
+
 
     public function generateUniqueCardNumber()
     {

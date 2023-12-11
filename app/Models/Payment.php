@@ -11,13 +11,9 @@ class Payment extends Model
 
     protected $fillable = [
         'user_id',
-        'status',
-        'track_id',
-        'id',
         'order_id',
-        'amount',
-        'card_no',
-        'hashed_card_no',
-        'date',
+        'gateway_result',
+        'price',
+        'status',
     ];
 }
