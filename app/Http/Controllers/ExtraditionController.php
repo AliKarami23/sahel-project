@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ExtraditionAnswerRequest;
+use App\Http\Requests\ExtraditionRequestsRequest;
 use App\Models\Extradition;
 use App\Models\Order;
 use App\Models\OrderProduct;
-use App\Models\Payment;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ExtraditionController extends Controller
 {
-    public function request(Request $request)
+    public function request(ExtraditionRequestsRequest $request)
     {
         $user = auth()->user();
         $orderId = $request->order_id;
@@ -82,7 +82,7 @@ class ExtraditionController extends Controller
     }
 
 
-    public function answer(Request $request, $id)
+    public function answer(ExtraditionAnswerRequest $request, $id)
     {
         try {
             $extradition = Extradition::findOrFail($id);

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ImageRequest;
+use App\Http\Requests\VideoRequest;
 use App\Models\Image;
 use App\Models\Video;
-use Illuminate\Http\Request;
 
 class MediaController extends Controller
 {
-    public function uploadImage(Request $request)
+    public function uploadImage(ImageRequest $request)
     {
         $image = new Image();
         $image->addMediaFromRequest('image')->toMediaCollection('image', 'images');
@@ -17,7 +18,7 @@ class MediaController extends Controller
         return response()->json($image);
     }
 
-    public function uploadMainImage(Request $request)
+    public function uploadMainImage(ImageRequest $request)
     {
         $image = new Image();
         $image->addMediaFromRequest('image')->toMediaCollection('image_Main', 'images');
@@ -26,7 +27,7 @@ class MediaController extends Controller
         return response()->json($image);
     }
 
-    public function uploadVideo(Request $request)
+    public function uploadVideo(VideoRequest $request)
     {
         $video = new Video();
         $video->addMediaFromRequest('video')->toMediaCollection('videos', 'videos');

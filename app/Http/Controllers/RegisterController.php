@@ -2,6 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AdminLoginRequest;
+use App\Http\Requests\EmailPasswordRequest;
+use App\Http\Requests\GetCodeSentRequest;
+use App\Http\Requests\GetInformationRequest;
+use App\Http\Requests\GetNumberRequest;
+use App\Http\Requests\UpdatePasswordRequest;
+use App\Http\Requests\VerifyCodeRequest;
 use App\Jobs\CleanUpVerificationCodesJob;
 use App\Mail\VerificationCodeMail;
 use App\Models\Register;
@@ -16,7 +23,7 @@ use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {
-    public function getNumber(Request $request)
+    public function getNumber(GetNumberRequest $request)
     {
         $phoneNumber = intval($request->phone_number);
 
@@ -34,7 +41,7 @@ class RegisterController extends Controller
         return response()->json(['message' => 'Verification code has been sent.']);
     }
 
-    public function getCodeSent(Request $request)
+    public function getCodeSent(GetCodeSentRequest $request)
     {
         $phoneNumber = $request->phone_number;
         $verificationCode = $request->verification_code;
@@ -56,7 +63,7 @@ class RegisterController extends Controller
         return response()->json(['token' => $token, 'message' => 'Token created successfully.']);
     }
 
-    public function getInformation( Request $request)
+    public function getInformation(GetInformationRequest $request)
     {
         $fullName = $request->full_name;
         $email = $request->email;
@@ -78,7 +85,7 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function adminLogin(Request $request)
+    public function adminLogin(AdminLoginRequest $request)
     {
         $user = User::where('email', $request->email)->first();
 
@@ -104,7 +111,7 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function emailPassword(Request $request)
+    public function emailPassword(EmailPasswordRequest $request)
     {
         $email = $request->email;
 
@@ -122,7 +129,7 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function verifyCode(Request $request)
+    public function verifyCode(VerifyCodeRequest $request)
     {
         $email = $request->email;
         $code = $request->code;
@@ -167,7 +174,7 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function updatePassword(Request $request)
+    public function updatePassword(UpdatePasswordRequest $request)
     {
         $email = $request->email;
         $newPassword = $request->new_password;

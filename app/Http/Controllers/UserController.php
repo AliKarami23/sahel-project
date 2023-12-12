@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -72,7 +72,7 @@ class UserController extends Controller
         return response()->json(['message' => "The user's Status has been changed to $newStatus"]);
     }
 
-    public function edit(Request $request, $id)
+    public function edit(UserUpdateRequest $request, $id)
     {
         $user = User::find($id);
 
@@ -101,7 +101,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(UserUpdateRequest $request)
     {
         $user = Auth::user();
 

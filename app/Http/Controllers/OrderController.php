@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderRequest;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Reservation;
 use App\Models\Sans;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    public function create(Request $request)
+    public function create(OrderRequest $request)
     {
         $total_price = 0;
         $updatedTicketsSold = [];
@@ -111,7 +111,7 @@ class OrderController extends Controller
         ], 200);
     }
 
-    public function edit(Request $request, $id)
+    public function edit(OrderRequest $request, $id)
     {
         $total_price = 0;
         $updatedTicketsSold = [];

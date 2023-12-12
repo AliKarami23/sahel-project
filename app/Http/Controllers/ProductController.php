@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Extradition;
+use App\Http\Requests\ProductRequest;
 use App\Models\Image;
 use App\Models\Product;
 use App\Models\Sans;
 use App\Models\Video;
-use Illuminate\Http\Request;
 use Modules\Comment\app\Models\Comment;
 
 class ProductController extends Controller
 {
-    public function create(Request $request)
+    public function create(ProductRequest $request)
     {
         if (isset($request->image_id)) {
             $imageIds = is_array($request->image_id) ? $request->image_id : [$request->image_id];
@@ -89,7 +88,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function edit(Request $request, $id)
+    public function edit(ProductRequest $request, $id)
     {
         if (isset($request->image_id)) {
             $imageIds = is_array($request->image_id) ? $request->image_id : [$request->image_id];

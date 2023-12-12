@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Middleware\checkPaymentOrder;
+use App\Http\Requests\PaymentRequest;
 use App\Models\Card;
 use App\Models\Order;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Evryn\LaravelToman\CallbackRequest;
 use Evryn\LaravelToman\Facades\Toman;
-use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
-    public function payment(Request $request)
+    public function payment(PaymentRequest $request)
     {
         $order = Order::find($request->order_id);
         $user = Auth::user();
