@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Order;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +16,7 @@ class CheckPaymentStatusMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $orderId = $request->input('order_id');
+        $orderId = $request->order_id;
 
         $order = Order::find($orderId);
         if ($order && $order->payment_status) {

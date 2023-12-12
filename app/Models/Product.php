@@ -25,10 +25,12 @@ class Product extends Model implements HasMedia
         'break_time',
         'rules',
         'description',
-        'discounted_price',
         'video_id',
         'image_id',
-        'image_main_id'
+        'image_main_id',
+        'extradition',
+        'extradition_percent',
+        'extradition_time',
     ];
 
     protected $casts = [
@@ -40,17 +42,17 @@ class Product extends Model implements HasMedia
         return $this->hasMany(Sans::class);
     }
 
-    public function extraditions()
+    public function extradition()
     {
         return $this->hasMany(Extradition::class);
     }
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->belongsToMany(Order::class);
     }
 
-    public function reservations()
+    public function reservation()
     {
         return $this->hasMany(Reservation::class);
     }

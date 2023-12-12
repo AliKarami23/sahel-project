@@ -76,5 +76,7 @@ class Kernel extends HttpKernel
         'CheckUserStatus' => \App\Http\Middleware\CheckUserStatus::class,
         'CheckPaymentOrder' => \App\Http\Middleware\CheckPaymentOrder::class,
         'CheckPaymentStatusMiddleware' => \App\Http\Middleware\CheckPaymentStatusMiddleware::class,
+        'CheckExtradition' => \App\Http\Middleware\CheckExtradition::class,
+        'CompleteProfile' => \App\Http\Middleware\CompleteProfile::class,
     ];
 }

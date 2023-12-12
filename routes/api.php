@@ -10,6 +10,7 @@ use \App\Http\Controllers\PaymentController;
 use \App\Http\Controllers\CardController;
 use \App\Http\Controllers\ReportController;
 use \App\Http\Controllers\MediaController;
+use \App\Http\Controllers\ExtraditionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,9 +54,11 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
     Route::delete('/Product/Delete/{id}', [ProductController::class, 'delete'])->name('deleteProduct')->middleware(['permission:Product.Delete']);
 
 //Order
-    Route::post('/Order/Create', [OrderController::class, 'create'])->name('createOrder')->middleware(['permission:Order.Create']);
-    Route::put('/Order/Edit/{id}', [OrderController::class, 'edit'])->name('editOrder')->middleware(['permission:Order.Edit', 'checkOrderPermission','CheckPaymentOrder']);
-    Route::get('/Order/Show/{id}', [OrderController::class, 'show'])->name('showOrder')->middleware(['permission:Order.Show','checkOrderPermission']);
+    Route::middleware(['CompleteProfile'])->group(function () {
+        Route::post('/Order/Create', [OrderController::class, 'create'])->name('createOrder')->middleware(['permission:Order.Create']);
+        Route::put('/Order/Edit/{id}', [OrderController::class, 'edit'])->name('editOrder')->middleware(['permission:Order.Edit', 'checkOrderPermission', 'CheckPaymentOrder']);
+    });
+    Route::get('/Order/Show/{id}', [OrderController::class, 'show'])->name('showOrder')->middleware(['permission:Order.Show', 'checkOrderPermission']);
     Route::get('/Order/List', [OrderController::class, 'list'])->name('listOrder')->middleware(['permission:Order.List']);
     Route::delete('/Order/Delete/{id}', [OrderController::class, 'delete'])->name('deleteOrder')->middleware(['permission:Order.Delete']);
 
@@ -81,6 +84,11 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
     Route::get('Card/DownloadPdf/{id}', [CardController::class, 'downloadPdf'])->name('downloadPdf')->middleware(['permission:Card.DownloadPdf']);
     Route::get('Card/FilterCard', [CardController::class, 'filterCard'])->name('filterCard')->middleware(['permission:Card.FilterCard']);
 
+//  Extradition
+    Route::post('/Extradition/Request', [ExtraditionController::class, 'request'])->name('requestExtradition')->middleware(['CheckExtradition']);
+    Route::get('/Extradition/List', [ExtraditionController::class, 'list'])->name('listExtradition');
+    Route::get('/Extradition/Show/{id}', [ExtraditionController::class, 'show'])->name('showExtradition');
+    Route::post('/Extradition/Answer/{id}', [ExtraditionController::class, 'answer'])->name('AnswerExtradition');
 });
 
 //Auth

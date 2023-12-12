@@ -22,7 +22,7 @@ class Order extends Model
 
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(OrderProduct::class);
     }
 
 
@@ -31,9 +31,9 @@ class Order extends Model
         return $this->hasMany(Reservation::class);
     }
 
-    public function cards(){
-
-        return $this->hasMany(Card::class);
+    public function cards()
+    {
+        return $this->hasOne(Card::class);
     }
 
     public function sans()
@@ -44,7 +44,6 @@ class Order extends Model
     {
         return $this->hasMany(Payment::class);
     }
-
 
     protected $casts = [
         "product_id" => "array"

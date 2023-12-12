@@ -50,13 +50,13 @@ class ProductController extends Controller
 
         if ($request->discount_type == 'Percent') {
             $Discount = 'Percent';
-            $discounted_price = $request->price - ($request->price * $request->discount_amount / 100);
+            $price = $request->price - ($request->price * $request->discount_amount / 100);
         } elseif ($request->discount_type == 'Amount') {
             $discount = 'Amount';
-            $discounted_price = $request->price - $request->discount_amount;
+            $price = $request->price - $request->discount_amount;
         } else {
             $discount = null;
-            $discounted_price = $request->price;
+            $price = $request->price;
         }
 
         $capacity_total = $request->capacity_man + $request->capacity_woman;
@@ -64,7 +64,7 @@ class ProductController extends Controller
 
         $productData = array_merge($request->all(), [
             'capacity_total' => $capacity_total,
-            'discounted_price' => $discounted_price,
+            'price' => $price
         ]);
 
         $product = Product::create($productData);
@@ -83,14 +83,6 @@ class ProductController extends Controller
             ]);
         }
 
-        foreach ($request->json('extradition') as $extraditionData) {
-            Extradition::create([
-                'product_id' => $product->id,
-                'extradition' => $extraditionData['extradition'],
-                'extradition_time' => $extraditionData['extradition_time'],
-                'extradition_percent' => $extraditionData['extradition_percent'],
-            ]);
-        }
         return response()->json([
             'message' => 'Product Added',
             'product' => $product
@@ -141,21 +133,22 @@ class ProductController extends Controller
 
         if ($request->discount_type == 'Percent') {
             $Discount = 'Percent';
-            $discounted_price = $request->price - ($request->price * $request->discount_amount / 100);
+            $price = $request->price - ($request->price * $request->discount_amount / 100);
         } elseif ($request->discount_type == 'Amount') {
             $discount = 'Amount';
-            $discounted_price = $request->price - $request->discount_amount;
+            $price = $request->price - $request->discount_amount;
         } else {
             $discount = null;
-            $discounted_price = $request->price;
+            $price = $request->price;
         }
+
 
         $capacity_total = $request->capacity_man + $request->capacity_woman;
 
         $productData = $product->toArray();
         $mergedData = array_merge($productData, [
             'capacity_total' => $capacity_total,
-            'discounted_price' => $discounted_price,
+            'price' => $price
         ]);
         $product->update($mergedData);
 
@@ -171,17 +164,6 @@ class ProductController extends Controller
                 'capacity_woman' => $sansData['capacity_woman'],
                 'capacity_remains_man' => $sansData['capacity_man'],
                 'capacity_remains_woman' => $sansData['capacity_woman'],
-            ]);
-        }
-
-        $product->extraditions()->delete();
-
-        foreach ($request->json('extradition') as $extraditionData) {
-            Extradition::create([
-                'product_id' => $product->id,
-                'extradition' => $extraditionData['extradition'],
-                'extradition_time' => $extraditionData['extradition_time'],
-                'extradition_percent' => $extraditionData['extradition_percent'],
             ]);
         }
 
@@ -268,7 +250,7 @@ class ProductController extends Controller
 
 
 
-    public function destroy($id)
+    public function delete($id)
     {
         $product = Product::find($id);
 

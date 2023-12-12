@@ -31,4 +31,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+
+    public function extradition()
+    {
+        return $this->hasMany(Extradition::class);
+    }
 }

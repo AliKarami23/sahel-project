@@ -56,7 +56,7 @@ class RegisterController extends Controller
         return response()->json(['token' => $token, 'message' => 'Token created successfully.']);
     }
 
-    public function getInformation(Request $request)
+    public function getInformation( Request $request)
     {
         $fullName = $request->full_name;
         $email = $request->email;

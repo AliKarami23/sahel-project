@@ -64,6 +64,9 @@ class OrderController extends Controller
                     'tickets_sold_woman' => $tickets_sold_woman,
                 ];
 
+                $order->products()->create([
+                    'product_id' => $productSans['product_id'],
+                ]);
             } else {
                 return response()->json(['message' => 'There is not enough capacity to reserve.'], 400);
             }

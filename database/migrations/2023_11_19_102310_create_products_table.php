@@ -25,10 +25,12 @@ return new class extends Migration
             $table->integer('break_time');
             $table->longText('rules');
             $table->string('description');
-            $table->integer('discounted_price');
             $table->integer('video_id');
             $table->string('image_id');
             $table->integer('image_main_id');
+            $table->string('extradition');
+            $table->integer('extradition_percent')->nullable();
+            $table->integer('extradition_time')->nullable();
             $table->timestamps();
         });
     }
