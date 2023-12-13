@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
     Route::get('/Extradition/List', [ExtraditionController::class, 'list'])->name('listExtradition');
     Route::get('/Extradition/Show/{id}', [ExtraditionController::class, 'show'])->name('showExtradition');
     Route::post('/Extradition/Answer/{id}', [ExtraditionController::class, 'answer'])->name('AnswerExtradition');
+    Route::post('/Extradition/cancellationSans', [ExtraditionController::class, 'cancellationSans'])->name('cancellationSans');
 });
 
 //Auth

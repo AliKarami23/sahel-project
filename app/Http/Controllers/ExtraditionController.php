@@ -8,8 +8,12 @@ use App\Models\Extradition;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Product;
+use App\Models\Reservation;
+use App\Models\Sans;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Morilog\Jalali\CalendarUtils;
 
 class ExtraditionController extends Controller
 {
@@ -121,5 +125,52 @@ class ExtraditionController extends Controller
         } catch (ModelNotFoundException $exception) {
             return response()->json(['error' => 'Extradition not found'], 404);
         }
+    }
+    public function cancellationSans(Request $request)
+    {
+        $productId = $request->product_id;
+        $sansId = $request->sans_id;
+
+        $product = Product::select('id', 'title')->find($productId);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        $sans = $product->sans()->where('id', $sansId)->first();
+
+        if (!$sans) {
+            return response()->json(['message' => 'Sans not found'], 404);
+        }
+
+        $sans->update(['status' => 'Inactive']);
+
+        $reservations = Reservation::where('sans_id', $sansId)->get();
+        $reserveData = [];
+
+        foreach ($reservations as $reservation) {
+            $user = $reservation->user;
+            $phoneNumber = $user->phone_number;
+            $full_name = $user->full_name;
+            $date = CalendarUtils::strftime('Y-m-d', strtotime($sans->date));
+            $start = $sans->start;
+            $end = $sans->end;
+            $titel = $product->titel;
+            $reserveData[] = [
+                'product' => $titel,
+                'phoneNumber' => $phoneNumber,
+                'full_name' => $full_name,
+                'date' => $date,
+                'start' => $start,
+                'end' => $end,
+            ];
+             $smsController = new SmsController();
+             $smsController->cancellationSans($phoneNumber,$full_name,$titel, $date, $start, $end);
+        }
+
+        return response()->json([
+            'message' => 'Sans canceled successfully',
+            'reserve' => $reserveData
+        ], 200);
     }
 }

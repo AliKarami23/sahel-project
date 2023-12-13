@@ -32,13 +32,14 @@ class OrderController extends Controller
                 return response()->json(['message' => 'Product with ID ' . $productSans['product_id'] . ' not found.'], 404);
             }
 
-
             $Sans = Sans::where('product_id', $productSans['product_id'])->first();
 
             if (!$Sans) {
                 return response()->json(['message' => 'Sans record not found for the given product and sans ID.'], 404);
             }
-
+            if ($Sans->status == 'Inactive') {
+                return response()->json(['message' => 'The Sans is inactive and cannot be reserved.'], 400);
+            }
             if ($productSans['capacity_man'] <= $Sans->capacity_remains_man && $productSans['capacity_woman'] <= $Sans->capacity_remains_woman) {
 
                 $total_price += ($product->price * $productSans['capacity_man']) + ($product->price * $productSans['capacity_woman']);
@@ -102,7 +103,6 @@ class OrderController extends Controller
             }
         }
 
-
         return response()->json([
             'message' => 'The order and reservation have been successfully completed.',
             'order' => $order,
@@ -128,6 +128,9 @@ class OrderController extends Controller
                 ->where('id', $productSans['sans_id'])
                 ->firstOrFail();
 
+            if ($Sans->status == 'Inactive') {
+                return response()->json(['message' => 'The Sans is inactive and cannot be reserved.'], 400);
+            }
             if ($Sans->capacity_remains_man >= $productSans['capacity_man'] && $Sans->capacity_remains_woman >= $productSans['capacity_woman']) {
                 $total_price += ($product->price * $productSans['capacity_man']) + ($product->price * $productSans['capacity_woman']);
 

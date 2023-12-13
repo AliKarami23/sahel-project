@@ -174,16 +174,19 @@ class ProductController extends Controller
 
     public function show($id)
     {
-
-        $product = Product::find($id);
+        $product = Product::join('sans', 'products.id', '=', 'sans.product_id')
+            ->where('products.id', $id)
+            ->where('sans.status', 'Active')
+            ->select('products.*')
+            ->first();
 
         if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
+            return response()->json(['message' => 'Product not found or does not have active Sans'], 404);
         }
+
         $comments = Comment::where('product_id', $id)
             ->where('status', 'Active')
             ->get();
-
 
         $MainImage = $product->image_main_id;
         $image_ids = $product->image_id;
@@ -198,13 +201,15 @@ class ProductController extends Controller
             }
         }
 
-        if ($MainImage){
+        if ($MainImage) {
             $image_Main = Image::find($MainImage);
             $Main_image = $image_Main->getMedia('*');
         }
+
         $video_id = $product->video_id;
-        if ($video_id){
-            $video = video::find($video_id);
+
+        if ($video_id) {
+            $video = Video::find($video_id);
             $product_video = $video->getMedia('*');
         }
 
@@ -218,12 +223,16 @@ class ProductController extends Controller
     }
 
 
+
     public function List()
     {
-        $products = Product::all();
-        $productsWithImages = [];
+        $productsWithImages = Product::join('sans', 'products.id', '=', 'sans.product_id')
+            ->where('sans.status', 'Active')
+            ->select('products.id', 'products.title', 'products.image_main_id')
+            ->distinct()
+            ->get();
 
-        foreach ($products as $product) {
+        foreach ($productsWithImages as $product) {
             $MainImage = $product->image_main_id;
             $Main_image = [];
 
@@ -235,17 +244,13 @@ class ProductController extends Controller
                 }
             }
 
-            $productData = [
-                'id' => $product->id,
-                'title' => $product->title,
-                'images' => $Main_image,
-            ];
-
-            $productsWithImages[] = $productData;
+            $product->images = $Main_image;
+            unset($product->image_main_id);
         }
 
         return response()->json($productsWithImages);
     }
+
 
 
 
