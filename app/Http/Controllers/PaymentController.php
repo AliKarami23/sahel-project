@@ -23,7 +23,7 @@ class PaymentController extends Controller
         }
 
         $paymentRequest = Toman::amount($order->total_price)
-            ->description('پرداخت هزینه خرید سرگرمی تفریح در سایت ساحل')
+            ->description('پرداخت هزینه خرید تفریح در سایت ساحل')
             ->callback(route('callback'))
             ->mobile($user->phone_number)
             ->email($user->email)

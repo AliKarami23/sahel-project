@@ -174,15 +174,11 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::join('sans', 'products.id', '=', 'sans.product_id')
-            ->where('products.id', $id)
-            ->where('sans.status', 'Active')
-            ->select('products.*')
-            ->first();
-
+        $product = Product::find($id);
         if (!$product) {
-            return response()->json(['message' => 'Product not found or does not have active Sans'], 404);
+            return response()->json(['message' => 'Product not found'], 404);
         }
+        $sansSessions = $product->sans()->where('status', 'Active')->get();
 
         $comments = Comment::where('product_id', $id)
             ->where('status', 'Active')
@@ -215,6 +211,7 @@ class ProductController extends Controller
 
         return response()->json([
             'product' => $product,
+            'sansSessions' => $sansSessions,
             'comments' => $comments,
             'images' => $images ?? [],
             'imageMain' => $Main_image ?? [],

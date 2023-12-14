@@ -44,7 +44,7 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
     Route::get('/Customer/Show/{id}', [UserController::class, 'show'])->name('showCustomer')->middleware(['permission:Customer.Show']);
     Route::delete('/Customer/Delete/{id}', [UserController::class, 'delete'])->name('deleteCustomer')->middleware(['permission:Customer.Delete']);
     Route::get('/Customer/List', [UserController::class, 'list'])->name('listCustomer')->middleware(['permission:Customer.List']);
-
+//require __DIR__ . '/user.php';
 
 //Product
     Route::post('/Product/Create', [ProductController::class, 'create'])->name('createProduct')->middleware(['permission:Product.Create']);

@@ -47,7 +47,6 @@ class QuestionController extends Controller
 
         return response()->json([
             'message' => 'The question was deleted',
-            'Question' => $question,
         ]);
     }
 
