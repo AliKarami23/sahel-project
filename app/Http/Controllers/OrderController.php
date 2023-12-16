@@ -87,13 +87,18 @@ class OrderController extends Controller
         foreach ($updatedTicketsSold as $productId => $sansData) {
             foreach ($sansData as $sansId => $ticketsSold) {
                 $Sans = Sans::where('product_id', $productId)->where('id', $sansId)->first();
-                $Reservation = Reservation::where('product_id', $productId)->first();
 
-                $capacity_remains_man = $Sans->capacity_remains_man - $Reservation->tickets_sold_man;
-                $capacity_remains_woman = $Sans->capacity_remains_woman - $Reservation->tickets_sold_woman;
+                // محاسبه تعداد کل بلیت‌ها
+                $totalTicketsSoldMan = $Sans->tickets_sold_man + $ticketsSold['tickets_sold_man'];
+                $totalTicketsSoldWoman = $Sans->tickets_sold_woman + $ticketsSold['tickets_sold_woman'];
+
+                $capacity_remains_man = $Sans->capacity_remains_man - $totalTicketsSoldMan;
+                $capacity_remains_woman = $Sans->capacity_remains_woman - $totalTicketsSoldWoman;
 
                 if ($capacity_remains_man >= 0 && $capacity_remains_woman >= 0) {
                     $Sans->update([
+                        'tickets_sold_man' => $totalTicketsSoldMan,
+                        'tickets_sold_woman' => $totalTicketsSoldWoman,
                         'capacity_remains_man' => $capacity_remains_man,
                         'capacity_remains_woman' => $capacity_remains_woman,
                     ]);
@@ -102,6 +107,7 @@ class OrderController extends Controller
                 }
             }
         }
+
 
         return response()->json([
             'message' => 'The order and reservation have been successfully completed.',

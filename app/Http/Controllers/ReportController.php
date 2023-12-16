@@ -18,10 +18,12 @@ class ReportController extends Controller
 
         // مجموع قیمت سفارشات امروز
         $today = Carbon::today();
-        $totalPriceToday = Order::whereDate('created_at', $today)->sum('total_price');
+        $totalPriceToday = Order::whereDate('created_at', $today)
+            ->where('payment_status', 1)
+            ->sum('total_price');
 
         // لیست تمام محصولات و مجموع قیمت فروش هر محصول
-        $productsWithSales = Product::all()->map(function ($product) {
+        $productsWithSales = Product::with('reservation')->get()->map(function ($product) {
             return [
                 'product' => $product,
                 'totalSales' => $product->updateTicketsSold(),
@@ -29,14 +31,31 @@ class ReportController extends Controller
         });
 
         // سفارشات ماه گذشته و مجموع قیمت آن‌ها
-        $firstDayOfLastMonth = Carbon::now()->subMonth()->firstOfMonth();
-        $lastDayOfLastMonth = Carbon::now()->subMonth()->lastOfMonth();
+        $firstDayOfLastMonth = Carbon::now()->subMonth()->startOfDay();
+        $lastDayOfLastMonth = Carbon::now()->endOfDay();
 
-        $ordersLastMonth = Order::whereBetween('created_at', [$firstDayOfLastMonth, $lastDayOfLastMonth])
+        $ordersLastMonth = Order::with('products')
+            ->whereBetween('created_at', [$firstDayOfLastMonth, $lastDayOfLastMonth])
             ->get();
 
+        $totalPriceLastMonth = $ordersLastMonth->sum('total_price');
+
+        foreach ($ordersLastMonth as $order) {
+            // اطلاعات سفارش
+            $orderDetails = [
+                'id' => $order->id,
+                'user_id' => $order->user_id,
+                'total_price' => $order->total_price,
+                'payment_status' => $order->payment_status,
+                'created_at' => $order->created_at,
+                'updated_at' => $order->updated_at,
+            ];
+
+            $relatedProducts = $order->products;
+        }
 
         $totalPriceLastMonth = $ordersLastMonth->sum('total_price');
+
 
         // تعداد بلیط‌های فروخته شده امروز
         $ticketsSoldTodayMan = Reservation::whereDate('created_at', $today)

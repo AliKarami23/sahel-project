@@ -64,14 +64,11 @@ class Product extends Model implements HasMedia
 
     public function updateTicketsSold()
     {
-        $totalSoldMan = Reservation::where('product_id', $this->id)->sum('Tickets_Sold_Man');
-        $totalSoldWoman = Reservation::where('product_id', $this->id)->sum('Tickets_Sold_Woman');
+        $totalSold = $this->reservation()->selectRaw('SUM(tickets_sold_man) as totalSoldMan, SUM(tickets_sold_woman) as totalSoldWoman')->first();
 
         return [
-            'totalSoldMan' => $totalSoldMan,
-            'totalSoldWoman' => $totalSoldWoman,
+            'totalSoldMan' => $totalSold->totalSoldMan ?? 0,
+            'totalSoldWoman' => $totalSold->totalSoldWoman ?? 0,
         ];
     }
-
-
 }

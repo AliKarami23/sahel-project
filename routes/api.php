@@ -56,9 +56,9 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
 //Order
     Route::middleware(['CompleteProfile'])->group(function () {
         Route::post('/Order/Create', [OrderController::class, 'create'])->name('createOrder')->middleware(['permission:Order.Create']);
-        Route::put('/Order/Edit/{id}', [OrderController::class, 'edit'])->name('editOrder')->middleware(['permission:Order.Edit', 'checkOrderPermission', 'CheckPaymentOrder']);
+        Route::put('/Order/Edit/{id}', [OrderController::class, 'edit'])->name('editOrder')->middleware(['permission:Order.Edit', 'CheckOrderPermission', 'CheckPaymentOrder']);
     });
-    Route::get('/Order/Show/{id}', [OrderController::class, 'show'])->name('showOrder')->middleware(['permission:Order.Show', 'checkOrderPermission']);
+    Route::get('/Order/Show/{id}', [OrderController::class, 'show'])->name('showOrder')->middleware(['permission:Order.Show', 'CheckOrderPermission']);
     Route::get('/Order/List', [OrderController::class, 'list'])->name('listOrder')->middleware(['permission:Order.List']);
     Route::delete('/Order/Delete/{id}', [OrderController::class, 'delete'])->name('deleteOrder')->middleware(['permission:Order.Delete']);
 

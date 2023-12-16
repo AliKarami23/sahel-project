@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Order;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +16,7 @@ class CheckPaymentOrder
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $order = Order::findOrFail(route('id'));
+        $order = Order::findOrFail($request->id);
 
         if ($order->payment_status == true) {
             return response()->json(['message' => 'Order payment has already been completed. Cannot edit.'], 403);
