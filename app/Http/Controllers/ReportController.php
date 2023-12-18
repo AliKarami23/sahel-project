@@ -14,7 +14,7 @@ class ReportController extends Controller
     public function dashboard()
     {
         // تعداد کاربران Customer
-        $Customers = User::role('Customer')->count();
+        $customerCount = User::role('Customer')->count();
 
         // مجموع قیمت سفارشات امروز
         $today = Carbon::today();
@@ -30,32 +30,27 @@ class ReportController extends Controller
             ];
         });
 
-        // سفارشات ماه گذشته و مجموع قیمت آن‌ها
-        $firstDayOfLastMonth = Carbon::now()->subMonth()->startOfDay();
-        $lastDayOfLastMonth = Carbon::now()->endOfDay();
+        //محصولات و مجموع قیمت آن‌ها در ماه گذشته
+        $firstDayOfLastMonth = now()->subMonth()->startOfDay();
+        $lastDayOfLastMonth = now()->endOfDay();
 
-        $ordersLastMonth = Order::with('products')
-            ->whereBetween('created_at', [$firstDayOfLastMonth, $lastDayOfLastMonth])
+        $productsLastMonth = Product::whereHas('orders', function ($query) use ($firstDayOfLastMonth, $lastDayOfLastMonth) {
+            $query->whereBetween('orders.created_at', [$firstDayOfLastMonth, $lastDayOfLastMonth])
+                ->where('orders.payment_status', 1);
+        })
+            ->with(['orders' => function ($query) use ($firstDayOfLastMonth, $lastDayOfLastMonth) {
+                $query->whereBetween('orders.created_at', [$firstDayOfLastMonth, $lastDayOfLastMonth])
+                    ->where('orders.payment_status', 1);
+            }])
             ->get();
 
-        $totalPriceLastMonth = $ordersLastMonth->sum('total_price');
-
-        foreach ($ordersLastMonth as $order) {
-            // اطلاعات سفارش
-            $orderDetails = [
-                'id' => $order->id,
-                'user_id' => $order->user_id,
-                'total_price' => $order->total_price,
-                'payment_status' => $order->payment_status,
-                'created_at' => $order->created_at,
-                'updated_at' => $order->updated_at,
+        $productsLastMonthSales = $productsLastMonth->map(function ($product) {
+            return [
+                'title' => $product->title,
+                'price' => $product->price,
+                'total_sales_last_month' => $product->getTotalSales(),
             ];
-
-            $relatedProducts = $order->products;
-        }
-
-        $totalPriceLastMonth = $ordersLastMonth->sum('total_price');
-
+        });
 
         // تعداد بلیط‌های فروخته شده امروز
         $ticketsSoldTodayMan = Reservation::whereDate('created_at', $today)
@@ -73,13 +68,10 @@ class ReportController extends Controller
         $ticketsSoldToday = $ticketsSoldTodayMan + $ticketsSoldTodayWoman;
 
         return response()->json([
-            'Customer' => $Customers,
+            'customerCount' => $customerCount,
             'totalPriceToday' => $totalPriceToday,
             'ticketsSoldToday' => $ticketsSoldToday,
-            'LastMonth' => [
-                'ordersLastMonth' => $ordersLastMonth,
-                'totalPriceLastMonth' => $totalPriceLastMonth
-            ],
+            'productsLastMonthSales' => $productsLastMonthSales,
             'productsWithSales' => $productsWithSales,
         ]);
     }
