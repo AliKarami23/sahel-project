@@ -24,7 +24,24 @@ class CardController extends Controller
 
         return $pdfUrl;
     }
+    public function updateCard($order, $uniqueCardNumber)
+    {
+        $orderDetails = Order::with(['reserves', 'reserves.sans', 'reserves.sans.product'])->find($order->id);
 
+
+        $pdfPath = 'tickets/' . $orderDetails->id . '_ticket.pdf';
+        if (Storage::exists($pdfPath)) {
+            Storage::delete($pdfPath);
+        }
+
+        $pdf = PDF::loadView('pdf.ticket', compact('orderDetails', 'uniqueCardNumber'));
+        $newPdfPath = 'tickets/' . $orderDetails->id . '_ticket.pdf';
+        Storage::put($newPdfPath, $pdf->output());
+
+        $order->card->update(['card_number' => $uniqueCardNumber]);
+
+        return Storage::url($newPdfPath);
+    }
 
     public function generateUniqueCardNumber()
     {
@@ -33,7 +50,7 @@ class CardController extends Controller
         while (!$uniqueCardNumber) {
             $randomNumber = random_int(1000000, 9999999);
 
-            $existingOrder = Order::whereHas('cards', function ($query) use ($randomNumber) {
+            $existingOrder = Order::whereHas('card', function ($query) use ($randomNumber) {
                 $query->where('card_Number', $randomNumber);
             })->first();
 

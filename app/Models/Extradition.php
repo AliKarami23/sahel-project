@@ -11,11 +11,14 @@ class Extradition extends Model
 
     protected $fillable = [
         'user_id',
+        'reserve_id',
         'order_id',
         'status',
         'price',
         'card_number',
         'name_card',
+        'capacity_man',
+        'capacity_woman',
         'answer'
     ];
 
@@ -30,5 +33,9 @@ class Extradition extends Model
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+    public function reserve()
+    {
+        return $this->belongsTo(Reservation::class);
     }
 }

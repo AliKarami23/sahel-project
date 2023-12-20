@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Reservation extends Model
 {
@@ -16,6 +17,7 @@ class Reservation extends Model
         'product_id',
         'tickets_sold_man',
         'tickets_sold_woman',
+        'status'
     ];
 
     public function order()
@@ -33,8 +35,13 @@ class Reservation extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function product()
+    public function products(): HasMany
     {
-        return $this->belongsTo(Product::class);
+        return $this->hasMany(OrderProduct::class, 'order_id', 'order_id');
+    }
+
+    public function extradition()
+    {
+        return $this->hasMany(Extradition::class);
     }
 }

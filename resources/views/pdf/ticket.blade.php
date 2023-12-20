@@ -9,8 +9,8 @@
 @foreach ($orderDetails->reserves as $reservation)
     <h1>Ticket Information</h1>
     <p>Card Number: {{ $uniqueCardNumber }}</p>
-    <p>Tickets Sold (Man): {{ $reservation->tickets_sold_Man }}</p>
-    <p>Tickets Sold (Woman): {{ $reservation->tickets_sold_Woman }}</p>
+    <p>Tickets Sold (Man): {{ $reservation->tickets_sold_man }}</p>
+    <p>Tickets Sold (Woman): {{ $reservation->tickets_sold_woman }}</p>
     <p>Sans Information:</p>
     <ul>
         <li>Start: {{ $reservation->sans->start }}</li>

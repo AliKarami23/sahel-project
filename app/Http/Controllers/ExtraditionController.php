@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Morilog\Jalali\CalendarUtils;
+use function Laravel\Prompts\error;
 
 class ExtraditionController extends Controller
 {
@@ -43,12 +44,17 @@ class ExtraditionController extends Controller
     public function request(ExtraditionRequestsRequest $request)
     {
         $user = auth()->user();
-        $orderId = $request->order_id;
+        $reserveId = $request->reserve_id;
+        $capacity_man = $request->capacity_man;
+        $capacity_woman = $request->capacity_woman;
 
-        $productOrder = OrderProduct::where('order_id', $orderId)->first();
+        $reserve = Reservation::find($reserveId);
 
-        if ($productOrder) {
-            $productId = $productOrder->product_id;
+        if ($capacity_man > $reserve->tickets_sold_man || $capacity_woman > $reserve->tickets_sold_woman) {
+            return response()->json(['error' => 'The number sent is more than the number reserved'], 404);
+        }
+        if ($reserve) {
+            $productId = $reserve->product_id;
             $product = Product::find($productId);
 
             if (!$product) {
@@ -56,99 +62,120 @@ class ExtraditionController extends Controller
             }
             $extraditionPercent = $product->extradition_percent / 100;
 
-            $order = Order::find($orderId);
-            if (!$order) {
-                return response()->json(['error' => 'Order not found'], 404);
-            }
+            $order = $reserve->order;
 
             $price = $order->total_price;
-                $final_price = $price * $extraditionPercent;
+            $final_price = $price * $extraditionPercent;
 
             $extradition = Extradition::create($request->merge([
                 'user_id' => $user->id,
                 'price' => $final_price,
             ])->all());
 
-
             return response()->json([
                 'message' => 'Your request has been successfully registered and is being tracked',
                 'extradition' => $extradition,
             ]);
         } else {
-            return response()->json(['error' => 'OrderProduct not found'], 404);
+            return response()->json(['error' => 'Reservation not found'], 404);
         }
     }
 
 
     public function list()
     {
-        $extraditions = Extradition::with(['user:id,full_name', 'order:id,total_price'])->get();
-
-        $formattedExtraditions = $extraditions->map(function ($extradition) {
-            return [
-                'extradition_id' => $extradition->id,
-                'user_full_name' => $extradition->user->full_name,
-                'order_total_price' => $extradition->price,
-            ];
-        });
+        $extraditions = Extradition::with(['user:id,full_name'])->get();
 
         return response()->json([
-            'extraditions' => $formattedExtraditions,
+            'extraditions' => $extraditions,
         ]);
     }
 
     public function show($id)
     {
-        $extradition = Extradition::with(['order:id,total_price'])->findOrFail($id);
+        $extradition = Extradition::with(['user:id,full_name'])->findOrFail($id);
 
         if (!$extradition) {
             return response()->json(['error' => 'Extradition not found'], 404);
         }
         $price = $extradition->price;
-        return response()->json(['order_total_price' => $price]);
+        return response()->json(['price' => $price,
+            'extradition' => $extradition
+        ]);
     }
 
 
     public function answer(ExtraditionAnswerRequest $request, $id)
     {
         try {
-            $extradition = Extradition::findOrFail($id);
-            $user = $extradition->user;
-            $card = $extradition->order->card;
+            $extradition = Extradition::with(['order', 'user'])->findOrFail($id);
             $order = $extradition->order;
-            $payment = $extradition->order->payment;
-            $price = $extradition->price;
-            if ($card && $user && $order && $payment) {
+            $reserve = Reservation::find($extradition->reserve_id);
+            $sans = $reserve->sans;
+            $product =Product::find($sans->product_id);
+            $user = $extradition->user;
+            $capacity_man = $extradition->capacity_man;
+            $capacity_woman = $extradition->capacity_woman;
+
+            if ($order && $order->card && $user) {
                 $pdfPath = 'tickets/' . $order->id . '_ticket.pdf';
 
-                if (Storage::exists($pdfPath)) {
-                    Storage::delete($pdfPath);
+                if ($capacity_man == $reserve->tickets_sold_man && $capacity_woman == $reserve->tickets_sold_woman) {
+                    $order->card->delete();
+                    $order->delete();
+                    if (Storage::exists($pdfPath)) {
+                        Storage::delete($pdfPath);
+                    }
+                    $reserve->update(['status' => 'cancel']);
+                } else {
+
+                    $CardController = new CardController();
+                    $uniqueCardNumber = $CardController->generateUniqueCardNumber();
+                    $pdfUrl = $CardController->updateCard($order, $uniqueCardNumber);
+
+                    $reserve->update([
+                        'tickets_sold_man' => $capacity_man,
+                        'tickets_sold_woman' => $capacity_woman,
+                    ]);
                 }
 
-                $card->delete();
-                $order->delete();
-                $payment->update(['status' => 'failed']);
+
+                $capacity_remains_man = $sans->capacity_remains_man + $capacity_man;
+                $capacity_remains_woman = $sans->capacity_remains_woman + $capacity_woman;
+                $sans->update([
+                    'capacity_remains_man' => $capacity_remains_man,
+                    'capacity_remains_woman' => $capacity_remains_woman,
+                ]);
+
+                $order_price = $product->price * ($capacity_man + $capacity_woman);
+                $order->update(['price' => $order_price]);
+
+                $phoneNumber = $user->phone_number;
+                $answer = $request->answer;
+
+                $smsController = new SmsController();
+                $smsController->extradition($phoneNumber, $answer, $extradition->price);
+
+                $extradition->update([
+                    'status' => 'Paid',
+                    'answer' => $answer,
+                ]);
+                return response()->json([
+                    'message' => 'The money has been returned successfully and the SMS has been sent successfully',
+                    'extradition' => $extradition,
+                    'pdfUrl' => $pdfUrl ?? null
+                ]);
+
+            } else {
+                return response()->json(['error' => 'Invalid order or user'], 400);
             }
 
-            $phoneNumber = $user->phone_number;
-            $answer = $request->answer;
-
-            $smsController = new SmsController();
-            $smsController->extradition($phoneNumber, $answer, $price);
-
-            $extradition->update([
-                'status' => 'Paid',
-                'answer' => $request->answer
-            ]);
-
-            return response()->json([
-                'message' => 'The money has been returned successfully and the SMS has been sent successfully',
-                'extradition' => $extradition
-            ]);
         } catch (ModelNotFoundException $exception) {
             return response()->json(['error' => 'Extradition not found'], 404);
         }
     }
+
+
     public function cancellationSans(Request $request)
     {
         $productId = $request->product_id;
@@ -187,8 +214,8 @@ class ExtraditionController extends Controller
                 'start' => $start,
                 'end' => $end,
             ];
-             $smsController = new SmsController();
-             $smsController->cancellationSans($phoneNumber,$full_name,$titel, $date, $start, $end);
+            $smsController = new SmsController();
+            $smsController->cancellationSans($phoneNumber, $full_name, $titel, $date, $start, $end);
         }
 
         return response()->json([

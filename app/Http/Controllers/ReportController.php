@@ -25,32 +25,46 @@ class ReportController extends Controller
         // لیست تمام محصولات و مجموع قیمت فروش هر محصول
         $productsWithSales = Product::with('reservation')->get()->map(function ($product) {
             return [
-                'product' => $product,
-                'totalSales' => $product->updateTicketsSold(),
+                'title' => $product->title,
+                'totalSales' => [
+                    'totalSoldMan' => $product->updateTicketsSold()['totalSoldMan'],
+                    'totalSoldWoman' => $product->updateTicketsSold()['totalSoldWoman'],
+                ],
             ];
         });
+
 
         //محصولات و مجموع قیمت آن‌ها در ماه گذشته
         $firstDayOfLastMonth = now()->subMonth()->startOfDay();
         $lastDayOfLastMonth = now()->endOfDay();
 
-        $productsLastMonth = Product::whereHas('orders', function ($query) use ($firstDayOfLastMonth, $lastDayOfLastMonth) {
-            $query->whereBetween('orders.created_at', [$firstDayOfLastMonth, $lastDayOfLastMonth])
-                ->where('orders.payment_status', 1);
-        })
+        $productsLastMonth = Product::leftJoin('order_product', 'products.id', '=', 'order_product.product_id')
+            ->leftJoin('orders', 'order_product.order_id', '=', 'orders.id')
+            ->where(function ($query) use ($firstDayOfLastMonth, $lastDayOfLastMonth) {
+                $query->whereBetween('orders.created_at', [$firstDayOfLastMonth, $lastDayOfLastMonth])
+                    ->where('orders.payment_status', 1);
+            })
+            ->orWhereNull('orders.id')
+            ->select('products.*')
+            ->distinct()
             ->with(['orders' => function ($query) use ($firstDayOfLastMonth, $lastDayOfLastMonth) {
                 $query->whereBetween('orders.created_at', [$firstDayOfLastMonth, $lastDayOfLastMonth])
                     ->where('orders.payment_status', 1);
             }])
             ->get();
 
-        $productsLastMonthSales = $productsLastMonth->map(function ($product) {
+        $productsLastMonthSales = $productsLastMonth->map(function ($product) use ($firstDayOfLastMonth, $lastDayOfLastMonth) {
             return [
                 'title' => $product->title,
                 'price' => $product->price,
-                'total_sales_last_month' => $product->getTotalSales(),
+                'total_sales_last_month' => $product->orders
+                    ->whereBetween('created_at', [$firstDayOfLastMonth, $lastDayOfLastMonth])
+                    ->where('payment_status', 1)
+                    ->sum('total_price'),
             ];
         });
+
+
 
         // تعداد بلیط‌های فروخته شده امروز
         $ticketsSoldTodayMan = Reservation::whereDate('created_at', $today)

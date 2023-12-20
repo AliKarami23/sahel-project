@@ -22,7 +22,10 @@ class ExtraditionRequestsRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'reserve_id' => 'required|numeric',
             'order_id' => 'required|numeric',
+            'capacity_man' => 'required|numeric',
+            'capacity_woman' => 'required|numeric',
             'card_number' => 'required|string|digits:9',
             'name_card' => 'required|string|max:255',
         ];

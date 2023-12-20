@@ -27,7 +27,7 @@ class OrderController extends Controller
 
         for ($i = 1; $i < 2; $i++) {
             Async::run(function () use ($i, $request, $order, &$total_price, &$updatedTicketsSold, &$allReservations, &$allSans) {
-                sleep(5);
+                sleep(3);
                 foreach (($request->json('product')) as $productSans) {
                     $product = Product::find($productSans['product_id']);
 
@@ -134,7 +134,7 @@ class OrderController extends Controller
         Reservation::where('order_id', $order->id)->delete();
         for ($i = 1; $i < 2; $i++) {
             Async::run(function () use ($i, $request, $order, &$total_price, &$updatedTicketsSold, &$allReservations, &$allSans) {
-                sleep(5);
+                sleep(3);
                 foreach ($request->json('product') as $productSans) {
                     $product = Product::findOrFail($productSans['product_id']);
                     $Sans = Sans::where('product_id', $productSans['product_id'])

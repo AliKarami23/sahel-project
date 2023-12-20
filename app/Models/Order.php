@@ -31,7 +31,7 @@ class Order extends Model
         return $this->hasMany(Reservation::class);
     }
 
-    public function cards()
+    public function card()
     {
         return $this->hasOne(Card::class);
     }
@@ -43,6 +43,11 @@ class Order extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function extradition()
+    {
+        return $this->hasMany(Extradition::class);
     }
 
     protected $casts = [

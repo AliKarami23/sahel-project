@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->integer('sans_id');
             $table->integer('tickets_sold_man');
             $table->integer('tickets_sold_woman');
+            $table->string('status')->default('Active');
             $table->timestamps();
         });
     }
