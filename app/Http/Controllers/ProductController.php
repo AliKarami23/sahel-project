@@ -62,7 +62,6 @@ class ProductController extends Controller
 
 
         $productData = array_merge($request->all(), [
-            'capacity_total' => $capacity_total,
             'price' => $price
         ]);
 
@@ -146,7 +145,6 @@ class ProductController extends Controller
 
         $productData = $product->toArray();
         $mergedData = array_merge($productData, [
-            'capacity_total' => $capacity_total,
             'price' => $price
         ]);
         $product->update($mergedData);
