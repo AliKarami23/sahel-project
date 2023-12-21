@@ -62,7 +62,7 @@ class CardController extends Controller
         return $uniqueCardNumber;
     }
 
-    public function userTickets()
+    public function userCard()
     {
         $userOrders = Auth::user()->orders()->with('cards')->get();
 
@@ -114,7 +114,7 @@ class CardController extends Controller
         return response()->json($orders);
     }
 
-    public function allTickets()
+    public function allCard()
     {
         $orders = Order::with(['reserves.sans', 'reserves.sans.product', 'cards'])
             ->get();
