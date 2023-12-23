@@ -67,6 +67,12 @@ class ExtraditionController extends Controller
             $price = $order->total_price;
             $final_price = $price * $extraditionPercent;
 
+            $existingExtradition = Extradition::where('reserve_id', $reserveId)->first();
+
+            if ($existingExtradition) {
+                return response()->json(['error' => 'This reservation has already been requested'], 400);
+            }
+
             $extradition = Extradition::create($request->merge([
                 'user_id' => $user->id,
                 'price' => $final_price,

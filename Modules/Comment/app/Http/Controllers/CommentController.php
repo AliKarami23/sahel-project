@@ -61,10 +61,15 @@ class CommentController extends Controller
             ->where('status', 'Active')
             ->get();
 
+        if ($comments->isEmpty()){
+            return response()->json(['message' => 'comments not found']);
+        }
+
         return response()->json([
             'comment' => $comments
         ]);
     }
+
 
     public function delete($id)
     {

@@ -60,7 +60,11 @@ class RegisterController extends Controller
         $user->assignRole('Customer');
         $token = $user->createToken('UserToken')->plainTextToken;
 
-        return response()->json(['token' => $token, 'message' => 'Token created successfully.']);
+        return response()->json([
+            'message' => 'Token created successfully.',
+            'token' => $token,
+            'user' => $user
+        ]);
     }
 
     public function getInformation(GetInformationRequest $request)
@@ -107,7 +111,7 @@ class RegisterController extends Controller
     {
         $request->user()->tokens()->delete();
         return response()->json([
-            'logout' => 'Goodbye'
+            'logout' => 'TOKEN Removed'
         ]);
     }
 

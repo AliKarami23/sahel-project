@@ -115,19 +115,19 @@ class PaymentController extends Controller
 
         switch ($filterType) {
             case 'daily':
-                $paymentsQuery->whereDate('date', Carbon::today()->toDateString());
+                $paymentsQuery->whereDate('created_at', Carbon::today()->toDateString());
                 break;
 
             case 'weekly':
-                $paymentsQuery->whereBetween('date', [Carbon::now()->subWeek(), Carbon::now()]);
+                $paymentsQuery->whereBetween('created_at', [Carbon::now()->subWeek(), Carbon::now()]);
                 break;
 
             case 'monthly':
-                $paymentsQuery->whereMonth('date', Carbon::now()->subMonth()->month);
+                $paymentsQuery->whereMonth('created_at', Carbon::now()->month);
                 break;
 
             case 'custom':
-                $paymentsQuery->whereBetween('date', [Carbon::parse($startDate), Carbon::parse($endDate)]);
+                $paymentsQuery->whereBetween('created_at', [Carbon::parse($startDate), Carbon::parse($endDate)]);
                 break;
 
             default:
@@ -140,5 +140,4 @@ class PaymentController extends Controller
             'PaymentList' => $filteredPayments
         ]);
     }
-
 }
