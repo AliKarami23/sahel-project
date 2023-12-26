@@ -161,12 +161,12 @@ class RegisterController extends Controller
 
         $record->delete();
 
-        $user = User::firstOrNew(['email' => $email]);
+        $user = User::where('email', $email)->first();
 
-        if (!$user->exists) {
-            $user->full_name = 'Default full Name';
-            $user->password = Hash::make('default_password');
-            $user->save();
+        if (!$user) {
+            return response()->json([
+                'error' => 'User not found',
+            ], 404);
         }
 
         $token = $user->createToken('UserToken')->plainTextToken;

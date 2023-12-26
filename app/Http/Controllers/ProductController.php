@@ -282,8 +282,6 @@ class ProductController extends Controller
         }
 
         $product->sans()->delete();
-        $product->extraditions()->delete();
-
         $product->delete();
 
         return response()->json(['message' => 'Product Deleted']);
