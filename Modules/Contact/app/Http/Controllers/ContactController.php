@@ -3,16 +3,15 @@
 namespace Modules\Contact\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
+use Modules\Contact\App\Http\Requests\AnswerContactRequest;
+use Modules\Contact\App\Http\Requests\ContactRequest;
 use Modules\Contact\app\Models\Contact;
 use App\Mail\AnswerContactMail;
 
 class ContactController extends Controller
 {
-    public function create(Request $request)
+    public function create(ContactRequest $request)
     {
         $contact = Contact::create($request->all());
 
@@ -38,7 +37,7 @@ class ContactController extends Controller
         ]);
     }
 
-    public function answer(Request $request, $id)
+    public function answer(AnswerContactRequest $request, $id)
     {
         $contact = Contact::find($id);
 

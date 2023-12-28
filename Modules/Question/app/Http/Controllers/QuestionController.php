@@ -3,12 +3,12 @@
 namespace Modules\Question\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Modules\Question\App\Http\Requests\QuestionRequest;
 use Modules\Question\app\Models\Question;
 
 class QuestionController extends Controller
 {
-    public function create(Request $request)
+    public function create(QuestionRequest $request)
     {
 
         $question = Question::create($request->all());
@@ -19,7 +19,7 @@ class QuestionController extends Controller
         ]);
     }
 
-    public function edit(Request $request, $id)
+    public function edit(QuestionRequest $request, $id)
     {
         $question = Question::find($id);
 

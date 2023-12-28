@@ -3,12 +3,13 @@
 namespace Modules\Comment\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Modules\Comment\App\Http\Requests\AnswerCommentRequest;
+use Modules\Comment\App\Http\Requests\CommentRequest;
 use Modules\Comment\app\Models\Comment;
 
 class CommentController extends Controller
 {
-    public function create(Request $request)
+    public function create(CommentRequest $request)
     {
         $user = auth()->user()->id;
 
@@ -20,7 +21,7 @@ class CommentController extends Controller
         ]);
     }
 
-    public function answer(Request $request, $id)
+    public function answer(AnswerCommentRequest $request, $id)
     {
         $comment = Comment::findOrFail($id);
         $comment->update([

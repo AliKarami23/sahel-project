@@ -5,12 +5,12 @@ namespace Modules\Article\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Image;
 use App\Models\Video;
-use Illuminate\Http\Request;
+use Modules\Article\App\Http\Requests\ArticleRequest;
 use Modules\Article\app\Models\Article;
 
 class ArticleController extends Controller
 {
-    public function create(Request $request)
+    public function create(ArticleRequest $request)
     {
         try {
             $video = Video::findOrFail($request->video_id);
@@ -52,7 +52,7 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function edit(Request $request, $id)
+    public function edit(ArticleRequest $request, $id)
     {
         try {
             $video = Video::findOrFail($request->video_id);
