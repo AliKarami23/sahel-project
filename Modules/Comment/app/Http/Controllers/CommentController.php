@@ -25,7 +25,7 @@ class CommentController extends Controller
     {
         $comment = Comment::findOrFail($id);
         $comment->update([
-            'response' => $request->response,
+            'response' => $request->Response,
         ]);
 
         return response()->json([

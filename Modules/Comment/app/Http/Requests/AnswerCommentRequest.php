@@ -22,7 +22,7 @@ class AnswerCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'answer' => 'required|string',
+            'Response' => 'required|string',
         ];
     }
 }

@@ -24,7 +24,7 @@ class CommentRequest extends FormRequest
         return [
             'product_id' => 'required|numeric',
             'score' => 'required|numeric|between:1,5',
-            'message' => 'required|string',
+            'massage' => 'required|string',
         ];
     }
 }
