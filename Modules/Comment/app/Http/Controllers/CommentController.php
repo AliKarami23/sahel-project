@@ -13,7 +13,7 @@ class CommentController extends Controller
     public function create(CommentRequest $request)
     {
         $user = auth()->user()->id;
-        $product = Product::find('product_id');
+        $product = Product::find($request->product_id);
         if (!$product) {
             return response()->json(['product not find']);
         }
