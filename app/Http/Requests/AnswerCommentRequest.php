@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Contact\App\Http\Requests;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AnswerContactRequest extends FormRequest
+class AnswerCommentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,7 @@ class AnswerContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'massage' => 'required|string'
+            'Response' => 'required|string',
         ];
     }
 }

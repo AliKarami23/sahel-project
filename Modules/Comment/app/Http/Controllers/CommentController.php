@@ -3,9 +3,9 @@
 namespace Modules\Comment\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AnswerCommentRequest;
+use App\Http\Requests\CommentRequest;
 use App\Models\Product;
-use Modules\Comment\App\Http\Requests\AnswerCommentRequest;
-use Modules\Comment\App\Http\Requests\CommentRequest;
 use Modules\Comment\app\Models\Comment;
 
 class CommentController extends Controller

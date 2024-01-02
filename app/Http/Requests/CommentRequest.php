@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Question\App\Http\Requests;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class QuestionRequest extends FormRequest
+class CommentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,9 @@ class QuestionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'text' => 'required|string',
+            'product_id' => 'required|numeric',
+            'score' => 'required|numeric|between:1,5',
+            'massage' => 'required|string',
         ];
     }
 }

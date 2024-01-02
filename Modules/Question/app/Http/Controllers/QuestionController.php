@@ -3,7 +3,7 @@
 namespace Modules\Question\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Modules\Question\App\Http\Requests\QuestionRequest;
+use App\Http\Requests\QuestionRequest;
 use Modules\Question\app\Models\Question;
 
 class QuestionController extends Controller

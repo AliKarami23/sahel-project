@@ -3,9 +3,9 @@
 namespace Modules\Article\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ArticleRequest;
 use App\Models\Image;
 use App\Models\Video;
-use Modules\Article\App\Http\Requests\ArticleRequest;
 use Modules\Article\app\Models\Article;
 
 class ArticleController extends Controller

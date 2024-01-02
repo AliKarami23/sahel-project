@@ -3,11 +3,11 @@
 namespace Modules\Contact\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Mail;
-use Modules\Contact\App\Http\Requests\AnswerContactRequest;
-use Modules\Contact\App\Http\Requests\ContactRequest;
-use Modules\Contact\app\Models\Contact;
+use App\Http\Requests\AnswerContactRequest;
+use App\Http\Requests\ContactRequest;
 use App\Mail\AnswerContactMail;
+use Illuminate\Support\Facades\Mail;
+use Modules\Contact\app\Models\Contact;
 
 class ContactController extends Controller
 {
