@@ -64,7 +64,7 @@ class CardController extends Controller
 
     public function userCard()
     {
-        $userOrders = Auth::user()->orders()->with('cards')->get();
+        $userOrders = Auth::user()->orders()->with('card')->get();
 
         return response()->json($userOrders);
     }
@@ -116,7 +116,7 @@ class CardController extends Controller
 
     public function allCard()
     {
-        $orders = Order::with(['reserves.sans', 'reserves.sans.product', 'cards'])
+        $orders = Order::with(['reserves.sans', 'reserves.sans.product', 'card'])
             ->get();
 
         return response()->json($orders);
