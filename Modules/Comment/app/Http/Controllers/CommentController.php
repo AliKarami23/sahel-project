@@ -3,6 +3,7 @@
 namespace Modules\Comment\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use Modules\Comment\App\Http\Requests\AnswerCommentRequest;
 use Modules\Comment\App\Http\Requests\CommentRequest;
 use Modules\Comment\app\Models\Comment;
@@ -12,7 +13,10 @@ class CommentController extends Controller
     public function create(CommentRequest $request)
     {
         $user = auth()->user()->id;
-
+        $product = Product::find('product_id');
+        if (!$product) {
+            return response()->json(['product not find']);
+        }
         $comment = Comment::create($request->merge(['user_id' => $user])->all());
 
         return response()->json([
@@ -62,7 +66,7 @@ class CommentController extends Controller
             ->where('status', 'Active')
             ->get();
 
-        if ($comments->isEmpty()){
+        if ($comments->isEmpty()) {
             return response()->json(['message' => 'comments not found']);
         }
 
