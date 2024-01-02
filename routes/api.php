@@ -14,6 +14,11 @@ require __DIR__ . '/payment.php';
 
 Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () {
 
+    Route::get('/link', function () {
+        $target = '/home/sahel/domains/sahel.v1r.ir/sahel-project/storage/app/public';
+        $shortcut = '/home/sahel/domains/sahel.v1r.ir/public_html';
+        symlink($target, $shortcut);
+    });
 
 //Dashboard
     Route::get('/Admin/Dashboard', [ReportController::class, 'dashboard'])->name('dashboard')->middleware(['permission:Admin.Dashboard']);
