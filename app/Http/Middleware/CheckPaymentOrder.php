@@ -18,7 +18,7 @@ class CheckPaymentOrder
     {
         $order = Order::findOrFail($request->id);
 
-        if ($order->payment_status == true) {
+        if ($order->payment_status == 1) {
             return response()->json(['message' => 'Order payment has already been completed. Cannot edit.'], 403);
         }
 

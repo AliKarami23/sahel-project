@@ -48,6 +48,7 @@ class RoleSeeder extends Seeder
             ['name' => 'Payment.List', 'guard_name' => 'api'],
             ['name' => 'Payment.Filter', 'guard_name' => 'api'],
             ['name' => 'Card.UserCard', 'guard_name' => 'api'],
+            ['name' => 'Card.show', 'guard_name' => 'api'],
             ['name' => 'Card.AllCard', 'guard_name' => 'api'],
             ['name' => 'Card.DownloadPdf', 'guard_name' => 'api'],
             ['name' => 'Card.FilterCard', 'guard_name' => 'api'],

@@ -19,7 +19,7 @@ class CheckPaymentStatusMiddleware
         $orderId = $request->order_id;
 
         $order = Order::find($orderId);
-        if ($order && $order->payment_status) {
+        if ($order->payment_status == 1) {
             return response()->json(['error' => 'Payment has already been completed for this order'], 400);
         }
 

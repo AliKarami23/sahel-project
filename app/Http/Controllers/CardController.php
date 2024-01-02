@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Card;
 use App\Models\Order;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -122,4 +123,33 @@ class CardController extends Controller
         return response()->json($orders);
     }
 
+    public function showCard($id)
+    {
+        $card = Card::find($id);
+
+        if (!$card) {
+            return response()->json(['error' => 'Card not found'], 404);
+        }
+
+        $order = $card->order;
+
+        if (!$order) {
+            return response()->json(['error' => 'Order not found'], 404);
+        }
+
+        $user = $order->user;
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $reservations = $order->reserves;
+
+        return response()->json([
+            'user' => $user,
+            'card' => $card,
+            'order' => $order,
+            'reservations' => $reservations,
+        ]);
+    }
 }

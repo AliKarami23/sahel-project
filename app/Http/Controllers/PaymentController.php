@@ -24,7 +24,7 @@ class PaymentController extends Controller
 
         $paymentRequest = Toman::amount($order->total_price)
             ->description('پرداخت هزینه خرید تفریح در سایت ساحل')
-            ->callback(route('callback'))
+            ->callback(route('callbackPayment'))
             ->mobile($user->phone_number)
             ->email($user->email)
             ->request();
@@ -58,8 +58,11 @@ class PaymentController extends Controller
             $uniqueCardNumber = $cardController->generateUniqueCardNumber();
 
             $card = Card::updateOrCreate(
-                ['order_id' => $payment->order_id],
-                ['card_number' => $uniqueCardNumber, 'card_link' => route('download_pdf', ['order_id' => $payment->order_id])]
+                [
+                    'order_id' => $payment->order_id,
+                    'card_number' => $uniqueCardNumber,
+                    'card_link' => route('downloadPdf', ['id' => $payment->order_id])
+                ]
             );
 
             $order->update(['payment_status' => true]);
