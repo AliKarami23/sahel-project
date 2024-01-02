@@ -147,8 +147,6 @@ class CardController extends Controller
 
         return response()->json([
             'user' => $user,
-            'card' => $card,
-            'order' => $order,
             'reservations' => $reservations,
         ]);
     }
