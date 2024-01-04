@@ -99,14 +99,14 @@ class CardController extends Controller
         $endDate = $request->end_date;
         $cardNumber = $request->card_number;
 
-        $orders = Order::with(['reserves.sans', 'reserves.sans.product', 'cards'])
+        $orders = Order::with(['reserves.sans', 'reserves.sans.product', 'card'])
             ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
                 $query->whereHas('reserves.sans', function ($query) use ($startDate, $endDate) {
                     $query->whereBetween('Date', [$startDate, $endDate]);
                 });
             })
             ->when($cardNumber, function ($query) use ($cardNumber) {
-                $query->whereHas('cards', function ($query) use ($cardNumber) {
+                $query->whereHas('card', function ($query) use ($cardNumber) {
                     $query->where('Card_Number', $cardNumber);
                 });
             })
