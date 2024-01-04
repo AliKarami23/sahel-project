@@ -118,14 +118,13 @@ class RegisterController extends Controller
     public function emailPassword(EmailPasswordRequest $request)
     {
         $email = $request->email;
-
         $code = mt_rand(100000, 999999);
-
+dd(1);
         Register::create([
             'email' => $email,
             'verification_code' => $code,
         ]);
-        dd(1);
+
         Mail::to($email)->send(new VerificationCodEmail($code));
 
         return response()->json([
