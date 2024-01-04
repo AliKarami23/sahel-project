@@ -125,7 +125,7 @@ class RegisterController extends Controller
             'email' => $email,
             'verification_code' => $code,
         ]);
-
+        dd(1);
         Mail::to($email)->send(new VerificationCodEmail($code));
 
         return response()->json([
