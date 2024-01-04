@@ -119,7 +119,7 @@ class RegisterController extends Controller
     {
         $email = $request->email;
         $code = mt_rand(100000, 999999);
-dd(1);
+
         Register::create([
             'email' => $email,
             'verification_code' => $code,
