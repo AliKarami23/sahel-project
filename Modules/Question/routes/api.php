@@ -20,6 +20,7 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
     Route::put('/Question/Edit/{id}', [QuestionController::class, 'edit'])->name('editQuestion')->middleware(['permission:Question.Edit']);
     Route::get('/Question/Show/{id}', [QuestionController::class, 'show'])->name('showQuestion')->middleware(['permission:Question.Show']);
     Route::delete('/Question/Delete/{id}', [QuestionController::class, 'delete'])->name('deleteQuestion')->middleware(['permission:Question.Delete']);
-    Route::get('/Question/List', [QuestionController::class, 'list'])->name('listQuestion')->middleware(['permission:Question.List']);
 
 });
+
+Route::get('/Question/List', [QuestionController::class, 'list'])->name('listQuestion')->middleware(['permission:Question.List']);
