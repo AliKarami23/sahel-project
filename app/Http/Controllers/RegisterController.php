@@ -28,8 +28,8 @@ class RegisterController extends Controller
         $phoneNumber = intval($request->phone_number);
 
         $verificationCode = mt_rand(10000, 99999);
-        $smsController = new SmsController();
-        $smsController->VerificationCode($phoneNumber, $verificationCode);
+//        $smsController = new SmsController();
+//        $smsController->VerificationCode($phoneNumber, $verificationCode);
 
         Register::create([
             'number' => $phoneNumber,
