@@ -35,7 +35,7 @@ class ClearInactiveMediaJob implements ShouldQueue
 
     protected function deleteMedia($model)
     {
-        $media = $model->getMedia('videos'); // Replace 'videos' with your media collection name
+        $media = $model->getMedia('videos'); 
 
         foreach ($media as $mediaItem) {
             $mediaItem->delete();

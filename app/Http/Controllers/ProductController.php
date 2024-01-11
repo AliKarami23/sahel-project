@@ -223,7 +223,7 @@ class ProductController extends Controller
     {
         $productsWithImages = Product::join('sans', 'products.id', '=', 'sans.product_id')
             ->where('sans.status', 'Active')
-            ->select('products.id', 'products.title', 'products.image_main_id')
+            ->select('products.id', 'products.title', 'products.price', 'products.image_main_id')
             ->distinct()
             ->get();
 
@@ -235,7 +235,7 @@ class ProductController extends Controller
                 $image_Main = Image::find($MainImage);
 
                 if ($image_Main) {
-                    $Main_image = $image_Main->getMedia('*');
+                    $Main_image = $image_Main->getFirstMediaUrl('*');
                 }
             }
 
