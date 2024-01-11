@@ -42,8 +42,8 @@ class ArticleController extends Controller
             return response()->json(['message' => 'Article not found.'], 404);
         }
 
-        $articleImage = $article->image_id ? Image::find($article->image_id)->getMedia('*') : null;
-        $articleVideo = $article->video_id ? Video::find($article->video_id)->getMedia('*') : null;
+        $articleImage = $article->image_id ? Image::find($article->image_id)->getFirstMediaUrl('*') : null;
+        $articleVideo = $article->video_id ? Video::find($article->video_id)->getFirstMediaUrl('*') : null;
 
         return response()->json([
             'article' => $article,

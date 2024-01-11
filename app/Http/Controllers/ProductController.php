@@ -190,21 +190,21 @@ class ProductController extends Controller
             foreach ($image_ids as $image_id) {
                 $image = Image::find($image_id);
                 if ($image) {
-                    $images[] = $image->getMedia('*');
+                    $images[] = $image->getFirstMediaUrl('*');
                 }
             }
         }
 
         if ($MainImage) {
             $image_Main = Image::find($MainImage);
-            $Main_image = $image_Main->getMedia('*');
+            $Main_image = $image_Main->getFirstMediaUrl('*');
         }
 
         $video_id = $product->video_id;
 
         if ($video_id) {
             $video = Video::find($video_id);
-            $product_video = $video->getMedia('*');
+            $product_video = $video->getFirstMediaUrl('*');
         }
 
         return response()->json([
