@@ -79,7 +79,7 @@ class ArticleController extends Controller
 
     public function list()
     {
-        $articles = Article::select('title', 'text')->get();
+        $articles = Article::select('id','title', 'text')->get();
         return response()->json($articles);
     }
 
