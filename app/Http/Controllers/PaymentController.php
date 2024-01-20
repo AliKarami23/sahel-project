@@ -102,10 +102,8 @@ class PaymentController extends Controller
 
     public function paymentList()
     {
-        $PaymentList = Payment::all();
-        return response()->json([
-            'PaymentList' => $PaymentList
-        ]);
+        $paymentList = Payment::with(['user', 'order.card'])->get();
+        return response()->json($paymentList);
     }
 
     public function paymentFilter(Request $request)
