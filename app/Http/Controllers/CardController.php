@@ -117,12 +117,11 @@ class CardController extends Controller
 
     public function allCard()
     {
-        $orders = Order::with(['reserves.sans', 'reserves.sans.product', 'card'])
+        $orders = Order::with(['user','reserves.sans', 'reserves.sans.product', 'card'])
             ->get();
 
         return response()->json($orders);
     }
-
     public function showCard($id)
     {
         $card = Card::find($id);
