@@ -15,7 +15,7 @@ Route::group(['middleware' => ['auth:sanctum', 'CheckUserStatus']], function () 
 });
 Route::prefix('/Product/')->name('Product.')->group(function () {
 
-    Route::get('Show/{id}', [ProductController::class, 'show'])->name('show')->middleware(['permission:Product.Show']);
-    Route::get('List', [ProductController::class, 'list'])->name('list')->middleware(['permission:Product.List']);
+    Route::get('Show/{id}', [ProductController::class, 'show'])->name('show');
+    Route::get('List', [ProductController::class, 'list'])->name('list');
 });
 
