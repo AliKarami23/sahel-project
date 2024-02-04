@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('total_end');
             $table->integer('break_time');
             $table->longText('rules');
-            $table->string('description');
+            $table->longText('description');
             $table->integer('video_id');
             $table->string('image_id');
             $table->integer('image_main_id');
