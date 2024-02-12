@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: sahel-project
+        restart: unless-stopped
+        tty: true
+        environment:
+            SERVICE_NAME: app
+            SERVICE_TAGS: dev
+        working_dir: /var/www
+        volumes:
+            - .:/var/www
+        networks:
+            - sahel_bia_net
+
+    db:
+        image: mysql:5.7
+        container_name: sahel_bia_db
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "3308:3308"
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            DB_USERNAME: ${DB_USERNAME}
+            DB_PASSWORD: ${DB_PASSWORD}
+            SERVICE_NAME: mysql
+        networks:
+            - sahel_bia_net
+
+networks:
+    sahel_bia_net:
+        driver: bridge
